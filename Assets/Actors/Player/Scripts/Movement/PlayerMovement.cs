@@ -1,3 +1,4 @@
+using Actors.Common;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,12 +7,12 @@ namespace Actors.Player.Scripts.Movement
     public class PlayerMovement : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private float acceleration = 20f;
         [SerializeField] private float deceleration = 25f;
         [SerializeField] private bool normalizeDiagonals = true;
 
         private Rigidbody2D rb;
+        private Stats stats;
         private Vector2 inputDirection;
         private Vector2 currentVelocity;
 
@@ -20,6 +21,7 @@ namespace Actors.Player.Scripts.Movement
             rb = GetComponent<Rigidbody2D>();
             rb.freezeRotation = true;
             rb.gravityScale = 0f;
+            stats = GetComponent<Stats>();
         }
 
         private void Update()
@@ -37,7 +39,7 @@ namespace Actors.Player.Scripts.Movement
 
         private void FixedUpdate()
         {
-            Vector2 targetVelocity = inputDirection * moveSpeed;
+            Vector2 targetVelocity = inputDirection * stats.MoveSpeed.Value;
 
             if (inputDirection.sqrMagnitude > 0f)
                 currentVelocity = Vector2.MoveTowards(currentVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);

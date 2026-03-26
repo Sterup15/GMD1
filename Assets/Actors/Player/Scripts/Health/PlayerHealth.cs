@@ -1,13 +1,14 @@
 using System;
+using Actors.Common;
+using Actors.Projectile.Scripts;
 using TMPro;
 using UnityEngine;
 
 namespace Actors.Player.Scripts.Health
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth : MonoBehaviour, IDamageable
     {
-        [SerializeField] private int maxHealth = 5;
-
+        public int MaxHealth { get; private set; }
         public int CurrentHealth { get; private set; }
         public static Action<int, int> OnHealthChanged; // current, max
         public static Action OnPlayerDied;
@@ -15,7 +16,9 @@ namespace Actors.Player.Scripts.Health
 
         private void Awake()
         {
-            CurrentHealth = maxHealth;
+            var stats = GetComponent<Stats>();
+            MaxHealth = Mathf.RoundToInt(stats.MaxHealth.Value);
+            CurrentHealth = MaxHealth;
             SetHealthText(CurrentHealth);
         }
 
@@ -25,7 +28,7 @@ namespace Actors.Player.Scripts.Health
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             SetHealthText(CurrentHealth);
-            OnHealthChanged?.Invoke(CurrentHealth, maxHealth);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
 
             if (CurrentHealth == 0)
                 OnPlayerDied?.Invoke();

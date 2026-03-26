@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5530974776709784486}
   - component: {fileID: 575547428599533771}
   - component: {fileID: 4020517356743049464}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RedKnightSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,9 +140,10 @@ GameObject:
   - component: {fileID: 8205300458172405799}
   - component: {fileID: 8184821505269674684}
   - component: {fileID: 5363649478818500034}
-  m_Layer: 0
+  - component: {fileID: -5726670134324076611}
+  m_Layer: 9
   m_Name: MeleeEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -256,3 +257,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.EnemyMovementState
   animator: {fileID: 575547428599533771}
   spriteRenderer: {fileID: 5530974776709784486}
+--- !u!114 &-5726670134324076611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4072d3f999e1f449900da30fbc7404c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.EnemyHealth
+  maxHealth: 10
