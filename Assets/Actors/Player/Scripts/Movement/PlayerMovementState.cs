@@ -1,4 +1,6 @@
 ﻿using System;
+using Actors.Common;
+using Actors.Projectile.Scripts;
 using UnityEngine;
 
 namespace Actors.Player.Scripts.Movement
@@ -9,7 +11,10 @@ namespace Actors.Player.Scripts.Movement
         [SerializeField] private Animator animator;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb;
+        [SerializeField] private ProjectileSpawner projectileSpawner;
+        [SerializeField] private float shootAnimLength = 1f;
         private PlayerMovement playerMovement;
+        private Stats stats;
         private const string idleAnim = "Idle";
         private const string moveAnim = "Move";
         private const string shootAnim = "Shoot";
@@ -18,16 +23,38 @@ namespace Actors.Player.Scripts.Movement
         private void Awake()
         {
             playerMovement = GetComponent<PlayerMovement>();
+            stats = GetComponent<Stats>();
         }
 
         private void Update()
         {
-            if (currentMoveState == MoveStateEnum.Shoot) return;
-
-            SetMoveState(playerMovement.IsMoving ? MoveStateEnum.Move : MoveStateEnum.Idle);
+            if (playerMovement.IsMoving)
+                SetMoveState(MoveStateEnum.Move);
+            else
+                SetMoveState(NearestEnemyInRange() != null ? MoveStateEnum.Shoot : MoveStateEnum.Idle);
 
             if (playerMovement.MoveDirection.x != 0f)
                 spriteRenderer.flipX = playerMovement.MoveDirection.x < 0f;
+        }
+
+        private GameObject NearestEnemyInRange()
+        {
+            float range = stats.ShootRange.Value;
+            float rangeSqr = range * range;
+            GameObject nearest = null;
+            float nearestDist = float.MaxValue;
+
+            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+                float dist = (enemy.transform.position - transform.position).sqrMagnitude;
+                if (dist <= rangeSqr && dist < nearestDist)
+                {
+                    nearestDist = dist;
+                    nearest = enemy;
+                }
+            }
+
+            return nearest;
         }
 
         public void SetMoveState(MoveStateEnum newMoveState)
@@ -59,17 +86,30 @@ namespace Actors.Player.Scripts.Movement
 
         private void HandleShoot()
         {
+            var target = NearestEnemyInRange();
+            if (target != null)
+                spriteRenderer.flipX = target.transform.position.x < transform.position.x;
+
+            animator.speed = shootAnimLength * stats.FireRate.Value;
             animator.Play(shootAnim);
         }
 
         private void HandleMove()
         {
+            animator.speed = 1f;
             animator.Play(moveAnim);
         }
 
         private void HandleIdle()
         {
+            animator.speed = 1f;
             animator.Play(idleAnim);
+        }
+
+        // Called via Animation Event at the arrow-release frame of the shoot clip
+        public void OnShotFired()
+        {
+            projectileSpawner.Fire();
         }
     }
 }
