@@ -9,5 +9,17 @@ namespace Actors.Common
         public Stat Damage;
         public Stat MaxHealth;
         public Stat ShootRange;
+        public Stat PickupRange;
+
+        public Stat GetStat(StatType type) => type switch
+        {
+            StatType.MoveSpeed   => MoveSpeed,
+            StatType.FireRate    => FireRate,
+            StatType.Damage      => Damage,
+            StatType.MaxHealth   => MaxHealth,
+            StatType.ShootRange  => ShootRange,
+            StatType.PickupRange => PickupRange,
+            _                    => null
+        };
     }
 }

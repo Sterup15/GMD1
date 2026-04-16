@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 7534648018037430309}
   - component: {fileID: -492562059946344226}
   - component: {fileID: -1202542230122245905}
+  - component: {fileID: 1042410967823602309}
+  - component: {fileID: 713612661716253374}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -32,7 +34,7 @@ Transform:
   m_GameObject: {fileID: 2904057035740938740}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.713, y: 0, z: 0}
+  m_LocalPosition: {x: -0.713, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -133,7 +135,6 @@ MonoBehaviour:
   animator: {fileID: 4779355374947453767}
   spriteRenderer: {fileID: 2164286328790560882}
   rb: {fileID: 2125432101765804230}
-  projectileSpawner: {fileID: -492562059946344226}
   shootAnimLength: 1
 --- !u!114 &7534648018037430309
 MonoBehaviour:
@@ -147,7 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ec63fbe1c140e4fb99144278ec8734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Player.Scripts.Health.PlayerHealth
-  playerHealthText: {fileID: 0}
 --- !u!114 &-492562059946344226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,15 +176,68 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Stats
   MoveSpeed:
-    baseValue: 5
+    baseValue: 3
   FireRate:
-    baseValue: 1
+    baseValue: 1.5
   Damage:
     baseValue: 1
   MaxHealth:
     baseValue: 5
   ShootRange:
     baseValue: 5
+  PickupRange:
+    baseValue: 1
+--- !u!114 &1042410967823602309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d58fb9ef89cf504d8a55f47b964a30a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Actors.Player.Scripts.Gold.PlayerPickup
+  pickupLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+--- !u!114 &713612661716253374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b4a26362846124fa47b9dc1c0eff03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Actors.Player.Scripts.Gold.PlayerGold
+  goldThresholdCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 100
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 100
+      value: 100
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &4819897903630161129
 PrefabInstance:
   m_ObjectHideFlags: 0

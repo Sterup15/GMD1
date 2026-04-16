@@ -1,7 +1,6 @@
 using System;
 using Actors.Common;
 using Actors.Projectile.Scripts;
-using TMPro;
 using UnityEngine;
 
 namespace Actors.Player.Scripts.Health
@@ -12,14 +11,27 @@ namespace Actors.Player.Scripts.Health
         public int CurrentHealth { get; private set; }
         public static Action<int, int> OnHealthChanged; // current, max
         public static Action OnPlayerDied;
-        public TextMeshProUGUI playerHealthText;
+
+        private Stats _stats;
 
         private void Awake()
         {
-            var stats = GetComponent<Stats>();
-            MaxHealth = Mathf.RoundToInt(stats.MaxHealth.Value);
+            _stats = GetComponent<Stats>();
+            MaxHealth = Mathf.RoundToInt(_stats.MaxHealth.Value);
             CurrentHealth = MaxHealth;
-            SetHealthText(CurrentHealth);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+        }
+
+        private void OnEnable()  => _stats.MaxHealth.OnValueChanged += OnMaxHealthUpgraded;
+        private void OnDisable() => _stats.MaxHealth.OnValueChanged -= OnMaxHealthUpgraded;
+
+        private void OnMaxHealthUpgraded()
+        {
+            int newMax = Mathf.RoundToInt(_stats.MaxHealth.Value);
+            int diff = newMax - MaxHealth;
+            MaxHealth = newMax;
+            CurrentHealth = Mathf.Min(CurrentHealth + diff, MaxHealth);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
         public void TakeDamage(int amount)
@@ -27,16 +39,10 @@ namespace Actors.Player.Scripts.Health
             if (CurrentHealth <= 0) return;
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
-            SetHealthText(CurrentHealth);
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
 
             if (CurrentHealth == 0)
                 OnPlayerDied?.Invoke();
-        }
-
-        private void SetHealthText(int health)
-        {
-            playerHealthText.text = "Player health: " + health;
         }
     }
 }

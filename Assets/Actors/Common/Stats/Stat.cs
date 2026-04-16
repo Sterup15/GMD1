@@ -11,7 +11,10 @@ namespace Actors.Common
 
         public float Value => baseValue + _bonus;
 
-        public void AddBonus(float amount) => _bonus += amount;
-        public void RemoveBonus(float amount) => _bonus -= amount;
+        public event Action OnValueChanged;
+
+        public void SetBaseValue(float value) { baseValue = value; OnValueChanged?.Invoke(); }
+        public void AddBonus(float amount)    { _bonus += amount;  OnValueChanged?.Invoke(); }
+        public void RemoveBonus(float amount) { _bonus -= amount;  OnValueChanged?.Invoke(); }
     }
 }

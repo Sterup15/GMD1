@@ -4,6 +4,6 @@
     {
         Idle,
         Move,
-        Shoot,
+        Attack,
     }
 }
