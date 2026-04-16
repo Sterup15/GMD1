@@ -11,19 +11,20 @@ namespace Actors.Player.Scripts.Movement
         [SerializeField] private Animator animator;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb;
-        [SerializeField] private ProjectileSpawner projectileSpawner;
+        private ProjectileSpawner projectileSpawner;
         [SerializeField] private float shootAnimLength = 1f;
         private PlayerMovement playerMovement;
         private Stats stats;
         private const string idleAnim = "Idle";
         private const string moveAnim = "Move";
-        private const string shootAnim = "Shoot";
+        private const string attackAnim = "Attack";
         public static Action<MoveStateEnum> OnPlayerMoveStateChanged;
 
         private void Awake()
         {
             playerMovement = GetComponent<PlayerMovement>();
             stats = GetComponent<Stats>();
+            projectileSpawner = GetComponent<ProjectileSpawner>();
         }
 
         private void Update()
@@ -31,7 +32,7 @@ namespace Actors.Player.Scripts.Movement
             if (playerMovement.IsMoving)
                 SetMoveState(MoveStateEnum.Move);
             else
-                SetMoveState(NearestEnemyInRange() != null ? MoveStateEnum.Shoot : MoveStateEnum.Idle);
+                SetMoveState(NearestEnemyInRange() != null ? MoveStateEnum.Attack : MoveStateEnum.Idle);
 
             if (playerMovement.MoveDirection.x != 0f)
                 spriteRenderer.flipX = playerMovement.MoveDirection.x < 0f;
@@ -71,8 +72,8 @@ namespace Actors.Player.Scripts.Movement
                     HandleMove();
                     break;
                 
-                case MoveStateEnum.Shoot:
-                    HandleShoot ();
+                case MoveStateEnum.Attack:
+                    HandleAttack ();
                     break;
                 
                 default:
@@ -84,14 +85,14 @@ namespace Actors.Player.Scripts.Movement
             currentMoveState = newMoveState;
         }
 
-        private void HandleShoot()
+        private void HandleAttack()
         {
             var target = NearestEnemyInRange();
             if (target != null)
                 spriteRenderer.flipX = target.transform.position.x < transform.position.x;
 
             animator.speed = shootAnimLength * stats.FireRate.Value;
-            animator.Play(shootAnim);
+            animator.Play(attackAnim);
         }
 
         private void HandleMove()

@@ -4,6 +4,6 @@ namespace Actors.Enemy.Scripts
     {
         Idle,
         Move,
-        Hit,
+        Attack,
     }
 }

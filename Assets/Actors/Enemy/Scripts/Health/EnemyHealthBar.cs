@@ -1,27 +1,25 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Actors.Enemy.Scripts.Health
 {
     public class EnemyHealthBar : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer fill;
+        [SerializeField] private Slider slider;
 
-        private float _fullWidth;
+        private EnemyHealth _enemyHealth;
 
         private void Awake()
         {
-            _fullWidth = fill.transform.localScale.x;
+            _enemyHealth = GetComponentInParent<EnemyHealth>();
         }
 
-        public void SetHealth(int current, int max)
-        {
-            float t = Mathf.Clamp01((float)current / max);
-            float newWidth = _fullWidth * t;
-            fill.transform.localScale = new Vector3(newWidth, fill.transform.localScale.y, 1f);
+        private void OnEnable()  { if (_enemyHealth != null) _enemyHealth.OnHealthChanged += OnHealthChanged; }
+        private void OnDisable() { if (_enemyHealth != null) _enemyHealth.OnHealthChanged -= OnHealthChanged; }
 
-            float offset = (_fullWidth - newWidth) / 2f;
-            var pos = fill.transform.localPosition;
-            fill.transform.localPosition = new Vector3(-offset, pos.y, pos.z);
+        private void OnHealthChanged(int current, int max)
+        {
+            slider.value = (float)current / max;
         }
     }
 }
