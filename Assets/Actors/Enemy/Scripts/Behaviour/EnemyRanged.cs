@@ -14,6 +14,8 @@ namespace Actors.Enemy.Scripts.Behaviour
         private Transform _player;
         private Stats _stats;
         private ProjectileSpawner _spawner;
+        private EnemyPathfinder _pathfinder;
+        private EnemyRangedMovementState _movementState;
         private Vector2 _moveDirection;
 
         public Vector2 MoveDirection => _moveDirection;
@@ -26,6 +28,8 @@ namespace Actors.Enemy.Scripts.Behaviour
             _rb = GetComponent<Rigidbody2D>();
             _stats = GetComponent<Stats>();
             _spawner = GetComponent<ProjectileSpawner>();
+            _pathfinder = GetComponent<EnemyPathfinder>();
+            _movementState = GetComponent<EnemyRangedMovementState>();
         }
 
         private void Start()
@@ -44,10 +48,15 @@ namespace Actors.Enemy.Scripts.Behaviour
             float range = _stats != null ? _stats.ShootRange.Value : shootRange;
             float dist = Vector2.Distance(transform.position, _player.position);
 
-            _moveDirection = (_player.position - transform.position).normalized;
+            if (_movementState.IsAttacking)
+            {
+                _rb.linearVelocity = Vector2.zero;
+                return;
+            }
 
             if (dist > range)
             {
+                _moveDirection = _pathfinder.GetSteerDirection();
                 float speed = _stats != null ? _stats.MoveSpeed.Value : moveSpeed;
                 _rb.linearVelocity = _moveDirection * speed;
                 IsMoving = true;
@@ -55,6 +64,7 @@ namespace Actors.Enemy.Scripts.Behaviour
             }
             else
             {
+                _moveDirection = ((Vector2)_player.position - _rb.position).normalized;
                 _rb.linearVelocity = Vector2.zero;
                 IsMoving = false;
                 IsAttacking = true;

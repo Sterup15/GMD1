@@ -15,5 +15,10 @@ namespace Actors.Enemy.Scripts.Behaviour
         {
             movementState.OnShotFired();
         }
+        
+        public void OnAttackComplete()
+        {
+            movementState.OnAttackComplete();
+        }
     }
 }
