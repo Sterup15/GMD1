@@ -15,6 +15,7 @@ namespace Actors.Enemy.Scripts
         private Stats stats;
         private Transform player;
         private bool isAttacking;
+        public bool IsAttacking => isAttacking;
         private const string idleAnim = "Idle";
         private const string moveAnim = "Move";
         private const string attackAnim = "Attack";
@@ -105,6 +106,11 @@ namespace Actors.Enemy.Scripts
         public void OnShotFired()
         {
             projectileSpawner.Fire();
+        }
+
+        // Called via Animation Event at the end of the Attack clip
+        public void OnAttackComplete()
+        {
             isAttacking = false;
         }
 

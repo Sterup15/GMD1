@@ -13,6 +13,7 @@ namespace Actors.Enemy.Scripts.Behaviour
         private Rigidbody2D rb;
         private Transform player;
         private EnemyMeleeMovementState meleeMovementState;
+        private EnemyPathfinder pathfinder;
         private Stats stats;
         private float nextDamageTime;
         private Vector2 moveDirection;
@@ -26,6 +27,7 @@ namespace Actors.Enemy.Scripts.Behaviour
         {
             rb = GetComponent<Rigidbody2D>();
             meleeMovementState = GetComponent<EnemyMeleeMovementState>();
+            pathfinder = GetComponent<EnemyPathfinder>();
             stats = GetComponent<Stats>();
         }
 
@@ -35,14 +37,14 @@ namespace Actors.Enemy.Scripts.Behaviour
             if (playerObj != null)
                 player = playerObj.transform;
             else
-                Debug.LogWarning("EnemyMeleeMelee: No GameObject tagged 'Player' found.");
+                Debug.LogWarning("EnemyMelee: No GameObject tagged 'Player' found.");
         }
 
         private void FixedUpdate()
         {
             if (player == null) return;
 
-            moveDirection = (player.position - transform.position).normalized;
+            moveDirection = pathfinder.GetSteerDirection();
             float speed = stats != null ? stats.MoveSpeed.Value : moveSpeed;
             rb.linearVelocity = moveDirection * speed;
         }

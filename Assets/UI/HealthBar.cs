@@ -13,6 +13,13 @@ namespace UI
         private void OnEnable()  => PlayerHealth.OnHealthChanged += OnHealthChanged;
         private void OnDisable() => PlayerHealth.OnHealthChanged -= OnHealthChanged;
 
+        private void Start()
+        {
+            var playerHealth = FindObjectOfType<PlayerHealth>();
+            if (playerHealth != null)
+                OnHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+        }
+
         private void OnHealthChanged(int current, int max)
         {
             slider.value = (float)current / max;
