@@ -6,7 +6,7 @@ namespace Actors.Player.Scripts.Gold
     public class PlayerGold : MonoBehaviour
     {
         [Tooltip("X = player level, Y = gold needed to reach the next level")]
-        [SerializeField] private AnimationCurve goldThresholdCurve = AnimationCurve.Linear(0f, 100f, 20f, 500f);
+        [SerializeField] private AnimationCurve goldThresholdCurve = AnimationCurve.Linear(0f, 3f, 600f, 15f);
 
         public static event Action<int, int> OnGoldChanged; // (current, threshold)
         public static event Action OnLevelUp;

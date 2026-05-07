@@ -8,13 +8,15 @@ namespace Actors.Enemy.Scripts.Health
 {
     public class EnemyHealth : MonoBehaviour, IDamageable
     {
-        [SerializeField] private int maxHealth = 3;
         [SerializeField] private GameObject damageNumberPrefab;
         [SerializeField] private GameObject goldPickupPrefab;
 
         public event Action<int, int> OnHealthChanged; // current, max
+        public event Action OnDeathStarted;
+        public event Action OnDeath;
 
         private int _currentHealth;
+        private int _maxHealth;
         private int _goldDrop;
         private EnemyMeleeMovementState meleeMovementState;
 
@@ -28,11 +30,12 @@ namespace Actors.Enemy.Scripts.Health
         private void Start()
         {
             var stats = GetComponent<Stats>();
-            if (stats != null)
-                maxHealth = Mathf.RoundToInt(stats.MaxHealth.Value);
+            if (stats == null)
+                Debug.LogError("EnemyHealth: Missing Stats component.", this);
 
-            _currentHealth = maxHealth;
-            OnHealthChanged?.Invoke(_currentHealth, maxHealth);
+            _maxHealth = stats != null ? Mathf.RoundToInt(stats.MaxHealth.Value) : 0;
+            _currentHealth = _maxHealth;
+            OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
         public void TakeDamage(int amount)
@@ -40,14 +43,23 @@ namespace Actors.Enemy.Scripts.Health
             if (_currentHealth <= 0) return;
 
             _currentHealth = Mathf.Max(0, _currentHealth - amount);
-            OnHealthChanged?.Invoke(_currentHealth, maxHealth);
+            OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
             SpawnDamageNumber(amount);
 
             if (_currentHealth == 0)
             {
-                DropGold();
-                Destroy(gameObject);
+                if (OnDeathStarted != null)
+                    OnDeathStarted.Invoke();
+                else
+                    FinaliseDeath();
             }
+        }
+
+        public void FinaliseDeath()
+        {
+            OnDeath?.Invoke();
+            DropGold();
+            Destroy(gameObject);
         }
 
         private void DropGold()

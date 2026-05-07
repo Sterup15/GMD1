@@ -4,6 +4,9 @@ namespace Actors.Enemy.Scripts
     {
         Idle,
         Move,
+        Windup,
         Attack,
+        Recover,
+        Die,
     }
 }

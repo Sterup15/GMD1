@@ -40,12 +40,23 @@ namespace Actors.Enemy.Scripts.Behaviour
 
         public Vector2 GetSteerDirection()
         {
-            if (_player == null) return Vector2.zero;
+            if (_player == null || !_agent.enabled) return Vector2.zero;
 
             _agent.SetDestination(_player.position);
             _agent.nextPosition = _rb.position;
 
             return new Vector2(_agent.desiredVelocity.x, _agent.desiredVelocity.y).normalized;
+        }
+
+        public void Stop()
+        {
+            _agent.enabled = false;
+            _rb.linearVelocity = Vector2.zero;
+        }
+
+        public void Resume()
+        {
+            _agent.enabled = true;
         }
     }
 }

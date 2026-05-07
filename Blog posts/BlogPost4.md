@@ -171,7 +171,12 @@ Stopping distance is wired to the `ShootRange` stat and updates live when the st
 ## Tilemap graphics
 
 The level now has an actual background instead of the void it was living in before. I brought the ground and water tilemaps in using sprites from the Tiny Swords asset pack. Z-positioning was set for all tilemaps to Z=0, with rendering order handled by sorting layers rather than Z offset, which plays nicer with the 2D NavMesh setup.
+![State of the map blogpost 4](BlogPost4Misc/State%20of%20map%20blogpost4.png)
 
+And some actual gameplay!:
+![Gameplay blogpost 4](BlogPost4Misc/Blogpost4GameplayGif.gif)
+
+Starting to feel like a bullethell with all the arrows flying around.
 ## Next up
 * Win condition — kill X enemies within a time limit, or a boss fight at the end
 * Proper run start/end flow

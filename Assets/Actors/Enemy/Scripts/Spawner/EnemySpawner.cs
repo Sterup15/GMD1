@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Actors.Common;
+using Actors.Enemy.Scripts.Health;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -33,20 +34,43 @@ namespace Actors.Enemy.Scripts.Spawner
         public AnimationCurve goldDropCurve = AnimationCurve.Linear(0f, 10f, 300f, 10f);
     }
 
+    [Serializable]
+    public class BossSpawnConfig
+    {
+        public string name;
+        public GameObject prefab;
+
+        [Header("Base Stats")]
+        public float baseHealth = 100f;
+        public float baseMoveSpeed = 2f;
+        public float baseDamage = 5f;
+        public float baseShootRange = 2f;
+        public float baseFireRate = 1f;
+
+        [Header("Gold Drop")]
+        public float goldDrop = 100f;
+    }
+
     public class EnemySpawner : MonoBehaviour
     {
         [Header("Spawn Settings")]
         [SerializeField] private List<EnemySpawnConfig> enemyTypes = new();
-        [SerializeField] private float spawnRadius = 12f;
+        [SerializeField] private float spawnRadius = 8f;
         [SerializeField] private float baseSpawnInterval = 3f;
 
         [Header("Spawn Rate Scaling")]
         [Tooltip("X = run time in seconds, Y = multiplier on spawn rate")]
         [SerializeField] private AnimationCurve spawnRateCurve = AnimationCurve.Linear(0f, 1f, 300f, 3f);
 
+        [Header("Boss")]
+        [SerializeField] private BossTimer bossTimer;
+        [SerializeField] private List<BossSpawnConfig> bossTypes = new();
+        [SerializeField] private BossHealthBar bossHealthBar;
+
         private float _runTime;
         private float _nextSpawnTime;
         private Transform _player;
+        private bool _isBossFightActive;
 
         private void Start()
         {
@@ -56,11 +80,22 @@ namespace Actors.Enemy.Scripts.Spawner
             else
                 Debug.LogWarning("EnemySpawner: No GameObject tagged 'Player' found.");
 
+            if (bossTimer != null)
+                bossTimer.OnTimerComplete += OnBossTimerComplete;
+
             ScheduleNextSpawn();
+        }
+
+        private void OnDestroy()
+        {
+            if (bossTimer != null)
+                bossTimer.OnTimerComplete -= OnBossTimerComplete;
         }
 
         private void Update()
         {
+            if (_isBossFightActive) return;
+
             _runTime += Time.deltaTime;
 
             if (Time.time >= _nextSpawnTime)
@@ -68,6 +103,19 @@ namespace Actors.Enemy.Scripts.Spawner
                 SpawnEnemy();
                 ScheduleNextSpawn();
             }
+        }
+
+        private void OnBossTimerComplete()
+        {
+            _isBossFightActive = true;
+            SpawnBoss();
+        }
+
+        private void OnBossDeath()
+        {
+            _isBossFightActive = false;
+            bossTimer.ResetAndStart();
+            ScheduleNextSpawn();
         }
 
         private void ScheduleNextSpawn()
@@ -95,8 +143,37 @@ namespace Actors.Enemy.Scripts.Spawner
                 stats.FireRate.SetBaseValue(config.baseFireRate);
             }
 
-            var health = enemy.GetComponent<Actors.Enemy.Scripts.Health.EnemyHealth>();
+            var health = enemy.GetComponent<EnemyHealth>();
             health?.SetGoldDrop(Mathf.RoundToInt(Evaluate(config.goldDropCurve, _runTime, 10f)));
+        }
+
+        private void SpawnBoss()
+        {
+            if (_player == null || bossTypes.Count == 0) return;
+
+            var config = bossTypes[Random.Range(0, bossTypes.Count)];
+            if (config?.prefab == null) return;
+
+            var boss = Instantiate(config.prefab, GetSpawnPosition(), Quaternion.identity);
+
+            var stats = boss.GetComponent<Stats>();
+            if (stats != null)
+            {
+                stats.MaxHealth.SetBaseValue(config.baseHealth);
+                stats.MoveSpeed.SetBaseValue(config.baseMoveSpeed);
+                stats.Damage.SetBaseValue(config.baseDamage);
+                stats.ShootRange.SetBaseValue(config.baseShootRange);
+                stats.FireRate.SetBaseValue(config.baseFireRate);
+            }
+
+            var health = boss.GetComponent<EnemyHealth>();
+            if (health != null)
+            {
+                health.SetGoldDrop(Mathf.RoundToInt(config.goldDrop));
+                health.OnDeath += OnBossDeath;
+
+                bossHealthBar?.Initialize(health, config.name);
+            }
         }
 
         private EnemySpawnConfig PickConfig()
@@ -118,7 +195,7 @@ namespace Actors.Enemy.Scripts.Spawner
         private static float Evaluate(AnimationCurve curve, float time, float fallback) =>
             curve != null && curve.length > 0 ? curve.Evaluate(time) : fallback;
 
-        [SerializeField] private LayerMask obstacleLayer = 1 << 4; // Water layer
+        [SerializeField] private LayerMask obstacleLayer = 1 << 4;
         private const int MaxSpawnAttempts = 10;
 
         private Vector2 GetSpawnPosition()
@@ -130,7 +207,6 @@ namespace Actors.Enemy.Scripts.Spawner
                     return candidate;
             }
 
-            // Fallback: return last candidate even if obstructed
             return (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
         }
 
@@ -144,7 +220,7 @@ namespace Actors.Enemy.Scripts.Spawner
             }
 
             if (_player == null) return;
-            Gizmos.color = new Color(1f, 0.5f, 0f, 0.3f);
+            Gizmos.color = new Color(1f, 0f, 0f, 1f);
             Gizmos.DrawWireSphere(_player.position, spawnRadius);
         }
 #endif
