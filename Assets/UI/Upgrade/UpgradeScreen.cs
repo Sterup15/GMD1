@@ -14,6 +14,8 @@ namespace UI.Upgrade
 
         private Stats _playerStats;
         private readonly List<UpgradeDefinition> _available = new();
+        private int _selectedIndex;
+        private int _activeCardCount;
 
         private void Start()
         {
@@ -28,17 +30,37 @@ namespace UI.Upgrade
         private void OnEnable()  => PlayerGold.OnLevelUp += Show;
         private void OnDisable() => PlayerGold.OnLevelUp -= Show;
 
+        private void Update()
+        {
+            if (!panel.activeSelf) return;
+
+            if (GameInput.NavigateLeft)
+            {
+                _selectedIndex = (_selectedIndex + 1) % _activeCardCount;
+                cards[_selectedIndex].Select();
+            }
+            else if (GameInput.NavigateRight)
+            {
+                _selectedIndex = (_selectedIndex - 1 + _activeCardCount) % _activeCardCount;
+                cards[_selectedIndex].Select();
+            }
+
+            if (GameInput.InteractPressed)
+                cards[_selectedIndex].Confirm();
+        }
+
         private void Show()
         {
             if (_available.Count == 0) return;
 
             List<UpgradeDefinition> drawn = DrawUpgrades(Mathf.Min(3, _available.Count));
+            _activeCardCount = drawn.Count;
 
             for (int i = 0; i < cards.Length; i++)
             {
                 if (i < drawn.Count)
                 {
-                    int index = i; // capture for lambda
+                    int index = i;
                     cards[i].gameObject.SetActive(true);
                     cards[i].Setup(drawn[i], () => Pick(drawn[index]));
                 }
@@ -50,6 +72,9 @@ namespace UI.Upgrade
 
             panel.SetActive(true);
             Time.timeScale = 0f;
+
+            _selectedIndex = 0;
+            cards[0].Select();
         }
 
         private void Pick(UpgradeDefinition definition)

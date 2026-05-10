@@ -1,6 +1,5 @@
 using Actors.Common;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Actors.Player.Scripts.Movement
 {
@@ -26,13 +25,7 @@ namespace Actors.Player.Scripts.Movement
 
         private void Update()
         {
-            inputDirection = Keyboard.current != null ? new Vector2(
-                (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed ? 1 : 0) -
-                (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed  ? 1 : 0),
-                (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed    ? 1 : 0) -
-                (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed  ? 1 : 0)
-            ) : Vector2.zero;
-
+            inputDirection = GameInput.Move;
             if (normalizeDiagonals && inputDirection.sqrMagnitude > 1f)
                 inputDirection.Normalize();
         }
