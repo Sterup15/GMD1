@@ -1,4 +1,4 @@
-using Actors.Player.Scripts.Gold;
+using GameObjects.Player.Scripts.Gold;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
