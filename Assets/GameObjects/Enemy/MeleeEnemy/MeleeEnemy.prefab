@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 4139985785035661939}
   - component: {fileID: -9038507217140776818}
   - component: {fileID: 1565910758337609219}
-  - component: {fileID: 1829812788078215797}
+  - component: {fileID: 6181758257063437484}
   m_Layer: 9
   m_Name: MeleeEnemy
   m_TagString: Enemy
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.GoldDropper
   goldPickupPrefab: {fileID: 5757454013157934801, guid: eed61debb49905c4fab9553011c6701e, type: 3}
---- !u!114 &1829812788078215797
+--- !u!114 &6181758257063437484
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -476,9 +476,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5558930510443425097}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0b1f23d1f1db2a4aabfc1c689f433a5, type: 3}
+  m_Script: {fileID: 11500000, guid: f5bf2d68c0411274aa8766ead09e47f0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.ActorEvents
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Events.ActorEvents
 --- !u!1 &6238807737273848099
 GameObject:
   m_ObjectHideFlags: 0
