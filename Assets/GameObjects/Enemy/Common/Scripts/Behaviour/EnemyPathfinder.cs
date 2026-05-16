@@ -1,4 +1,3 @@
-using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,8 +8,6 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
         private NavMeshAgent _agent;
         private Rigidbody2D _rb;
         private Transform _player;
-        private Stat _shootRange;
-
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
@@ -22,14 +19,7 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
             _agent.updatePosition = false;
             _agent.updateRotation = false;
             _agent.updateUpAxis = false;
-
-            var stats = GetComponent<Stats>();
-            _shootRange = stats?.ShootRange;
-            if (_shootRange != null)
-            {
-                _agent.stoppingDistance = _shootRange.Value;
-                _shootRange.OnValueChanged += () => _agent.stoppingDistance = _shootRange.Value;
-            }
+            _agent.stoppingDistance = 0f;
 
             var playerObj = GameObject.FindWithTag("Player");
             if (playerObj != null)
@@ -57,6 +47,11 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
         public void Resume()
         {
             _agent.enabled = true;
+        }
+
+        public void SetStoppingDistance(float distance)
+        {
+            _agent.stoppingDistance = distance;
         }
     }
 }

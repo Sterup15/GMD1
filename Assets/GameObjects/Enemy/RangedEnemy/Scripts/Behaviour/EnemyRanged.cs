@@ -1,4 +1,3 @@
-using GameObjects.Common.Projectiles.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using UnityEngine;
@@ -14,21 +13,17 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
         private Rigidbody2D _rb;
         private Transform _player;
         private Stats _stats;
-        private ProjectileSpawner _spawner;
         private EnemyPathfinder _pathfinder;
         private EnemyRangedMovementState _movementState;
         private Vector2 _moveDirection;
 
         public Vector2 MoveDirection => _moveDirection;
-        public bool IsMoving { get; private set; }
-        public bool IsAttacking { get; private set; }
         public float AttackAnimSpeed => _stats != null ? _stats.FireRate.Value : fireRate;
 
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
             _stats = GetComponent<Stats>();
-            _spawner = GetComponent<ProjectileSpawner>();
             _pathfinder = GetComponent<EnemyPathfinder>();
             _movementState = GetComponent<EnemyRangedMovementState>();
         }
@@ -40,14 +35,12 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
                 _player = playerObj.transform;
             else
                 Debug.LogWarning("EnemyRanged: No GameObject tagged 'Player' found.");
+
         }
 
         private void FixedUpdate()
         {
             if (_player == null) return;
-
-            float range = _stats != null ? _stats.ShootRange.Value : shootRange;
-            float dist = Vector2.Distance(transform.position, _player.position);
 
             if (_movementState.IsAttacking)
             {
@@ -55,27 +48,19 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
                 return;
             }
 
-            if (dist > range)
-            {
-                _moveDirection = _pathfinder.GetSteerDirection();
-                float speed = _stats != null ? _stats.MoveSpeed.Value : moveSpeed;
-                _rb.linearVelocity = _moveDirection * speed;
-                IsMoving = true;
-                IsAttacking = false;
-            }
-            else
+            float range = _stats != null ? _stats.ShootRange.Value : shootRange;
+            float dist = Vector2.Distance(transform.position, _player.position);
+
+            if (dist < range)
             {
                 _moveDirection = ((Vector2)_player.position - _rb.position).normalized;
                 _rb.linearVelocity = Vector2.zero;
-                IsMoving = false;
-                IsAttacking = true;
+                return;
             }
-        }
 
-        // Called via Animation Event on the attack clip
-        public void OnShotFired()
-        {
-            _spawner.Fire();
+            _moveDirection = _pathfinder.GetSteerDirection();
+            float speed = _stats != null ? _stats.MoveSpeed.Value : moveSpeed;
+            _rb.linearVelocity = _moveDirection * speed;
         }
 
 #if UNITY_EDITOR
