@@ -293,3 +293,6 @@ More balancing and tuning would be a very good idea, but I feel that the difficu
 
 ## Next up
 * Final blogpost: Showing off the game in its entirety.
+* Optionals i hope i get to
+  * Main menu
+  * Change win condition to kill boss that spawns after 5 minutes. Objective is to build up character in those 5 minutes, and then defeat a harder tuned boss.
