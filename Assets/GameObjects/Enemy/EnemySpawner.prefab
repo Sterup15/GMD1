@@ -56,10 +56,28 @@ MonoBehaviour:
     baseFireRate: 1
     healthCurve:
       serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0.0098
+        outSlope: 0.0098
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 5000
+        value: 50
+        inSlope: 0.0098
+        outSlope: 0.0098
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     speedCurve:
       serializedVersion: 2
       m_Curve: []
@@ -88,10 +106,28 @@ MonoBehaviour:
     baseFireRate: 0
     healthCurve:
       serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0.0098
+        outSlope: 0.0098
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 5000
+        value: 50
+        inSlope: 0.0098
+        outSlope: 0.0098
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     speedCurve:
       serializedVersion: 2
       m_Curve: []
@@ -140,9 +176,9 @@ MonoBehaviour:
   bossTypes:
   - name: Chief Titty Ogre
     prefab: {fileID: 1908229703796852517, guid: 7c2618d120da8714bb1fcc383cd66af9, type: 3}
-    baseHealth: 20
+    baseHealth: 30
     baseMoveSpeed: 1
-    baseDamage: 1
+    baseDamage: 3
     baseShootRange: 4
     baseFireRate: 0
     goldDrop: 10
@@ -162,5 +198,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc99efccd49ef0246b807899ec6abb2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.Spawner.BossTimer
-  duration: 60
+  duration: 90
   timerText: {fileID: 0}

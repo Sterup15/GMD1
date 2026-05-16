@@ -15,5 +15,7 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         public void OnAttackComplete() => _events.AttackComplete();
         public void OnRecoverComplete() => _events.RecoverComplete();
         public void OnDeathComplete()  => _events.DeathComplete();
+        public void OnStep() => _events.Step();
+        public void OnSwing() => _events.Swing();
     }
 }

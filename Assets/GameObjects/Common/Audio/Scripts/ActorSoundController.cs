@@ -22,6 +22,8 @@ namespace GameObjects.Common.Audio.Scripts
         [SerializeField] private SoundPool onSpawnPool;
         [SerializeField] private SoundPool onShotFiredPool;
         [SerializeField] private SoundPool onDeathStartedPool;
+        [SerializeField] private SoundPool onStepPool;
+        [SerializeField] private SoundPool onSwingPool;
 
         private ActorEvents _events;
 
@@ -38,16 +40,22 @@ namespace GameObjects.Common.Audio.Scripts
         {
             _events.OnShotFired     += OnShotFired;
             _events.OnDeathStarted  += OnDeathStarted;
+            _events.OnStep          += OnStep;
+            _events.OnSwing         += OnSwing;
         }
 
         private void OnDisable()
         {
             _events.OnShotFired     -= OnShotFired;
             _events.OnDeathStarted  -= OnDeathStarted;
+            _events.OnStep          -= OnStep;
+            _events.OnSwing         -= OnSwing;
         }
 
         private void OnShotFired()    => Play(onShotFiredPool.Pick());
         private void OnDeathStarted() => Play(onDeathStartedPool.Pick());
+        private void OnStep()         => Play(onStepPool.Pick());
+        private void OnSwing()        => Play(onSwingPool.Pick());
 
         private void Play(AudioClip clip)
         {

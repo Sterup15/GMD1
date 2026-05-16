@@ -369,6 +369,22 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 2d9c2a033939b6647a47a7d08c75166a, type: 3}
   onShotFiredPool:
     clips: []
+  onDeathStartedPool:
+    clips:
+    - {fileID: 8300000, guid: 37bb74062366fd1479d5d2ef0d52e375, type: 3}
+  onStepPool:
+    clips:
+    - {fileID: 8300000, guid: a1f76e5538b695144956686681e864b2, type: 3}
+    - {fileID: 8300000, guid: 3b3644ba3e663f944a118b6c5820dd17, type: 3}
+    - {fileID: 8300000, guid: e33a5451d07fede47af8838a0f458147, type: 3}
+    - {fileID: 8300000, guid: d0df049e11e72884ea90ea8901236b86, type: 3}
+  onSwingPool:
+    clips:
+    - {fileID: 8300000, guid: 2ed6416837b97b84d916d95365a3ad10, type: 3}
+    - {fileID: 8300000, guid: 119acafdaa96771408b17b4226b6ce0b, type: 3}
+    - {fileID: 8300000, guid: 4c4557cc80caf544d8294b0cc9906164, type: 3}
+    - {fileID: 8300000, guid: 61cd7ab8dd25f214785d8c6a74cffd6b, type: 3}
+    - {fileID: 8300000, guid: 75825623c37e8b3408184eec7eb303ed, type: 3}
 --- !u!82 &817779109293729049
 AudioSource:
   m_ObjectHideFlags: 0

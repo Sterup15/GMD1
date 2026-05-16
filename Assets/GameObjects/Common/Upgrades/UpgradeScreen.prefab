@@ -121,6 +121,7 @@ MonoBehaviour:
   - {fileID: 8723716983294865196}
   - {fileID: 4394470716959417819}
   upgradePool: []
+  bonusScale: 0.4
 --- !u!1 &8755532687491358398
 GameObject:
   m_ObjectHideFlags: 0

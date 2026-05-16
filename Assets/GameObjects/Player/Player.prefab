@@ -46,9 +46,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Audio.Scripts.ActorSoundController
   audioSource: {fileID: 0}
+  onSpawnPool:
+    clips: []
   onShotFiredPool:
     clips:
     - {fileID: 8300000, guid: 58fbdd287da255b4f9cf213bbc6e96b6, type: 3}
+  onDeathStartedPool:
+    clips: []
+  onStepPool:
+    clips: []
+  onSwingPool:
+    clips: []
 --- !u!82 &4532121126558830284
 AudioSource:
   m_ObjectHideFlags: 0
@@ -366,19 +374,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 20
-      inSlope: 0.80000305
-      outSlope: 0.80000305
+      time: 0.020462036
+      value: 49.961914
+      inSlope: 1.0005856
+      outSlope: 1.0005856
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 100
-      value: 100.000305
-      inSlope: 0.80000305
-      outSlope: 0.80000305
+      value: 150
+      inSlope: 1.0005856
+      outSlope: 1.0005856
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

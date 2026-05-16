@@ -8,7 +8,8 @@ namespace GameObjects.Music.Scripts
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip normalMusic;
         [SerializeField] private AudioClip bossMusic;
-        [SerializeField] private AudioClip deathStinger;
+        [SerializeField] private AudioClip defeatMusic;
+        [SerializeField] private AudioClip victoryMusic;
 
         private void Awake()
         {
@@ -22,19 +23,22 @@ namespace GameObjects.Music.Scripts
         {
             GlobalEvents.OnBossSpawned  += PlayBossMusic;
             GlobalEvents.OnBossDefeated += PlayNormalMusic;
-            GlobalEvents.OnPlayerDied   += PlayDeathStinger;
+            GlobalEvents.OnPlayerDied   += PlayDefeatMusic;
+            GlobalEvents.OnPlayerWon    += PlayVictoryMusic;
         }
 
         private void OnDisable()
         {
             GlobalEvents.OnBossSpawned  -= PlayBossMusic;
             GlobalEvents.OnBossDefeated -= PlayNormalMusic;
-            GlobalEvents.OnPlayerDied   -= PlayDeathStinger;
+            GlobalEvents.OnPlayerDied   -= PlayDefeatMusic;
+            GlobalEvents.OnPlayerWon    -= PlayVictoryMusic;
         }
 
         private void PlayNormalMusic()  => Play(normalMusic);
         private void PlayBossMusic()    => Play(bossMusic);
-        private void PlayDeathStinger() => Play(deathStinger);
+        private void PlayDefeatMusic()  => Play(defeatMusic);
+        private void PlayVictoryMusic() => Play(victoryMusic);
 
         private void Play(AudioClip clip)
         {

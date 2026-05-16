@@ -1,4 +1,5 @@
 using System;
+using GameObjects.Common.Events;
 using UnityEngine;
 
 namespace GameObjects.Player.Scripts.Gold
@@ -9,7 +10,6 @@ namespace GameObjects.Player.Scripts.Gold
         [SerializeField] private AnimationCurve goldThresholdCurve = AnimationCurve.Linear(0f, 3f, 600f, 15f);
 
         public static event Action<int, int> OnGoldChanged; // (current, threshold)
-        public static event Action OnLevelUp;
 
         public int CurrentGold { get; private set; }
         public int Level { get; private set; }
@@ -23,7 +23,7 @@ namespace GameObjects.Player.Scripts.Gold
             {
                 CurrentGold -= threshold;
                 Level++;
-                OnLevelUp?.Invoke();
+                GlobalEvents.LevelUp(Level);
                 threshold = GetThreshold();
             }
 

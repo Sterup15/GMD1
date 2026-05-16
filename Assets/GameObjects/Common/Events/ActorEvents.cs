@@ -15,6 +15,8 @@ namespace GameObjects.Common.Events
         public event Action OnHitboxOpen;
         public event Action OnHitboxClose;
         public event Action OnDeathComplete;
+        public event Action OnStep;
+        public event Action OnSwing;
 
         public bool HasDeathStartedListeners => OnDeathStarted != null;
 
@@ -28,5 +30,7 @@ namespace GameObjects.Common.Events
         public void HitboxOpen()      => OnHitboxOpen?.Invoke();
         public void HitboxClose()     => OnHitboxClose?.Invoke();
         public void DeathComplete()   => OnDeathComplete?.Invoke();
+        public void Step()            => OnStep?.Invoke();
+        public void Swing()           => OnSwing?.Invoke();
     }
 }
