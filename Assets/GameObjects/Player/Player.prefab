@@ -53,6 +53,9 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 58fbdd287da255b4f9cf213bbc6e96b6, type: 3}
   onDeathStartedPool:
     clips: []
+  onHitPool:
+    clips:
+    - {fileID: 8300000, guid: 15e9cd89c12f3524891be6877941af12, type: 3}
   onStepPool:
     clips: []
   onSwingPool:

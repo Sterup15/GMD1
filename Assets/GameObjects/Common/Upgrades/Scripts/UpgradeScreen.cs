@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
-using GameObjects.Common.UI.VictoryScene.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Common.Upgrades.Scripts
@@ -14,7 +13,6 @@ namespace GameObjects.Common.Upgrades.Scripts
         [SerializeField] private float bonusScale = 1f;
 
         private Stats.Scripts.Stats _playerStats;
-        private VictoryCondition _victoryCondition;
         private readonly List<UpgradeDefinition> _available = new();
         private int _selectedIndex;
         private int _activeCardCount;
@@ -25,8 +23,6 @@ namespace GameObjects.Common.Upgrades.Scripts
             if (playerObj != null)
                 _playerStats = playerObj.GetComponent<Stats.Scripts.Stats>();
 
-            _victoryCondition = FindObjectOfType<VictoryCondition>();
-
             _available.AddRange(upgradePool);
             panel.SetActive(false);
         }
@@ -34,11 +30,7 @@ namespace GameObjects.Common.Upgrades.Scripts
         private void OnEnable()  => GlobalEvents.OnLevelUp += OnLevelUp;
         private void OnDisable() => GlobalEvents.OnLevelUp -= OnLevelUp;
 
-        private void OnLevelUp(int level)
-        {
-            if (_victoryCondition != null && level == _victoryCondition.WinLevel) return;
-            Show();
-        }
+        private void OnLevelUp(int _) => Show();
 
         private void Update()
         {

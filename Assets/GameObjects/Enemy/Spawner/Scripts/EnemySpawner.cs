@@ -65,6 +65,10 @@ namespace GameObjects.Enemy.Spawner.Scripts
         [Tooltip("X = run time in seconds, Y = multiplier on spawn rate")]
         [SerializeField] private AnimationCurve spawnRateCurve = AnimationCurve.Linear(0f, 1f, 300f, 3f);
 
+        [Header("Minimum Enemies Alive")]
+        [Tooltip("X = run time in seconds, Y = minimum number of enemies that must be alive")]
+        [SerializeField] private AnimationCurve minEnemiesAliveCurve = AnimationCurve.Linear(0f, 1f, 300f, 30f);
+
         [Header("Boss")]
         [SerializeField] private BossTimer bossTimer;
         [SerializeField] private List<BossSpawnConfig> bossTypes = new();
@@ -74,6 +78,7 @@ namespace GameObjects.Enemy.Spawner.Scripts
         private float _nextSpawnTime;
         private Transform _player;
         private bool _isBossFightActive;
+        private int _aliveEnemyCount;
 
         private void Start()
         {
@@ -106,6 +111,11 @@ namespace GameObjects.Enemy.Spawner.Scripts
                 SpawnEnemy();
                 ScheduleNextSpawn();
             }
+
+            int minAlive = Mathf.RoundToInt(minEnemiesAliveCurve.Evaluate(_runTime));
+            int deficit = minAlive - _aliveEnemyCount;
+            for (int i = 0; i < deficit; i++)
+                SpawnEnemy();
         }
 
         private void OnBossTimerComplete()
@@ -136,6 +146,11 @@ namespace GameObjects.Enemy.Spawner.Scripts
             if (config?.prefab == null) return;
 
             var enemy = Instantiate(config.prefab, GetSpawnPosition(), Quaternion.identity);
+
+            _aliveEnemyCount++;
+            var enemyEvents = enemy.GetComponent<ActorEvents>();
+            if (enemyEvents != null)
+                enemyEvents.OnDeath += () => _aliveEnemyCount--;
 
             var stats = enemy.GetComponent<Stats>();
             if (stats != null)

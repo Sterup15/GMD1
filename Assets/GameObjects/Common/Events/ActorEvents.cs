@@ -17,6 +17,7 @@ namespace GameObjects.Common.Events
         public event Action OnDeathComplete;
         public event Action OnStep;
         public event Action OnSwing;
+        public event Action OnHit;
 
         public bool HasDeathStartedListeners => OnDeathStarted != null;
 
@@ -32,5 +33,6 @@ namespace GameObjects.Common.Events
         public void DeathComplete()   => OnDeathComplete?.Invoke();
         public void Step()            => OnStep?.Invoke();
         public void Swing()           => OnSwing?.Invoke();
+        public void Hit()             => OnHit?.Invoke();
     }
 }

@@ -42,6 +42,9 @@ namespace GameObjects.Enemy.Common.Scripts.Health
             _events.HealthChanged(_currentHealth, _maxHealth);
             SpawnDamageNumber(amount);
 
+            if (_currentHealth > 0)
+                _events.Hit();
+
             if (_currentHealth == 0)
             {
                 if (_events.HasDeathStartedListeners)

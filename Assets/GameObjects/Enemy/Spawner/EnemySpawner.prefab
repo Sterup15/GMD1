@@ -48,12 +48,12 @@ MonoBehaviour:
   enemyTypes:
   - name: Red archer
     prefab: {fileID: 5558930510443425097, guid: 26dd1a55642f35844a7179efb5e41781, type: 3}
-    spawnWeight: 0.501
+    spawnWeight: 0.25
     baseHealth: 4
     baseMoveSpeed: 2
     baseDamage: 1
     baseShootRange: 3
-    baseFireRate: 1
+    baseFireRate: 0.7
     healthCurve:
       serializedVersion: 2
       m_Curve:
@@ -98,9 +98,9 @@ MonoBehaviour:
       m_RotationOrder: 0
   - name: Red knight
     prefab: {fileID: 5558930510443425097, guid: 0efafcbfa33cc0a43a2377df03974b09, type: 3}
-    spawnWeight: 0.5
+    spawnWeight: 0.75
     baseHealth: 6
-    baseMoveSpeed: 1
+    baseMoveSpeed: 1.2
     baseDamage: 2
     baseShootRange: 0.1
     baseFireRate: 0
@@ -172,14 +172,38 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  minEnemiesAliveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 300
+      value: 30
+      inSlope: 0.09
+      outSlope: 0.09
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   bossTimer: {fileID: -6144790375559271296}
   bossTypes:
   - name: Chief Titty Ogre
     prefab: {fileID: 1908229703796852517, guid: 7c2618d120da8714bb1fcc383cd66af9, type: 3}
-    baseHealth: 30
-    baseMoveSpeed: 1
-    baseDamage: 3
-    baseShootRange: 4
+    baseHealth: 150
+    baseMoveSpeed: 1.2
+    baseDamage: 4
+    baseShootRange: 5
     baseFireRate: 0
     goldDrop: 10
   bossHealthBar: {fileID: 0}
@@ -198,5 +222,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc99efccd49ef0246b807899ec6abb2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.Spawner.BossTimer
-  duration: 90
+  duration: 300
   timerText: {fileID: 0}

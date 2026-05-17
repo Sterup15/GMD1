@@ -43,6 +43,9 @@ namespace GameObjects.Player.Scripts.Health
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
 
+            if (CurrentHealth > 0)
+                _events.Hit();
+
             if (CurrentHealth == 0)
             {
                 _events.Death();
