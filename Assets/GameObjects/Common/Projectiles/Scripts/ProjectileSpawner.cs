@@ -23,7 +23,11 @@ namespace GameObjects.Common.Projectiles.Scripts
             var go = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
             var projectile = go.GetComponent<Projectile>();
             if (_stats != null)
+            {
                 projectile.SetDamage(Mathf.RoundToInt(_stats.Damage.Value));
+                projectile.SetBounces(Mathf.RoundToInt(_stats.Bounce.Value));
+                projectile.SetPenetration(Mathf.RoundToInt(_stats.Penetration.Value));
+            }
             projectile.Launch(direction);
         }
 

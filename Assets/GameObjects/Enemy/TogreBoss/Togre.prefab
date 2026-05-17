@@ -203,16 +203,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Stats
   MoveSpeed:
-    baseValue: 1
+    baseValue: 1.5
   FireRate:
     baseValue: 0
   Damage:
-    baseValue: 1
-  MaxHealth:
     baseValue: 10
+  MaxHealth:
+    baseValue: 1000
   ShootRange:
-    baseValue: 4
+    baseValue: 5
   PickupRange:
+    baseValue: 0
+  Bounce:
+    baseValue: 0
+  Penetration:
     baseValue: 0
 --- !u!114 &757207391865653148
 MonoBehaviour:
@@ -372,6 +376,8 @@ MonoBehaviour:
   onDeathStartedPool:
     clips:
     - {fileID: 8300000, guid: 37bb74062366fd1479d5d2ef0d52e375, type: 3}
+  onHitPool:
+    clips: []
   onStepPool:
     clips:
     - {fileID: 8300000, guid: a1f76e5538b695144956686681e864b2, type: 3}

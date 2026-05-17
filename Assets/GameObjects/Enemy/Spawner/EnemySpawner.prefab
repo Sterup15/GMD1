@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &467702433369687185
+--- !u!1 &3193142886609705922
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1168503169224277629}
-  - component: {fileID: 7707884390129126208}
-  - component: {fileID: -6144790375559271296}
+  - component: {fileID: 7030176568970686046}
+  - component: {fileID: 3180588400762967240}
+  - component: {fileID: -7398399727007516945}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -18,134 +18,246 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1168503169224277629
+--- !u!4 &7030176568970686046
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 467702433369687185}
+  m_GameObject: {fileID: 3193142886609705922}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12816, y: -0.15161, z: 0}
+  m_LocalPosition: {x: 489.20712, y: 441.97174, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7707884390129126208
+--- !u!114 &3180588400762967240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 467702433369687185}
+  m_GameObject: {fileID: 3193142886609705922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc99efccd49ef0246b807899ec6abb2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Spawner.BossTimer
+  duration: 300
+  timerText: {fileID: 0}
+--- !u!114 &-7398399727007516945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3193142886609705922}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 637dc6329e8b2f2489ff7665306860be, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.Spawner.EnemySpawner
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Spawner.Scripts.EnemySpawner
   enemyTypes:
-  - name: Red archer
-    prefab: {fileID: 5558930510443425097, guid: 26dd1a55642f35844a7179efb5e41781, type: 3}
-    spawnWeight: 0.25
-    baseHealth: 4
-    baseMoveSpeed: 2
-    baseDamage: 1
-    baseShootRange: 3
-    baseFireRate: 0.7
-    healthCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0.0098
-        outSlope: 0.0098
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 5000
-        value: 50
-        inSlope: 0.0098
-        outSlope: 0.0098
-        tangentMode: 34
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    speedCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
-    damageCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
-    goldDropCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
-  - name: Red knight
+  - name: Red Knight
     prefab: {fileID: 5558930510443425097, guid: 0efafcbfa33cc0a43a2377df03974b09, type: 3}
     spawnWeight: 0.75
-    baseHealth: 6
-    baseMoveSpeed: 1.2
-    baseDamage: 2
-    baseShootRange: 0.1
-    baseFireRate: 0
     healthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 1
-        inSlope: 0.0098
-        outSlope: 0.0098
-        tangentMode: 34
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0.33333334
+        outWeight: 0
       - serializedVersion: 3
-        time: 5000
-        value: 50
-        inSlope: 0.0098
-        outSlope: 0.0098
-        tangentMode: 34
+        time: 300
+        value: 10
+        inSlope: 0.06
+        outSlope: 0
+        tangentMode: 0
         weightedMode: 0
-        inWeight: 0.33333334
+        inWeight: 0
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     speedCurve:
       serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 1.5
+        inSlope: 0.0033333334
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     damageCurve:
       serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     goldDropCurve:
       serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 0
-      m_PostInfinity: 0
-      m_RotationOrder: 0
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - name: Red Archer
+    prefab: {fileID: 5558930510443425097, guid: 26dd1a55642f35844a7179efb5e41781, type: 3}
+    spawnWeight: 0.25
+    healthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 10
+        inSlope: 0.06
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    speedCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 1.5
+        inSlope: 0.0033333334
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    damageCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    goldDropCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 300
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   spawnRadius: 12
   baseSpawnInterval: 3
   spawnRateCurve:
@@ -155,15 +267,15 @@ MonoBehaviour:
       time: 0
       value: 1
       inSlope: 0
-      outSlope: 0.006666667
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 300
-      value: 3
-      inSlope: 0.006666667
+      value: 5
+      inSlope: 0.026666667
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
@@ -179,7 +291,7 @@ MonoBehaviour:
       time: 0
       value: 1
       inSlope: 0
-      outSlope: 0
+      outSlope: 0.096666664
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -187,8 +299,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 300
       value: 30
-      inSlope: 0.09
-      outSlope: 0.09
+      inSlope: 0.096666664
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -196,31 +308,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  bossTimer: {fileID: -6144790375559271296}
+  bossTimer: {fileID: 3180588400762967240}
   bossTypes:
   - name: Chief Titty Ogre
     prefab: {fileID: 1908229703796852517, guid: 7c2618d120da8714bb1fcc383cd66af9, type: 3}
-    baseHealth: 150
-    baseMoveSpeed: 1.2
-    baseDamage: 4
-    baseShootRange: 5
-    baseFireRate: 0
     goldDrop: 10
   bossHealthBar: {fileID: 0}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 16
---- !u!114 &-6144790375559271296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 467702433369687185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc99efccd49ef0246b807899ec6abb2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.Spawner.BossTimer
-  duration: 300
-  timerText: {fileID: 0}

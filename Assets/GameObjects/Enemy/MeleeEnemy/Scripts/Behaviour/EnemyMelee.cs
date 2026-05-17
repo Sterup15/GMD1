@@ -7,8 +7,6 @@ namespace GameObjects.Enemy.MeleeEnemy.Scripts.Behaviour
 {
     public class EnemyMelee : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed = 3f;
-        [SerializeField] private int damage = 1;
         [SerializeField] private float damageCooldown = 1f;
 
         private Rigidbody2D rb;
@@ -46,8 +44,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Scripts.Behaviour
             if (player == null) return;
 
             moveDirection = pathfinder.GetSteerDirection();
-            float speed = stats != null ? stats.MoveSpeed.Value : moveSpeed;
-            rb.linearVelocity = moveDirection * speed;
+            rb.linearVelocity = moveDirection * stats.MoveSpeed.Value;
         }
 
         private void OnTriggerStay2D(Collider2D other)
@@ -57,8 +54,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Scripts.Behaviour
 
             if (other.TryGetComponent<PlayerHealth>(out var health))
             {
-                int dmg = stats != null ? Mathf.RoundToInt(stats.Damage.Value) : damage;
-                health.TakeDamage(dmg);
+                health.TakeDamage(Mathf.RoundToInt(stats.Damage.Value));
                 nextDamageTime = Time.time + damageCooldown;
                 meleeMovementState.SetMoveState(EnemyMoveStateEnum.Attack);
             }

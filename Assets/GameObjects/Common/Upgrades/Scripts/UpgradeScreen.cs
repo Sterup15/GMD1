@@ -1,16 +1,31 @@
+using System;
 using System.Collections.Generic;
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace GameObjects.Common.Upgrades.Scripts
 {
+    [Serializable]
+    public struct RarityWeight
+    {
+        public UpgradeRarity rarity;
+        public float weight;
+    }
+
     public class UpgradeScreen : MonoBehaviour
     {
         [SerializeField] private GameObject panel;
         [SerializeField] private UpgradeCard[] cards;
-        [SerializeField] private List<UpgradeDefinition> upgradePool;
         [SerializeField] private float bonusScale = 1f;
+        [SerializeField] private List<RarityWeight> rarityWeights = new()
+        {
+            new RarityWeight { rarity = UpgradeRarity.Common,    weight = 60f },
+            new RarityWeight { rarity = UpgradeRarity.Uncommon,  weight = 25f },
+            new RarityWeight { rarity = UpgradeRarity.Rare,      weight = 12f },
+            new RarityWeight { rarity = UpgradeRarity.Legendary, weight = 3f  },
+        };
 
         private Stats.Scripts.Stats _playerStats;
         private readonly List<UpgradeDefinition> _available = new();
@@ -23,7 +38,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             if (playerObj != null)
                 _playerStats = playerObj.GetComponent<Stats.Scripts.Stats>();
 
-            _available.AddRange(upgradePool);
+            _available.AddRange(Resources.LoadAll<UpgradeDefinition>("Upgrades"));
             panel.SetActive(false);
         }
 
@@ -84,8 +99,8 @@ namespace GameObjects.Common.Upgrades.Scripts
             if (_playerStats != null)
             {
                 var stat = _playerStats.GetStat(definition.statType);
-                bool scaleBonus = definition.statType != StatType.Damage && definition.statType != StatType.MaxHealth;
-                stat?.AddBonus(definition.bonusAmount * (scaleBonus ? bonusScale : 1f));
+                float amount = definition.bonusAmount * (definition.applyBonusScale ? bonusScale : 1f);
+                stat?.AddBonus(amount);
             }
 
             if (!definition.canRepeat)
@@ -102,12 +117,39 @@ namespace GameObjects.Common.Upgrades.Scripts
 
             for (int i = 0; i < count && pool.Count > 0; i++)
             {
-                int index = Random.Range(0, pool.Count);
-                drawn.Add(pool[index]);
-                pool.RemoveAt(index);
+                var picked = PickWeighted(pool);
+                drawn.Add(picked);
+                pool.Remove(picked);
             }
 
             return drawn;
+        }
+
+        private UpgradeDefinition PickWeighted(List<UpgradeDefinition> pool)
+        {
+            float totalWeight = 0f;
+            foreach (var rw in rarityWeights)
+            {
+                if (pool.Exists(u => u.rarity == rw.rarity))
+                    totalWeight += rw.weight;
+            }
+
+            if (totalWeight <= 0f)
+                return pool[Random.Range(0, pool.Count)];
+
+            float roll = Random.Range(0f, totalWeight);
+            float cumulative = 0f;
+
+            foreach (var rw in rarityWeights)
+            {
+                var candidates = pool.FindAll(u => u.rarity == rw.rarity);
+                if (candidates.Count == 0) continue;
+                cumulative += rw.weight;
+                if (roll < cumulative)
+                    return candidates[Random.Range(0, candidates.Count)];
+            }
+
+            return pool[Random.Range(0, pool.Count)];
         }
     }
 }

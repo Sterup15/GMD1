@@ -350,8 +350,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4f20bfb256e19047944790e63741d27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.EnemyFollow
-  moveSpeed: 3
-  damage: 1
   damageCooldown: 1
 --- !u!114 &5363649478818500034
 MonoBehaviour:
@@ -394,16 +392,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Stats
   MoveSpeed:
-    baseValue: 3
+    baseValue: 1
   FireRate:
     baseValue: 0
   Damage:
     baseValue: 2
   MaxHealth:
-    baseValue: 5
+    baseValue: 3
   ShootRange:
     baseValue: 0
   PickupRange:
+    baseValue: 0
+  Bounce:
+    baseValue: 0
+  Penetration:
     baseValue: 0
 --- !u!70 &4139985785035661939
 CapsuleCollider2D:
@@ -421,7 +423,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

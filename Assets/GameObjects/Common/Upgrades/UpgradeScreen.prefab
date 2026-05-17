@@ -120,8 +120,25 @@ MonoBehaviour:
   - {fileID: 7273824748218695206}
   - {fileID: 8723716983294865196}
   - {fileID: 4394470716959417819}
-  upgradePool: []
+  upgradePool:
+  - {fileID: 11400000, guid: 7e3ec520d56225c44821cc0b4b5fbbc0, type: 2}
+  - {fileID: 11400000, guid: 95a45f8c5e45f744581211f1f334a9e3, type: 2}
+  - {fileID: 11400000, guid: 6206167a50653d14897be33f20c76708, type: 2}
+  - {fileID: 11400000, guid: dabb385f847ea92448338f0928f9abbb, type: 2}
+  - {fileID: 11400000, guid: 36cb7510d0b296342a89e89687982a27, type: 2}
+  - {fileID: 11400000, guid: c52875b6aa2efaf4dad94a92f8b35ad9, type: 2}
+  - {fileID: 11400000, guid: 505a71abf117529498f32ec11b9852dd, type: 2}
+  - {fileID: 11400000, guid: 339d63fc83454a94cb686af8669e0942, type: 2}
   bonusScale: 0.4
+  rarityWeights:
+  - rarity: 0
+    weight: 60
+  - rarity: 1
+    weight: 25
+  - rarity: 2
+    weight: 12
+  - rarity: 3
+    weight: 3
 --- !u!1 &8755532687491358398
 GameObject:
   m_ObjectHideFlags: 0

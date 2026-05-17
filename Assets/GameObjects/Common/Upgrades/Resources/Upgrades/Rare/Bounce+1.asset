@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
-  m_Name: HP+1
-  m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
-  displayName: Health +1
-  description: Increases your max Health by +1
-  statType: 4
+  m_Name: Bounce+1
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
+  displayName: Sir Bounce's Arrow Tips
+  description: Makes your projectiles bounce against the walls!
+  statType: 6
   bonusAmount: 1
+  applyBonusScale: 0
+  rarity: 2
   canRepeat: 1

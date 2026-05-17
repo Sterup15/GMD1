@@ -6,10 +6,6 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
 {
     public class EnemyRanged : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed = 2f;
-        [SerializeField] private float shootRange = 6f;
-        [SerializeField] private float fireRate = 1f;
-
         private Rigidbody2D _rb;
         private Transform _player;
         private Stats _stats;
@@ -18,7 +14,7 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
         private Vector2 _moveDirection;
 
         public Vector2 MoveDirection => _moveDirection;
-        public float AttackAnimSpeed => _stats != null ? _stats.FireRate.Value : fireRate;
+        public float AttackAnimSpeed => _stats.FireRate.Value;
 
         private void Awake()
         {
@@ -48,10 +44,9 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
                 return;
             }
 
-            float range = _stats != null ? _stats.ShootRange.Value : shootRange;
             float dist = Vector2.Distance(transform.position, _player.position);
 
-            if (dist < range)
+            if (dist < _stats.ShootRange.Value)
             {
                 _moveDirection = ((Vector2)_player.position - _rb.position).normalized;
                 _rb.linearVelocity = Vector2.zero;
@@ -59,17 +54,16 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
             }
 
             _moveDirection = _pathfinder.GetSteerDirection();
-            float speed = _stats != null ? _stats.MoveSpeed.Value : moveSpeed;
-            _rb.linearVelocity = _moveDirection * speed;
+            _rb.linearVelocity = _moveDirection * _stats.MoveSpeed.Value;
         }
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             if (_stats == null) _stats = GetComponent<Stats>();
-            float range = _stats != null ? _stats.ShootRange.Value : shootRange;
+            if (_stats == null) return;
             Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.3f);
-            Gizmos.DrawWireSphere(transform.position, range);
+            Gizmos.DrawWireSphere(transform.position, _stats.ShootRange.Value);
         }
 #endif
     }

@@ -7,6 +7,8 @@ namespace GameObjects.Common.Stats.Scripts
         FireRate,
         ShootRange,
         MaxHealth,
-        PickupRange
+        PickupRange,
+        Bounce,
+        Penetration
     }
 }

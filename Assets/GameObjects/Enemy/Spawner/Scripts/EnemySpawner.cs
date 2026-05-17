@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using GameObjects.Enemy.Common.Scripts;
 using GameObjects.Enemy.Common.Spawner;
 using GameObjects.Enemy.TogreBoss.Scripts.Health;
@@ -17,24 +18,25 @@ namespace GameObjects.Enemy.Spawner.Scripts
         public GameObject prefab;
         [Range(0f, 1f)] public float spawnWeight = 0.5f;
 
-        [Header("Base Stats")]
-        public float baseHealth = 3f;
-        public float baseMoveSpeed = 3f;
-        public float baseDamage = 1f;
-        public float baseShootRange = 6f;
-        public float baseFireRate = 1f;
-
         [Header("Difficulty Scaling")]
         [Tooltip("X = run time in seconds, Y = multiplier on base health")]
-        public AnimationCurve healthCurve = AnimationCurve.Linear(0f, 1f, 300f, 5f);
+        public AnimationCurve healthCurve = AnimationCurve.Linear(0f, 1f, 300f, 10f);
         [Tooltip("X = run time in seconds, Y = multiplier on base move speed")]
-        public AnimationCurve speedCurve = AnimationCurve.Linear(0f, 1f, 300f, 2f);
+        public AnimationCurve speedCurve = AnimationCurve.Linear(0f, 1f, 300f, 1.5f);
         [Tooltip("X = run time in seconds, Y = multiplier on base damage")]
-        public AnimationCurve damageCurve = AnimationCurve.Linear(0f, 1f, 300f, 3f);
+        public AnimationCurve damageCurve = AnimationCurve.Linear(0f, 1f, 300f, 1f);
 
         [Header("Gold Drop")]
         [Tooltip("X = run time in seconds, Y = gold dropped")]
-        public AnimationCurve goldDropCurve = AnimationCurve.Linear(0f, 10f, 300f, 10f);
+        public AnimationCurve goldDropCurve = AnimationCurve.Linear(0f, 1f, 300f, 1f);
+
+        public void InitializeDefaultCurves()
+        {
+            if (healthCurve   == null || healthCurve.length   == 0) healthCurve   = CurveUtils.EaseIn(0f, 1f,  300f, 10f);
+            if (speedCurve    == null || speedCurve.length    == 0) speedCurve    = CurveUtils.EaseIn(0f, 1f,  300f, 1.5f);
+            if (damageCurve   == null || damageCurve.length   == 0) damageCurve   = AnimationCurve.Linear(0f, 1f,  300f, 1f);
+            if (goldDropCurve == null || goldDropCurve.length == 0) goldDropCurve = CurveUtils.EaseIn(0f, 1f, 300f, 1f);
+        }
     }
 
     [Serializable]
@@ -42,13 +44,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
     {
         public string name;
         public GameObject prefab;
-
-        [Header("Base Stats")]
-        public float baseHealth = 100f;
-        public float baseMoveSpeed = 2f;
-        public float baseDamage = 5f;
-        public float baseShootRange = 2f;
-        public float baseFireRate = 1f;
 
         [Header("Gold Drop")]
         public float goldDrop = 100f;
@@ -58,12 +53,12 @@ namespace GameObjects.Enemy.Spawner.Scripts
     {
         [Header("Spawn Settings")]
         [SerializeField] private List<EnemySpawnConfig> enemyTypes = new();
-        [SerializeField] private float spawnRadius = 8f;
+        [SerializeField] private float spawnRadius = 12f;
         [SerializeField] private float baseSpawnInterval = 3f;
 
         [Header("Spawn Rate Scaling")]
         [Tooltip("X = run time in seconds, Y = multiplier on spawn rate")]
-        [SerializeField] private AnimationCurve spawnRateCurve = AnimationCurve.Linear(0f, 1f, 300f, 3f);
+        [SerializeField] private AnimationCurve spawnRateCurve;
 
         [Header("Minimum Enemies Alive")]
         [Tooltip("X = run time in seconds, Y = minimum number of enemies that must be alive")]
@@ -79,6 +74,15 @@ namespace GameObjects.Enemy.Spawner.Scripts
         private Transform _player;
         private bool _isBossFightActive;
         private int _aliveEnemyCount;
+
+        private void Awake()
+        {
+            foreach (var config in enemyTypes)
+                config.InitializeDefaultCurves();
+
+            if (spawnRateCurve == null || spawnRateCurve.length == 0)
+                spawnRateCurve = CurveUtils.EaseIn(0f, 1f, 300f, 5f);
+        }
 
         private void Start()
         {
@@ -155,11 +159,9 @@ namespace GameObjects.Enemy.Spawner.Scripts
             var stats = enemy.GetComponent<Stats>();
             if (stats != null)
             {
-                stats.MaxHealth.SetBaseValue(config.baseHealth * Evaluate(config.healthCurve, _runTime, 1f));
-                stats.MoveSpeed.SetBaseValue(config.baseMoveSpeed * Evaluate(config.speedCurve, _runTime, 1f));
-                stats.Damage.SetBaseValue(config.baseDamage * Evaluate(config.damageCurve, _runTime, 1f));
-                stats.ShootRange.SetBaseValue(config.baseShootRange);
-                stats.FireRate.SetBaseValue(config.baseFireRate);
+                stats.MaxHealth.SetBaseValue(stats.MaxHealth.Value * Evaluate(config.healthCurve, _runTime, 1f));
+                stats.MoveSpeed.SetBaseValue(stats.MoveSpeed.Value * Evaluate(config.speedCurve, _runTime, 1f));
+                stats.Damage.SetBaseValue(stats.Damage.Value * Evaluate(config.damageCurve, _runTime, 1f));
             }
 
             enemy.GetComponent<GoldDropper>()?.SetAmount(Mathf.RoundToInt(Evaluate(config.goldDropCurve, _runTime, 10f)));
@@ -173,16 +175,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
             if (config?.prefab == null) return;
 
             var boss = Instantiate(config.prefab, GetSpawnPosition(), Quaternion.identity);
-
-            var stats = boss.GetComponent<Stats>();
-            if (stats != null)
-            {
-                stats.MaxHealth.SetBaseValue(config.baseHealth);
-                stats.MoveSpeed.SetBaseValue(config.baseMoveSpeed);
-                stats.Damage.SetBaseValue(config.baseDamage);
-                stats.ShootRange.SetBaseValue(config.baseShootRange);
-                stats.FireRate.SetBaseValue(config.baseFireRate);
-            }
 
             var actorEvents = boss.GetComponent<ActorEvents>();
             if (actorEvents != null)
@@ -230,6 +222,16 @@ namespace GameObjects.Enemy.Spawner.Scripts
         }
 
 #if UNITY_EDITOR
+        private void OnValidate()
+        {
+            foreach (var config in enemyTypes)
+                config.InitializeDefaultCurves();
+            
+            if (spawnRateCurve == null || spawnRateCurve.length == 0)
+                spawnRateCurve = CurveUtils.EaseIn(0f, 1f, 300f, 5f);
+            
+        }
+
         private void OnDrawGizmosSelected()
         {
             if (_player == null)
