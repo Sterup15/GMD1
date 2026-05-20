@@ -1,3 +1,4 @@
+using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using GameObjects.Player.Scripts.Health;
@@ -21,6 +22,10 @@ namespace GameObjects.Enemy.MeleeEnemy.Scripts.Behaviour
         public bool IsMoving => player != null && (player.position - transform.position).sqrMagnitude > 0.01f;
         public bool IsAttacking => false;
         public float AttackAnimSpeed => 1f;
+
+        private void OnEnable()  => GlobalEvents.OnBossSpawned += HandleBossSpawned;
+        private void OnDisable() => GlobalEvents.OnBossSpawned -= HandleBossSpawned;
+        private void HandleBossSpawned() => Destroy(gameObject);
 
         private void Awake()
         {

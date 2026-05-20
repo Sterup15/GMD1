@@ -119,7 +119,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             {
                 var picked = PickWeighted(pool);
                 drawn.Add(picked);
-                pool.Remove(picked);
+                pool.RemoveAll(u => u.statType == picked.statType);
             }
 
             return drawn;

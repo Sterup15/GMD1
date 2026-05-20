@@ -1,3 +1,4 @@
+using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using UnityEngine;
@@ -15,6 +16,10 @@ namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
 
         public Vector2 MoveDirection => _moveDirection;
         public float AttackAnimSpeed => _stats.FireRate.Value;
+
+        private void OnEnable()  => GlobalEvents.OnBossSpawned += HandleBossSpawned;
+        private void OnDisable() => GlobalEvents.OnBossSpawned -= HandleBossSpawned;
+        private void HandleBossSpawned() => Destroy(gameObject);
 
         private void Awake()
         {
