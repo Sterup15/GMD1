@@ -29,3 +29,6 @@
 
 ## Gameplay video
 [Link to youtube video](https://www.youtube.com/watch?v=gE3IQujT8LE)
+
+## WebGL build of the game
+[Link to Web build of the game](https://sterup15.github.io/GMD1/)
