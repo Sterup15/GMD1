@@ -31,7 +31,15 @@ namespace GameObjects.Player.Scripts.Health
         }
 
         private void OnEnable()  => _stats.MaxHealth.OnValueChanged += OnMaxHealthUpgraded;
-        private void OnDisable() => _stats.MaxHealth.OnValueChanged -= OnMaxHealthUpgraded;
+        private void OnDisable()
+        {
+            _stats.MaxHealth.OnValueChanged -= OnMaxHealthUpgraded;
+
+            // Layer collision settings survive scene loads, so restore them if a run ends mid-invulnerability
+            Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(enemyLayerName), false);
+            _isInvulnerable = false;
+            _invulnerabilityCoroutine = null;
+        }
 
         private void OnMaxHealthUpgraded()
         {
