@@ -18,5 +18,6 @@ namespace GameObjects.Common.Events
         public static void PlayerWon()        => OnPlayerWon?.Invoke();
         public static void LevelUp(int level) => OnLevelUp?.Invoke(level);
         public static void BounceUnlocked()   { IsBounceUnlocked = true; OnBounceUnlocked?.Invoke(); }
+        public static void ResetRunState()    => IsBounceUnlocked = false;
     }
 }

@@ -19,6 +19,9 @@ namespace GameObjects.Common.Camera.Scripts
 
         private void Awake()
         {
+            // Static state survives scene reloads, so clear it at the start of every run
+            GlobalEvents.ResetRunState();
+
             _camera = UnityEngine.Camera.main;
             _wallLayer = gameObject.layer;
 
