@@ -4,7 +4,7 @@ Guidance for AI agents working on **A Chance at Glory**, a Unity 2D top-down bul
 
 ## The game in one paragraph
 
-The player (an archer) moves with WASD/arrows or the VIA arcade stick and auto-fires at the nearest enemy in `ShootRange`. Enemies (melee knight, ranged archer) spawn in a ring around the player at an ever-increasing rate. Kills drop gold; gold fills a level bar, and each level-up pauses the game and offers 3 upgrade cards. When the boss timer hits zero, all regular enemies despawn, the camera locks into an arena, and the boss (Togre) spawns. Killing the boss wins the run. Runs last 5–10 minutes.
+The player (an archer) moves with WASD/arrows (touch controls for phones and tablets are planned) and auto-fires at the nearest enemy in `ShootRange`. Enemies (melee knight, ranged archer) spawn in a ring around the player at an ever-increasing rate. Kills drop gold; gold fills a level bar, and each level-up pauses the game and offers 3 upgrade cards. When the boss timer hits zero, all regular enemies despawn, the camera locks into an arena, and the boss (Togre) spawns. Killing the boss wins the run. Runs last 5–10 minutes.
 
 Design pillars (from the GDD, `Blog posts/BlogPost2.md`): **Sensation** (dodging and firing barrages), **Challenge** (short runs that ramp fast), **Mastery** (learning enemy patterns and upgrade combos). Planned future work: more characters, upgrades (legendary effects), enemies, bosses, multiple bosses per run, persistent between-run upgrades.
 
@@ -13,7 +13,7 @@ Design pillars (from the GDD, `Blog posts/BlogPost2.md`): **Sensation** (dodging
 - Unity **6000.3.8f1**, URP 2D, new **Input System**, TextMeshPro, uGUI.
 - Pathfinding: **NavMeshPlus** (vendored in `Assets/NavMeshPlus-master` — third-party, don't edit).
 - Art: **Tiny Swords** asset pack by Pixel Frog (`Assets/Tiny Swords`, third-party). Music from ebunny (Pixabay).
-- Target platforms: the VIA Windows arcade machine and a **WebGL** build. `Builds/WebGL` is committed and deployed to GitHub Pages by `.github/workflows/deploy-pages.yml` on every push to `master`.
+- Target platforms: a **WebGL** build that must work on desktop browsers and on phones/tablets (iPhone, iPad, Android), plus Windows desktop. `Builds/WebGL` is committed and deployed to GitHub Pages by `.github/workflows/deploy-pages.yml` on every push to `master`.
 - Build scenes: `MainMenu` (index 0), `SampleScene` (index 1, the actual game). `MainScene.unity` is not in the build.
 - IDE: Rider. `*.csproj`/`*.sln` are generated and gitignored.
 - There are no automated tests. Verification means running the game in the Unity editor — say so when you cannot do that rather than claiming a change works.
@@ -107,9 +107,9 @@ The whole game is **component-based and event-driven**. These rules come from th
 - Editor-only helpers (`OnDrawGizmosSelected`, `OnValidate`) are wrapped in `#if UNITY_EDITOR`.
 - Spawner stat injection happens between `Instantiate` (runs `Awake`) and the first frame (`Start`). Components that read spawner-set stats (e.g. `EnemyHealth`) must read them in `Start`, not `Awake`.
 
-## Input and UI (arcade-first)
+## Input and UI (keyboard and touch)
 
-- **All input goes through the static `GameInput`** (`Assets/Input/GameInput.cs`, execution order -100): `Move`, `InteractPressed`, `NavigateLeft/Right/Up/Down`. Never read `Keyboard.current` or the mouse directly. The game must be fully playable on the arcade stick and buttons with no mouse.
+- **All input goes through the static `GameInput`** (`Assets/Input/GameInput.cs`, execution order -100): `Move`, `InteractPressed`, `NavigateLeft/Right/Up/Down`. Never read `Keyboard.current`, the mouse or touches directly in gameplay scripts. The game must be fully playable with the keyboard alone, and on phones and tablets with on-screen touch controls: a joystick on the left that moves the player and a dash button on the right. Touch controls feed the same `GameInput` actions, so gameplay code never knows which device is used. Menus and upgrade cards must work with both keyboard navigation and taps.
 - The Quit action returns to the main menu (scene 0).
 - Menus handle their own selection with `GameInput` (select index, call `Button.Select()`, `onClick.Invoke()` on Interact). Follow `DefeatScreen`/`VictoryScreen`/`UpgradeScreen`.
 - Reusable buttons are self-wiring components with `[RequireComponent(typeof(Button))]` that add their listener in `Start` (`RestartButton`, `MainMenuButton`, `StartGameButton`, `QuitButton`).
@@ -154,7 +154,7 @@ Mention these when they matter for your change. Ask before broad refactors.
 - **Optimisation review after every feature or fix.** Before committing, review the change (and the code it touches) so the game runs as smoothly as possible:
   - Performance: no allocations or `GetComponent`/`Find*` calls in `Update`/`FixedUpdate` or in per-hit/per-shot paths, cache what can be cached, avoid per-frame work that an event could replace, and keep asset import settings lean (audio, textures).
   - Over-engineering: remove code, fields, events or abstractions the change doesn't need, and prefer the simpler solution (rule 7).
-  - Optimisations must not break the other rules in this file (component split, event buses, animation-driven timing, Inspector tunables, arcade input), and they go in their own commit when they are separate from the feature. Report what the review found and changed, or say that nothing needed changing.
+  - Optimisations must not break the other rules in this file (component split, event buses, animation-driven timing, Inspector tunables, all input through `GameInput`), and they go in their own commit when they are separate from the feature. Report what the review found and changed, or say that nothing needed changing.
 - Always keep `.meta` files with their assets, and never delete or regenerate GUIDs.
 - Don't touch `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `obj/`, or third-party folders (`NavMeshPlus-master`, `Tiny Swords`, `TextMesh Pro`). Leave `_Recovery/` to the user.
 - Git: work on `master`. Commit messages are plain, descriptive sentences, with no `Co-Authored-By` or other AI attribution trailers (same for PR descriptions). Group changes into separate commits by logical change (one fix or feature per commit, docs apart from code) so each one can be reverted without affecting the others. Stage files explicitly, and never sweep in unrelated working-tree changes (e.g. `ProjectSettings/`, `_Recovery/`). `.gif` files are tracked with Git LFS. WebGL build files are regular git objects (not LFS), and pushing to `master` redeploys the web build. Commit or push only when asked.
