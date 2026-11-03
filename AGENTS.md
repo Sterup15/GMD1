@@ -24,8 +24,9 @@ Everything belonging to one entity lives in that entity's folder: scripts, sprit
 
 ```
 Assets/GameObjects/
-  Common/            shared systems: Audio, Camera, DamageNumber, Events, Gold, Health,
+  Common/            shared systems: Audio, Camera, DamageNumber, Events, Health (bar UI),
                      Projectiles, Stats, UI (buttons, menus, victory/defeat), Upgrades, Utils
+    Pickups/         things the player collects, one folder each: Gold, Steak
   Enemy/
     Common/          components shared by all enemies (EnemyPathfinder, EnemyHealth, GoldDropper)
     MeleeEnemy/      enemy type folder
@@ -89,6 +90,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ### 6. Abstractions where it pays off
 - `IDamageable` (`TakeDamage(int)`) is the only thing projectiles know about. New damageable things implement it, and `Projectile` stays unchanged.
+- `IPickup` (`Collect(GameObject collector)`, `Common/Pickups/Scripts`) is the only thing `PlayerPickup` knows about. A new pickup (gold, steak, magnet, ...) implements it in its own `Common/Pickups/<Name>/` folder. It decides for itself whether it is consumed (e.g. the steak stays on the ground at full health).
 - `EnemyPathfinder` is a **bridge** between `NavMeshAgent` and `Rigidbody2D`: the agent has `updatePosition/Rotation/UpAxis = false`, and behaviour scripts call `GetSteerDirection()` and set `rb.linearVelocity` themselves. Don't let NavMesh move transforms.
 - `ProjectileSpawner` is shared by the player (`TargetModeEnum.NearestEnemy`) and enemies (`TargetModeEnum.Player`) and pushes `Damage/Bounce/Penetration` from `Stats` into the projectile at fire time.
 
