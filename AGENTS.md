@@ -39,7 +39,7 @@ Assets/UI/           HUD bars (GoldBar) and UI textures
 Assets/World/        tilemaps
 ```
 
-A new enemy goes in `Assets/GameObjects/Enemy/<Name>/` with `Scripts/Behaviour`, `Sprite/Anims` and its prefab. Namespaces mirror the folder path, e.g. `GameObjects.Enemy.RangedEnemy.Scripts.Behaviour`.
+A new enemy goes in `Assets/GameObjects/Enemy/<Name>/` with `Sprite/Anims` and its prefab, plus `Scripts/Behaviour` only if it is a new enemy type (see rule 1). Namespaces mirror the folder path, e.g. `GameObjects.Enemy.RangedEnemy.Scripts.Behaviour`.
 
 ## Architecture rules
 
@@ -48,7 +48,8 @@ The whole game is **component-based and event-driven**. These rules come from th
 ### 1. Composition over inheritance, one job per component (SRP)
 - Actors have no class hierarchy. They are a GameObject built from small components (`Stats`, `ActorEvents`, `EnemyPathfinder`, `EnemyHealth`, `ProjectileSpawner`, `GoldDropper`, `ActorSoundController`, ...).
 - When a component starts doing a second job, pull that job out into its own component. Example: gold dropping was moved out of `EnemyHealth` into `GoldDropper`.
-- **Every enemy type gets its own dedicated scripts.** Never add an `enemyType` enum or `if (isBoss)` branches to a shared script. Each type has its own `<Type>` (behaviour/movement), `<Type>MovementState` (state machine and animation), and `<Type>AnimationEvents` scripts. They share only the generic components in `Enemy/Common`.
+- **Every enemy type gets its own dedicated scripts.** An enemy *type* is a behaviour archetype (melee, ranged, boss, and later things like a grenade thrower), not a specific enemy or skin. Never add an `enemyType` enum or `if (isBoss)` branches to a shared script. Each type has its own `<Type>` (behaviour/movement), `<Type>MovementState` (state machine and animation), and `<Type>AnimationEvents` scripts. They share only the generic components in `Enemy/Common`.
+- **A new enemy of an existing type reuses that type's scripts.** It only gets its own folder with sprites, an Animator Controller (same state names, e.g. Idle/Move/Attack), stats and a prefab. Example: `Skull` is a melee enemy that uses the `EnemyMelee*` scripts. Write new scripts only when the enemy needs behaviour its type doesn't have, and then it's a new type.
 
 ### 2. Two event buses: decouple, don't reference siblings
 - **`ActorEvents`** (`Common/Events/ActorEvents.cs`) is a per-actor bus on each actor's root GameObject. Components on the same actor talk through it, not through direct references to each other. Adding a signal means: add `public event Action OnX;` plus a `public void X() => OnX?.Invoke();` raiser.
@@ -133,7 +134,12 @@ Mention these when they matter for your change. Ask before broad refactors.
 
 ## Workflow
 
-- Scene and prefab wiring (component references, animation events on clips, layers, NavMesh bake) happens in the Unity editor. When a change needs editor steps, list them explicitly for the user (which prefab, which component, which field or animation frame) instead of hand-editing `.unity`/`.prefab` YAML.
+- Hand-editing Unity YAML (`.prefab`, `.unity`, `.anim`, `.controller`, `.asset`, `.meta`) is allowed for wiring components, building prefabs, animation clips/events and controllers. Base new assets on an existing working one (e.g. copy `MeleeEnemy.prefab` for a new enemy) and keep the structure intact:
+  - Every new asset gets a fresh random 32-hex GUID in its `.meta`. Every new object inside a file gets a fresh `fileID` that is unique within that file, and all internal `{fileID: X}` references are remapped consistently.
+  - Script references use `{fileID: 11500000, guid: <script .meta guid>, type: 3}`. Sprite references use the sprite's internal ID from the texture `.meta` (`nameFileIdTable`). Clips and controllers use `fileID: 7400000` / `9100000`.
+  - Serialized field names in YAML must match the C# field names exactly.
+  - Don't reorder or regenerate existing fileIDs/GUIDs, because other assets reference them.
+  - Things that still need the editor: NavMesh baking, slicing new spritesheets when no frame size is known, and anything that needs visual tuning (collider sizes, offsets). List those steps for the user, and always say that the result must be checked by opening the prefab and playing in the editor.
 - Always keep `.meta` files with their assets, and never delete or regenerate GUIDs.
 - Don't touch `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `obj/`, or third-party folders (`NavMeshPlus-master`, `Tiny Swords`, `TextMesh Pro`). Leave `_Recovery/` to the user.
 - Git: work on `master`. Commit messages are plain, descriptive sentences. Group changes into separate commits by logical change (one fix or feature per commit, docs apart from code) so each one can be reverted without affecting the others. Stage files explicitly, and never sweep in unrelated working-tree changes (e.g. `ProjectSettings/`, `_Recovery/`). `.gif` files are tracked with Git LFS. WebGL build files are regular git objects (not LFS), and pushing to `master` redeploys the web build. Commit or push only when asked.
