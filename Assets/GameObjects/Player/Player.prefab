@@ -48,18 +48,30 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   onSpawnPool:
     clips: []
+    volume: 1
+    cooldown: 0
   onShotFiredPool:
     clips:
     - {fileID: 8300000, guid: 58fbdd287da255b4f9cf213bbc6e96b6, type: 3}
+    volume: 1
+    cooldown: 0
   onDeathStartedPool:
     clips: []
+    volume: 1
+    cooldown: 0
   onHitPool:
     clips:
     - {fileID: 8300000, guid: 15e9cd89c12f3524891be6877941af12, type: 3}
+    volume: 1
+    cooldown: 0
   onStepPool:
     clips: []
+    volume: 1
+    cooldown: 0
   onSwingPool:
     clips: []
+    volume: 1
+    cooldown: 0
 --- !u!82 &4532121126558830284
 AudioSource:
   m_ObjectHideFlags: 0
