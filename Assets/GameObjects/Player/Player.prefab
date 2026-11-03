@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 1042410967823602309}
   - component: {fileID: 897273270636199396}
   - component: {fileID: 3966971216776533575}
+  - component: {fileID: 1097445083443872963}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -502,3 +503,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3503401323347541027, guid: 949c40ec9594ada4c8e1e20db6d54cd6, type: 3}
   m_PrefabInstance: {fileID: 4819897903630161129}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1097445083443872963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be429267ddb4d31a052467c36403298, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Scripts.Health.PlayerHitBlink
+  spriteRenderer: {fileID: 2164286328790560882}
+  blinkInterval: 0.1
+  blinkAlpha: 0.2

@@ -83,12 +83,14 @@ namespace GameObjects.Player.Scripts.Health
             _isInvulnerable = true;
             int enemyLayer = LayerMask.NameToLayer(enemyLayerName);
             Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, true);
+            _events.InvulnerabilityStarted();
 
             yield return new WaitForSeconds(InvulnerabilityDuration);
 
             Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, false);
             _isInvulnerable = false;
             _invulnerabilityCoroutine = null;
+            _events.InvulnerabilityEnded();
         }
     }
 }

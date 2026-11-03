@@ -18,6 +18,8 @@ namespace GameObjects.Common.Events
         public event Action OnStep;
         public event Action OnSwing;
         public event Action OnHit;
+        public event Action OnInvulnerabilityStarted;
+        public event Action OnInvulnerabilityEnded;
 
         public bool HasDeathStartedListeners => OnDeathStarted != null;
 
@@ -34,5 +36,7 @@ namespace GameObjects.Common.Events
         public void Step()            => OnStep?.Invoke();
         public void Swing()           => OnSwing?.Invoke();
         public void Hit()             => OnHit?.Invoke();
+        public void InvulnerabilityStarted() => OnInvulnerabilityStarted?.Invoke();
+        public void InvulnerabilityEnded()   => OnInvulnerabilityEnded?.Invoke();
     }
 }
