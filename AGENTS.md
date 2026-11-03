@@ -131,6 +131,7 @@ Match the newer files (`ActorEvents`, `BossMelee`, `UpgradeScreen`):
 - Use expression-bodied members for one-line forwarders and subscriptions, and align `+=`/`-=` blocks vertically.
 - Use guard clauses with early `return`. Write few comments: only explain non-obvious *why* (see the wall-orientation comment in `Projectile`).
 - Events: `public event Action OnSomething;` raised with `?.Invoke()`.
+- A handler that has to match a typed event (`Action<Vector2>`) but doesn't use the value names the parameter `_` (`private void HideHealthBar(Vector2 _)`). Don't use a lambda instead, because it can't be unsubscribed in `OnDisable`.
 
 ## Known quirks and debt (be aware, don't "fix" silently)
 
