@@ -125,6 +125,8 @@ namespace GameObjects.Enemy.Spawner.Scripts
         private void OnBossTimerComplete()
         {
             _isBossFightActive = true;
+            // Regular enemies leave without dying, so OnDeath never counts them down
+            _aliveEnemyCount = 0;
             SpawnBoss();
         }
 
