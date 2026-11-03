@@ -37,7 +37,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         private void OnDisable() => events.OnRetreat -= HandleRetreat;
 
         // EnemyRetreat drives movement from here on
-        private void HandleRetreat(Vector2 direction) => enabled = false;
+        private void HandleRetreat(Vector2 _) => enabled = false;
 
         private void Start()
         {

@@ -30,7 +30,7 @@ namespace GameObjects.Enemy.Common.Scripts.Health
             _events.OnRetreat       -= HideHealthBar;
         }
 
-        private void HideHealthBar(Vector2 direction)
+        private void HideHealthBar(Vector2 _)
         {
             if (slider != null)
                 slider.gameObject.SetActive(false);
