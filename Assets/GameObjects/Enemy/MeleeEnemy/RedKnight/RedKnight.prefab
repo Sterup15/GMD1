@@ -251,6 +251,7 @@ GameObject:
   - component: {fileID: 4521416057782266425}
   - component: {fileID: -2869570643311153898}
   - component: {fileID: -703298326790458542}
+  - component: {fileID: 3496521347260699125}
   m_Layer: 9
   m_Name: RedKnight
   m_TagString: Enemy
@@ -932,3 +933,18 @@ MonoBehaviour:
     clips: []
     volume: 1
     cooldown: 0
+--- !u!114 &3496521347260699125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de8a26aa836b42dd916da644fb43f680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.Behaviour.EnemyRetreat
+  speedMultiplier: 1.5
+  offscreenMargin: 1
+  maxRetreatTime: 6

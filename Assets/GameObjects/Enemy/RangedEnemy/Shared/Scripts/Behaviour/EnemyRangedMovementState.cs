@@ -40,12 +40,24 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
         {
             _events.OnShotFired      += FireProjectile;
             _events.OnAttackComplete += OnAttackComplete;
+            _events.OnRetreat        += HandleRetreat;
         }
 
         private void OnDisable()
         {
             _events.OnShotFired      -= FireProjectile;
             _events.OnAttackComplete -= OnAttackComplete;
+            _events.OnRetreat        -= HandleRetreat;
+        }
+
+        // Playing Move cancels any attack in progress, so no shot fires on the way out
+        private void HandleRetreat(Vector2 direction)
+        {
+            isAttacking = false;
+            SetMoveState(EnemyMoveStateEnum.Move);
+            if (direction.x != 0f)
+                spriteRenderer.flipX = direction.x < 0f;
+            enabled = false;
         }
 
         private void Update()

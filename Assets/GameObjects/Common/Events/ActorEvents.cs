@@ -20,6 +20,7 @@ namespace GameObjects.Common.Events
         public event Action OnHit;
         public event Action OnInvulnerabilityStarted;
         public event Action OnInvulnerabilityEnded;
+        public event Action<Vector2> OnRetreat;
 
         public bool HasDeathStartedListeners => OnDeathStarted != null;
 
@@ -38,5 +39,6 @@ namespace GameObjects.Common.Events
         public void Hit()             => OnHit?.Invoke();
         public void InvulnerabilityStarted() => OnInvulnerabilityStarted?.Invoke();
         public void InvulnerabilityEnded()   => OnInvulnerabilityEnded?.Invoke();
+        public void Retreat(Vector2 direction) => OnRetreat?.Invoke(direction);
     }
 }

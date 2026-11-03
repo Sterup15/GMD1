@@ -23,8 +23,25 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
             _events = GetComponent<ActorEvents>();
         }
 
-        private void OnEnable()  => _events.OnAttackComplete += ResetToIdle;
-        private void OnDisable() => _events.OnAttackComplete -= ResetToIdle;
+        private void OnEnable()
+        {
+            _events.OnAttackComplete += ResetToIdle;
+            _events.OnRetreat        += HandleRetreat;
+        }
+
+        private void OnDisable()
+        {
+            _events.OnAttackComplete -= ResetToIdle;
+            _events.OnRetreat        -= HandleRetreat;
+        }
+
+        private void HandleRetreat(Vector2 direction)
+        {
+            SetMoveState(EnemyMoveStateEnum.Move);
+            if (direction.x != 0f)
+                spriteRenderer.flipX = direction.x < 0f;
+            enabled = false;
+        }
 
         private void Update()
         {

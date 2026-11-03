@@ -18,8 +18,23 @@ namespace GameObjects.Enemy.Common.Scripts.Health
 
         private void Awake() => _events = GetComponent<ActorEvents>();
 
-        private void OnEnable()  => _events.OnDeathComplete += FinaliseDeath;
-        private void OnDisable() => _events.OnDeathComplete -= FinaliseDeath;
+        private void OnEnable()
+        {
+            _events.OnDeathComplete += FinaliseDeath;
+            _events.OnRetreat       += HideHealthBar;
+        }
+
+        private void OnDisable()
+        {
+            _events.OnDeathComplete -= FinaliseDeath;
+            _events.OnRetreat       -= HideHealthBar;
+        }
+
+        private void HideHealthBar(Vector2 direction)
+        {
+            if (slider != null)
+                slider.gameObject.SetActive(false);
+        }
 
         private void Start()
         {

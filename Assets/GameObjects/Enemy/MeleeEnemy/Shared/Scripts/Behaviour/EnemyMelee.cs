@@ -15,6 +15,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         private EnemyMeleeMovementState meleeMovementState;
         private EnemyPathfinder pathfinder;
         private Stats stats;
+        private ActorEvents events;
         private float nextDamageTime;
         private Vector2 moveDirection;
 
@@ -23,17 +24,20 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         public bool IsAttacking => false;
         public float AttackAnimSpeed => 1f;
 
-        private void OnEnable()  => GlobalEvents.OnBossSpawned += HandleBossSpawned;
-        private void OnDisable() => GlobalEvents.OnBossSpawned -= HandleBossSpawned;
-        private void HandleBossSpawned() => Destroy(gameObject);
-
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
             meleeMovementState = GetComponent<EnemyMeleeMovementState>();
             pathfinder = GetComponent<EnemyPathfinder>();
             stats = GetComponent<Stats>();
+            events = GetComponent<ActorEvents>();
         }
+
+        private void OnEnable()  => events.OnRetreat += HandleRetreat;
+        private void OnDisable() => events.OnRetreat -= HandleRetreat;
+
+        // EnemyRetreat drives movement from here on
+        private void HandleRetreat(Vector2 direction) => enabled = false;
 
         private void Start()
         {

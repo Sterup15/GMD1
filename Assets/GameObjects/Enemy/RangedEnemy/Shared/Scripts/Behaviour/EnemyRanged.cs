@@ -12,14 +12,11 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
         private Stats _stats;
         private EnemyPathfinder _pathfinder;
         private EnemyRangedMovementState _movementState;
+        private ActorEvents _events;
         private Vector2 _moveDirection;
 
         public Vector2 MoveDirection => _moveDirection;
         public float AttackAnimSpeed => _stats.FireRate.Value;
-
-        private void OnEnable()  => GlobalEvents.OnBossSpawned += HandleBossSpawned;
-        private void OnDisable() => GlobalEvents.OnBossSpawned -= HandleBossSpawned;
-        private void HandleBossSpawned() => Destroy(gameObject);
 
         private void Awake()
         {
@@ -27,7 +24,14 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
             _stats = GetComponent<Stats>();
             _pathfinder = GetComponent<EnemyPathfinder>();
             _movementState = GetComponent<EnemyRangedMovementState>();
+            _events = GetComponent<ActorEvents>();
         }
+
+        private void OnEnable()  => _events.OnRetreat += HandleRetreat;
+        private void OnDisable() => _events.OnRetreat -= HandleRetreat;
+
+        // EnemyRetreat drives movement from here on
+        private void HandleRetreat(Vector2 direction) => enabled = false;
 
         private void Start()
         {
