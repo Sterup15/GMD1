@@ -14,7 +14,7 @@ namespace GameObjects.Player.Scripts.Health
         public static Action<int, int> OnHealthChanged;
 
         [SerializeField] private string enemyLayerName = "Enemy";
-        private const float InvulnerabilityDuration = 3f;
+        private const float InvulnerabilityDuration = 2f;
         private bool _isInvulnerable;
         private Coroutine _invulnerabilityCoroutine;
 
