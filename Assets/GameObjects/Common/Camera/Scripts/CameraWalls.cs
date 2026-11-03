@@ -89,7 +89,9 @@ namespace GameObjects.Common.Camera.Scripts
         private static void SetWall(BoxCollider2D wall, Vector2 position, Vector2 size)
         {
             wall.transform.position = position;
-            wall.size = size;
+            // Resizing rebuilds the collider shape, so only do it when the camera size or aspect changed
+            if (wall.size != size)
+                wall.size = size;
         }
 
         public void EnableCollisionWithLayer(int layer)
