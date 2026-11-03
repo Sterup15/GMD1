@@ -1,7 +1,7 @@
 using GameObjects.Player.Scripts.Gold;
 using UnityEngine;
 
-namespace GameObjects.Common.Gold.Scripts
+namespace GameObjects.Common.Pickups.Gold.Scripts
 {
     public class GoldPickup : MonoBehaviour
     {

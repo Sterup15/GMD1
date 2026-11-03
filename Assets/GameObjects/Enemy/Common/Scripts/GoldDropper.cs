@@ -1,5 +1,5 @@
 using GameObjects.Common.Events;
-using GameObjects.Common.Gold.Scripts;
+using GameObjects.Common.Pickups.Gold.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Enemy.Common.Scripts

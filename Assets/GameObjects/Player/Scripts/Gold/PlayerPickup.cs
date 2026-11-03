@@ -1,4 +1,4 @@
-using GameObjects.Common.Gold.Scripts;
+using GameObjects.Common.Pickups.Gold.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
