@@ -28,9 +28,14 @@ Assets/GameObjects/
                      Projectiles, Stats, UI (buttons, menus, victory/defeat), Upgrades, Utils
   Enemy/
     Common/          components shared by all enemies (EnemyPathfinder, EnemyHealth, GoldDropper)
-    MeleeEnemy/      Scripts/Behaviour, Sprite/Anims, MeleeEnemy.prefab
-    RangedEnemy/     same shape
-    TogreBoss/       same shape + AudioFiles, Scripts/Health (BossHealthBar)
+    MeleeEnemy/      enemy type folder
+      Shared/        Scripts/Behaviour (EnemyMelee*) used by every melee enemy
+      RedKnight/     Sprite/Anims, RedKnight.prefab
+      Skull/         Sprite/Anims, Skull.prefab
+    RangedEnemy/     enemy type folder
+      Shared/        Scripts/Behaviour (EnemyRanged*) used by every ranged enemy
+      RedArcher/     Sprite/Anims, RedArcher.prefab
+    TogreBoss/       Scripts/Behaviour, Scripts/Health (BossHealthBar), Sprite/Anims, AudioFiles, prefab
     Spawner/         EnemySpawner, BossTimer
   Music/             MusicController, MainMenuMusicController, AudioFiles
   Player/            Scripts/{Movement,Health,Gold}, Sprite, AudioFiles, Player.prefab
@@ -39,7 +44,12 @@ Assets/UI/           HUD bars (GoldBar) and UI textures
 Assets/World/        tilemaps
 ```
 
-A new enemy goes in `Assets/GameObjects/Enemy/<Name>/` with `Sprite/Anims` and its prefab, plus `Scripts/Behaviour` only if it is a new enemy type (see rule 1). Namespaces mirror the folder path, e.g. `GameObjects.Enemy.RangedEnemy.Scripts.Behaviour`.
+Enemies are grouped by **type** (see rule 1): `Enemy/<Type>/Shared/` holds everything the enemies of that type share (behaviour scripts, and any shared audio or assets), and `Enemy/<Type>/<EnemyName>/` holds only what is unique to that enemy (sprites, animation clips, Animator Controller, prefab, and its own audio).
+- A new enemy of an existing type goes in `Enemy/<Type>/<EnemyName>/` with `Sprite/Anims` and `<EnemyName>.prefab`, and uses the type's `Shared` scripts.
+- A new enemy type gets `Enemy/<NewType>/Shared/Scripts/Behaviour` plus a folder for its first enemy.
+- When something unique to one enemy becomes useful to others of the same type, move it to `Shared/`.
+
+Namespaces mirror the folder path, e.g. `GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour`.
 
 ## Architecture rules
 
@@ -134,7 +144,7 @@ Mention these when they matter for your change. Ask before broad refactors.
 
 ## Workflow
 
-- Hand-editing Unity YAML (`.prefab`, `.unity`, `.anim`, `.controller`, `.asset`, `.meta`) is allowed for wiring components, building prefabs, animation clips/events and controllers. Base new assets on an existing working one (e.g. copy `MeleeEnemy.prefab` for a new enemy) and keep the structure intact:
+- Hand-editing Unity YAML (`.prefab`, `.unity`, `.anim`, `.controller`, `.asset`, `.meta`) is allowed for wiring components, building prefabs, animation clips/events and controllers. Base new assets on an existing working one (e.g. copy `MeleeEnemy/RedKnight/RedKnight.prefab` for a new melee enemy) and keep the structure intact:
   - Every new asset gets a fresh random 32-hex GUID in its `.meta`. Every new object inside a file gets a fresh `fileID` that is unique within that file, and all internal `{fileID: X}` references are remapped consistently.
   - Script references use `{fileID: 11500000, guid: <script .meta guid>, type: 3}`. Sprite references use the sprite's internal ID from the texture `.meta` (`nameFileIdTable`). Clips and controllers use `fileID: 7400000` / `9100000`.
   - Serialized field names in YAML must match the C# field names exactly.
