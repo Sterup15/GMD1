@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 9221878393825345512}
   - component: {fileID: 7664049773673079572}
   - component: {fileID: 2641034993044268525}
+  - component: {fileID: -386682614508965135}
   m_Layer: 9
   m_Name: RedArcher
   m_TagString: Enemy
@@ -788,3 +789,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
   m_PrefabInstance: {fileID: 5339594825021449254}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &-386682614508965135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9774bc9b9cc4828b4fed9191c87b052, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.Death.DeathDust
+  dustPuffPrefab: {fileID: 2982554850998808992, guid: ecf8074280ae4470a1950651b59ef425, type: 3}
+  puffCount: 3
+  spreadRadius: 0.25
+  scaleRange: {x: 1.2, y: 1.6}
