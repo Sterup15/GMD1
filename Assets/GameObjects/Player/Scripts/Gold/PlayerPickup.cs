@@ -1,4 +1,4 @@
-using GameObjects.Common.Pickups.Gold.Scripts;
+using GameObjects.Common.Pickups.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
@@ -18,8 +18,8 @@ namespace GameObjects.Player.Scripts.Gold
             int count = Physics2D.OverlapCircleNonAlloc(transform.position, _stats.PickupRange.Value, _hits, pickupLayer);
             for (int i = 0; i < count; i++)
             {
-                if (_hits[i] != null && _hits[i].TryGetComponent<GoldPickup>(out var pickup))
-                    pickup.Collect();
+                if (_hits[i] != null && _hits[i].TryGetComponent<IPickup>(out var pickup))
+                    pickup.Collect(gameObject);
             }
         }
 

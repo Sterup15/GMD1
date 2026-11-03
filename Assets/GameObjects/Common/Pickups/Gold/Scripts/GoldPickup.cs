@@ -1,18 +1,18 @@
+using GameObjects.Common.Pickups.Scripts;
 using GameObjects.Player.Scripts.Gold;
 using UnityEngine;
 
 namespace GameObjects.Common.Pickups.Gold.Scripts
 {
-    public class GoldPickup : MonoBehaviour
+    public class GoldPickup : MonoBehaviour, IPickup
     {
         private int _amount;
 
         public void SetAmount(int amount) => _amount = amount;
 
-        public void Collect()
+        public void Collect(GameObject collector)
         {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null && playerObj.TryGetComponent<PlayerGold>(out var gold))
+            if (collector.TryGetComponent<PlayerGold>(out var gold))
                 gold.AddGold(_amount);
 
             Destroy(gameObject);

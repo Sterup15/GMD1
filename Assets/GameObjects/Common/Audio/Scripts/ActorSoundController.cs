@@ -45,6 +45,7 @@ namespace GameObjects.Common.Audio.Scripts
         [SerializeField] private SoundPool onHitPool = new();
         [SerializeField] private SoundPool onStepPool = new();
         [SerializeField] private SoundPool onSwingPool = new();
+        [SerializeField] private SoundPool onHealedPool = new();
 
         private ActorEvents _events;
 
@@ -69,6 +70,7 @@ namespace GameObjects.Common.Audio.Scripts
             _events.OnHit           += OnHit;
             _events.OnStep          += OnStep;
             _events.OnSwing         += OnSwing;
+            _events.OnHealed        += OnHealed;
         }
 
         private void OnDisable()
@@ -79,6 +81,7 @@ namespace GameObjects.Common.Audio.Scripts
             _events.OnHit           -= OnHit;
             _events.OnStep          -= OnStep;
             _events.OnSwing         -= OnSwing;
+            _events.OnHealed        -= OnHealed;
         }
 
         private void OnShotFired()    => Play(onShotFiredPool);
@@ -87,6 +90,7 @@ namespace GameObjects.Common.Audio.Scripts
         private void OnHit()          => Play(onHitPool);
         private void OnStep()         => Play(onStepPool);
         private void OnSwing()        => Play(onSwingPool);
+        private void OnHealed()       => Play(onHealedPool);
 
         private void Play(SoundPool pool)
         {

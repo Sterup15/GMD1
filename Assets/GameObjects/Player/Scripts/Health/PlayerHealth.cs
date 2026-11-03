@@ -11,6 +11,7 @@ namespace GameObjects.Player.Scripts.Health
     {
         public int MaxHealth { get; private set; }
         public int CurrentHealth { get; private set; }
+        public bool IsFullHealth => CurrentHealth >= MaxHealth;
         public static Action<int, int> OnHealthChanged;
 
         [SerializeField] private string enemyLayerName = "Enemy";
@@ -69,6 +70,15 @@ namespace GameObjects.Player.Scripts.Health
                 _events.Death();
                 GlobalEvents.PlayerDied();
             }
+        }
+
+        public void Heal(int amount)
+        {
+            if (CurrentHealth <= 0 || IsFullHealth) return;
+
+            CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            _events.Healed();
         }
 
         private void BeginInvulnerability()

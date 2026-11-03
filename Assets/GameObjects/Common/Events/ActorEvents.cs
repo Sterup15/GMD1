@@ -18,6 +18,7 @@ namespace GameObjects.Common.Events
         public event Action OnStep;
         public event Action OnSwing;
         public event Action OnHit;
+        public event Action OnHealed;
         public event Action OnInvulnerabilityStarted;
         public event Action OnInvulnerabilityEnded;
         public event Action<Vector2> OnRetreat;
@@ -37,6 +38,7 @@ namespace GameObjects.Common.Events
         public void Step()            => OnStep?.Invoke();
         public void Swing()           => OnSwing?.Invoke();
         public void Hit()             => OnHit?.Invoke();
+        public void Healed()          => OnHealed?.Invoke();
         public void InvulnerabilityStarted() => OnInvulnerabilityStarted?.Invoke();
         public void InvulnerabilityEnded()   => OnInvulnerabilityEnded?.Invoke();
         public void Retreat(Vector2 direction) => OnRetreat?.Invoke(direction);

@@ -72,6 +72,15 @@ MonoBehaviour:
     clips: []
     volume: 1
     cooldown: 0
+  onHealedPool:
+    clips:
+    - {fileID: 8300000, guid: 2277cf2e21c038a49aa5736d66854a72, type: 3}
+    - {fileID: 8300000, guid: 3f5ad7d5e66edfd47adb0d1113b87112, type: 3}
+    - {fileID: 8300000, guid: 26e534ebf7f18f1478a6f35f0135af18, type: 3}
+    - {fileID: 8300000, guid: 917a89a2c2d57a54c813a7f66f49dda8, type: 3}
+    - {fileID: 8300000, guid: 6f662777d1bd38148ba83ee379860423, type: 3}
+    volume: 1
+    cooldown: 0
 --- !u!82 &4532121126558830284
 AudioSource:
   m_ObjectHideFlags: 0
