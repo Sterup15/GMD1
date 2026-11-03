@@ -1,7 +1,7 @@
 using GameObjects.Common.Events;
 using UnityEngine;
 
-namespace GameObjects.Enemy.MeleeEnemy.Scripts.Behaviour
+namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
 {
     public class EnemyMeleeAnimationEvents : MonoBehaviour
     {

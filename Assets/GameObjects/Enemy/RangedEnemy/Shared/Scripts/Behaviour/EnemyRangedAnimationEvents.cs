@@ -1,7 +1,7 @@
 using GameObjects.Common.Events;
 using UnityEngine;
 
-namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
+namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
 {
     public class EnemyRangedAnimationEvents : MonoBehaviour
     {

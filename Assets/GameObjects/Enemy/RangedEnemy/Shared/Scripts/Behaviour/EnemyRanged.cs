@@ -3,7 +3,7 @@ using GameObjects.Common.Stats.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using UnityEngine;
 
-namespace GameObjects.Enemy.RangedEnemy.Scripts.Behaviour
+namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
 {
     public class EnemyRanged : MonoBehaviour
     {

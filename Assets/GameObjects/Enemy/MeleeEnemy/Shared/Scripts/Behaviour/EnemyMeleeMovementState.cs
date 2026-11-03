@@ -3,7 +3,7 @@ using GameObjects.Common.Events;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using UnityEngine;
 
-namespace GameObjects.Enemy.MeleeEnemy.Scripts.Behaviour
+namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
 {
     public class EnemyMeleeMovementState : MonoBehaviour
     {
