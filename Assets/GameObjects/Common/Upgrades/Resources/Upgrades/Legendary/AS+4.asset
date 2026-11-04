@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: AS+4
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
   displayName: Elven Bowstring
-  description: Increases your attack speed by 4!
+  description: Increases your attack speed by 160%!
   statType: 2
-  bonusAmount: 4
+  bonusAmount: 160
+  percentOfBase: 1
   applyBonusScale: 1
   rarity: 3
   canRepeat: 1

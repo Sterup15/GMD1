@@ -9,7 +9,8 @@ namespace GameObjects.Common.Stats.Scripts
         [SerializeField] private float baseValue;
         private float _bonus;
 
-        public float Value => baseValue + _bonus;
+        public float Value     => baseValue + _bonus;
+        public float BaseValue => baseValue;
 
         public event Action OnValueChanged;
 

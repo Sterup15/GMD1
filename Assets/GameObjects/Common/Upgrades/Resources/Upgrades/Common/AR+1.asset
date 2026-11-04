@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: AR+1
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
   displayName: Attack Range +1
-  description: Increases your attack range by +1
+  description: Increases your attack range by 8%
   statType: 3
-  bonusAmount: 1
+  bonusAmount: 8
+  percentOfBase: 1
   canRepeat: 1

@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: AS+2
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
   displayName: Attack Speed +2
-  description: Increases your attack speed by +2
+  description: Increases your attack speed by 80%
   statType: 2
-  bonusAmount: 2
+  bonusAmount: 80
+  percentOfBase: 1
   applyBonusScale: 1
   rarity: 1
   canRepeat: 1

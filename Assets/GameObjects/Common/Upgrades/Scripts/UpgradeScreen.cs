@@ -99,8 +99,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             if (_playerStats != null)
             {
                 var stat = _playerStats.GetStat(definition.statType);
-                float amount = definition.bonusAmount * (definition.applyBonusScale ? bonusScale : 1f);
-                stat?.AddBonus(amount);
+                if (stat != null) stat.AddBonus(BonusFor(definition, stat));
             }
 
             if (!definition.canRepeat)
@@ -108,6 +107,13 @@ namespace GameObjects.Common.Upgrades.Scripts
 
             panel.SetActive(false);
             Time.timeScale = 1f;
+        }
+
+        // Percentage cards scale with the character's own base value, so one card set works for every character
+        private float BonusFor(UpgradeDefinition definition, Stat stat)
+        {
+            if (definition.percentOfBase) return stat.BaseValue * definition.bonusAmount / 100f;
+            return definition.bonusAmount * (definition.applyBonusScale ? bonusScale : 1f);
         }
 
         private List<UpgradeDefinition> DrawUpgrades(int count)

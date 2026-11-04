@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: AR+3
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
   displayName: Attack range +3
-  description: Increases your attack range by 3
+  description: Increases your attack range by 24%
   statType: 3
-  bonusAmount: 3
+  bonusAmount: 24
+  percentOfBase: 1
   applyBonusScale: 1
   rarity: 2
   canRepeat: 1

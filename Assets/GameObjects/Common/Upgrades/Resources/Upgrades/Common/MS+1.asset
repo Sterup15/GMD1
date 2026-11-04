@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MS+1
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
   displayName: Movement Speed +1
-  description: Increases your movement speed by +1
+  description: Increases your movement speed by 13%
   statType: 1
-  bonusAmount: 1
+  bonusAmount: 13.3333
+  percentOfBase: 1
   canRepeat: 1
