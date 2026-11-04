@@ -26,7 +26,7 @@ Everything belonging to one entity lives in that entity's folder: scripts, sprit
 Assets/GameObjects/
   Common/            shared systems: Audio, Camera, DamageNumber, Events, Health (bar UI),
                      Projectiles, Stats, UI (buttons, menus, victory/defeat), Upgrades, Utils
-    Effects/         shared visual effects, one folder each: DustPuff (death and dash smoke)
+    Effects/         shared visual effects, one folder each: DustPuff (death and dash smoke), Explosion (area damage, used by bombs), Fire (imported, not used yet)
     Pickups/         things the player collects, one folder each: Gold, Steak
     Terrain/         map decoration: Scripts (TerrainScatter, RandomAnimationStart, CanopyFade), Trees/ (Sprite/Anims, Tree1-4 and Stump1-4 prefabs), GroundPatches/ (Sprite, GroundPatch_<Colour>_<Shape> prefabs)
   Enemy/
@@ -41,7 +41,11 @@ Assets/GameObjects/
     TogreBoss/       Scripts/Behaviour, Scripts/Health (BossHealthBar), Sprite/Anims, AudioFiles, prefab
     Spawner/         EnemySpawner, BossTimer
   Music/             MusicController, MainMenuMusicController, AudioFiles
-  Player/            Scripts/{Movement,Health,Gold,Dash}, Sprite, AudioFiles, Player.prefab
+  Player/
+    Shared/          Scripts/{Movement,Health,Gold,Dash,Selection} and AudioFiles used by every character
+    Characters/      one folder per playable character
+      Archer/        Sprite/Anims, ArcherSprite.prefab, AudioFiles, Archer.prefab (arrows via ProjectileSpawner)
+      Bombardier/    Sprite/Anims (prototype: copies of the archer art), Scripts (BombThrower), Bomb/ (Bomb script, sprite, prefab), Bombardier.prefab
 Assets/Input/        GameInput.cs + GameControls.inputactions
 Assets/UI/           HUD bars (HealthBar, GoldBar, StaminaBar with dash charge pips) and UI textures
 Assets/World/        tilemaps
@@ -78,7 +82,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 - Death is two-phase. `EnemyHealth` raises `DeathStarted` if anything listens (the boss plays a Die clip, then `DeathComplete` → `FinaliseDeath()`). Otherwise it finalises immediately. `FinaliseDeath` raises `Death` (gold drop, spawner counters) and destroys the actor.
 
 ### 4. Universal Stats with the Observer pattern
-- Every actor has a `Stats` component: `MoveSpeed, FireRate, Damage, MaxHealth, ShootRange, PickupRange, Bounce, Penetration, Haste, DashCharges`. Never hardcode these on behaviour scripts. Read `stats.X.Value` instead.
+- Every actor has a `Stats` component: `MoveSpeed, FireRate, Damage, MaxHealth, ShootRange, PickupRange, Bounce, Penetration, Haste, DashCharges, Area` (`Area` multiplies explosion radius, base 1). Never hardcode these on behaviour scripts. Read `stats.X.Value` instead.
 - `Stat` = `baseValue + _bonus`. **`SetBaseValue`** is for difficulty scaling (spawner). **`AddBonus`/`RemoveBonus`** is for upgrades. Don't mix them up.
 - React to changes by subscribing to `Stat.OnValueChanged` instead of polling (e.g. `PlayerHealth` reacting to `MaxHealth`).
 - Adding a stat: add the field to `Stats`, a value to `StatType`, and a case to `Stats.GetStat`.
@@ -88,6 +92,8 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ### 5. Data-driven, tunable in the Inspector (Open/Closed)
 - **Upgrades** are `UpgradeDefinition` ScriptableObjects (`Create > BulletHell > Upgrade Definition`) in `Common/Upgrades/Resources/Upgrades/<Rarity>/`, loaded with `Resources.LoadAll`. A new stat upgrade is a new asset, not new code. Naming convention: `AD+1`, `AS+3`, `Haste+2`, `Bounce+2`, `Pen+1`, with the suffix matching the rarity tier (Common +1 … Legendary +4). Special stats with only a few tiers (`Bounce`, `Pen`, `Dash`) use +1/+2 on the two rarest tiers. The `Dash+1`/`Dash+2` charge cards are one-time picks (the HUD has 4 charge pips) and are meant to become an item once the Items system exists.
+- Upgrade cards are shared by every character. Rate stats (attack speed, move speed, attack range) use `percentOfBase` cards: `bonusAmount` is a percentage of the character's own `Stat.BaseValue`, so a slow-firing character doesn't outgrow a fast one. The percentages are chosen so the archer gets exactly the old flat bonus (e.g. AS+1 = 40%, MS+1 = 13.33%, AR+1 = 8% of base). Counts and independent stats (damage, health, bounce, penetration, haste, dash charges) stay flat. Never change a character's base stats with `AddBonus`, because percentage cards are computed from `BaseValue`.
+- Cards that only make sense for some attacks have a `requirement` (`UpgradeRequirementType`: None, Projectiles, Explosions). Each character prefab has an `UpgradeEligibility` component with one bool per requirement (archer: projectiles, Bombardier: explosions), and `UpgradeScreen` filters the pool by it on every level-up. Something that adds a new kind of attack mid-run (e.g. the Shoulder Ballista or Backpack Catapult items) calls `UpgradeEligibility.Set(requirement, true)`. A new requirement is a new enum value plus a bool on `UpgradeEligibility`, not character checks in the upgrade code.
 - **Difficulty** uses `AnimationCurve`s (X = run time in seconds or player level, Y = multiplier or value): spawn rate, enemy health/speed/damage, gold drop, minimum enemies alive, gold threshold. Provide a default curve in `Awake` and `OnValidate` (see `CurveUtils.EaseIn`) for when the serialized curve is empty.
 - Global balance knobs live on one component (e.g. `UpgradeScreen.bonusScale`), not spread across many assets.
 - Tunables are `[SerializeField] private` fields with `[Header]` and `[Tooltip]` where useful.
@@ -96,7 +102,10 @@ The whole game is **component-based and event-driven**. These rules come from th
 - `IDamageable` (`TakeDamage(int)`) is the only thing projectiles know about. New damageable things implement it, and `Projectile` stays unchanged.
 - `IPickup` (`Collect(GameObject collector)`, `Common/Pickups/Scripts`) is the only thing `PlayerPickup` knows about. A new pickup (gold, steak, magnet, ...) implements it in its own `Common/Pickups/<Name>/` folder. It decides for itself whether it is consumed (e.g. the steak stays on the ground at full health).
 - Enemies move straight at the player: each behaviour script sets `rb.linearVelocity` from the normalised direction to the player. This only works because the map is convex with nothing inside it to walk around. A map with obstacles would need pathfinding back (see the `navmesh-pathfinding` branch).
-- `ProjectileSpawner` is shared by the player (`TargetModeEnum.NearestEnemy`) and enemies (`TargetModeEnum.Player`) and pushes `Damage/Bounce/Penetration` from `Stats` into the projectile at fire time.
+- `ProjectileSpawner` is shared by the archer (`TargetModeEnum.NearestEnemy`) and enemies (`TargetModeEnum.Player`), fires on its actor's `ShotFired` event and pushes `Damage/Bounce/Penetration` from `Stats` into the projectile at fire time.
+- **Characters** share everything in `Player/Shared` and differ only in their sprite child (Animator Controller with the same Idle/Move/Attack states and a `ShotFired` event on Attack), `Stats` values and **attack component**, which listens to `ShotFired`: `ProjectileSpawner` for the archer, `BombThrower` for the Bombardier. A new character is a copy of an existing character folder with its own art and attack component. Movement states never fire attacks themselves.
+- The game scene has no placed player. `PlayerSpawner` (execution order -50) spawns the character picked in the main menu (`CharacterSelection.SelectedIndex`, index into its `characters` list) in `Awake`, so everything that looks for the `Player` tag in `Start` finds it. Never reference the player from scene objects; find it by tag. Playing the game scene directly uses index 0 (Archer).
+- `Targeting.Nearest(tag, from, maxRange)` (`Common/Utils`) is the one place that finds the nearest tagged target.
 
 ### 7. Prefer simple solutions
 - When a cheap arithmetic compensation fixes a problem (e.g. a trigger firing twice), prefer it over tracking collections like `HashSet`s of hit targets. Add a collection only if the arithmetic would be wrong or fragile.
@@ -120,7 +129,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 - **All input goes through the static `GameInput`** (`Assets/Input/GameInput.cs`, execution order -100): `Move`, `InteractPressed`, `DashPressed` (Space / gamepad south), `NavigateLeft/Right/Up/Down`. Never read `Keyboard.current`, the mouse or touches directly in gameplay scripts. The game must be fully playable with the keyboard alone, and on phones and tablets with on-screen touch controls: a joystick on the left that moves the player and a dash button on the right. Touch controls feed the same `GameInput` actions, so gameplay code never knows which device is used. Menus and upgrade cards must work with both keyboard navigation and taps.
 - The Quit action returns to the main menu (scene 0).
 - Menus handle their own selection with `GameInput` (select index, call `Button.Select()`, `onClick.Invoke()` on Interact). Follow `DefeatScreen`/`VictoryScreen`/`UpgradeScreen`.
-- Reusable buttons are self-wiring components with `[RequireComponent(typeof(Button))]` that add their listener in `Start` (`RestartButton`, `MainMenuButton`, `StartGameButton`, `QuitButton`).
+- Reusable buttons are self-wiring components with `[RequireComponent(typeof(Button))]` that add their listener in `Start` (`RestartButton`, `MainMenuButton`, `StartAsCharacterButton`, `QuitButton`). The main menu has one start button per character.
 - Victory and defeat screens follow the same pattern: subscribe to a `GlobalEvents` event, show the panel, pause.
 - UI should match the cartoonish Tiny Swords style. Text uses TextMeshPro.
 
