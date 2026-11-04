@@ -372,6 +372,10 @@ MonoBehaviour:
     baseValue: 0
   Penetration:
     baseValue: 0
+  Haste:
+    baseValue: 0
+  DashCharges:
+    baseValue: 1
 --- !u!114 &1042410967823602309
 MonoBehaviour:
   m_ObjectHideFlags: 0

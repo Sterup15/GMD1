@@ -9,6 +9,8 @@ namespace GameObjects.Common.Stats.Scripts
         MaxHealth,
         PickupRange,
         Bounce,
-        Penetration
+        Penetration,
+        Haste,
+        DashCharges
     }
 }

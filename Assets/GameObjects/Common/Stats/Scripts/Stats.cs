@@ -13,6 +13,8 @@ namespace GameObjects.Common.Stats.Scripts
         public Stat PickupRange;
         public Stat Bounce;
         public Stat Penetration;
+        public Stat Haste;
+        public Stat DashCharges;
 
         private bool _bounceUnlocked;
 
@@ -44,6 +46,8 @@ namespace GameObjects.Common.Stats.Scripts
             StatType.PickupRange  => PickupRange,
             StatType.Bounce       => Bounce,
             StatType.Penetration  => Penetration,
+            StatType.Haste        => Haste,
+            StatType.DashCharges  => DashCharges,
             _                     => null
         };
     }
