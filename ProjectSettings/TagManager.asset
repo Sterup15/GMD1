@@ -18,8 +18,8 @@ TagManager:
   - Enemy
   - Pickup
   - CameraWalls
-  - 
-  - 
+  - Terrain
+  - PlayerFeet
   - 
   - 
   - 

@@ -352072,10 +352072,77 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8778085937813447749, guid: 8bc2c1fd579e4adb966e1371f86ea536, type: 3}
   m_PrefabInstance: {fileID: 7345732078230562648}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1815609445
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1380925520}
+  - component: {fileID: 1209184716}
+  m_Layer: 0
+  m_Name: Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1380925520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815609445}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1209184716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815609445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c0a722ed6a4ddc97f973ec85801a71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Terrain.Scripts.TerrainScatter
+  prefabs:
+  - {fileID: 2015700662904235309, guid: 6876f56822cd4fd88c79cbb454750e4d, type: 3}
+  - {fileID: 5770621521947117929, guid: 169fd65e9a1f46d9a49392447694b1c1, type: 3}
+  - {fileID: 7949931728189947885, guid: 573d43ca70674b30a96eacf68ec3e4b5, type: 3}
+  - {fileID: 2130934982820452157, guid: 09106b0fb0584227b62b5256ab6277d0, type: 3}
+  - {fileID: 4631836740968946085, guid: 6f4a907ff3fd4921b82e13cd2d2cb4a3, type: 3}
+  - {fileID: 1452339931679232927, guid: 4dcb5aacdc034d8d991d61d16f918dc3, type: 3}
+  - {fileID: 7476691393260694188, guid: 038b55677d0b4f3e8ec0f9e3fed8625c, type: 3}
+  - {fileID: 6418599908202013942, guid: 61085f26dad14d24b4d8766daf9f612e, type: 3}
+  count: 8
+  area:
+    serializedVersion: 2
+    x: -15
+    y: -9
+    width: 30
+    height: 25
+  minSpacing: 11
+  playerClearRadius: 3
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+  waterClearance: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1380925520}
   - {fileID: 619394802}
   - {fileID: 393597390020592500}
   - {fileID: 1298399247}
