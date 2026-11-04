@@ -1,3 +1,4 @@
+using GameObjects.Common.Effects.DustPuff.Scripts;
 using GameObjects.Common.Events;
 using UnityEngine;
 
@@ -26,12 +27,7 @@ namespace GameObjects.Enemy.Common.Scripts.Death
                 return;
             }
 
-            for (int i = 0; i < puffCount; i++)
-            {
-                var position = (Vector2)transform.position + Random.insideUnitCircle * spreadRadius;
-                var puff = Instantiate(dustPuffPrefab, position, Quaternion.identity);
-                puff.transform.localScale = Vector3.one * Random.Range(scaleRange.x, scaleRange.y);
-            }
+            DustPuff.SpawnBurst(dustPuffPrefab, transform.position, puffCount, spreadRadius, scaleRange);
         }
     }
 }

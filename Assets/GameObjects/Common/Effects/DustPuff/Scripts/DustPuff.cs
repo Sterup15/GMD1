@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace GameObjects.Enemy.Common.Scripts.Death
+namespace GameObjects.Common.Effects.DustPuff.Scripts
 {
     public class DustPuff : MonoBehaviour
     {
@@ -17,5 +17,15 @@ namespace GameObjects.Enemy.Common.Scripts.Death
 
         // Animation event on the last frame of each dust clip
         public void OnDustComplete() => Destroy(gameObject);
+
+        public static void SpawnBurst(GameObject prefab, Vector2 center, int count, float spreadRadius, Vector2 scaleRange)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var position = center + Random.insideUnitCircle * spreadRadius;
+                var puff = Instantiate(prefab, position, Quaternion.identity);
+                puff.transform.localScale = Vector3.one * Random.Range(scaleRange.x, scaleRange.y);
+            }
+        }
     }
 }
