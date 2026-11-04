@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameObjects.Common.Terrain.Scripts
 {
-    // Scatters a few trees and stumps over the map at run start, as landmarks so the open grass doesn't all look the same
+    // Scatters a few map decorations (trees and stumps, ground patches) at run start, so the open grass doesn't all look the same
     public class TerrainScatter : MonoBehaviour
     {
         [Tooltip("Picked at random, one per placed piece")]
@@ -12,7 +12,7 @@ namespace GameObjects.Common.Terrain.Scripts
         [SerializeField, Min(0)] private int count = 8;
         [Tooltip("World area the pieces are placed in")]
         [SerializeField] private Rect area = new(-15f, -9f, 30f, 25f);
-        [Tooltip("Min distance between two pieces. Keeps it to about 2-3 on screen")]
+        [Tooltip("Min distance between two pieces, which controls how many show on screen")]
         [SerializeField] private float minSpacing = 11f;
         [Tooltip("No pieces this close to where the player starts")]
         [SerializeField] private float playerClearRadius = 3f;

@@ -352138,10 +352138,77 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16
   waterClearance: 1
+--- !u!1 &1820179933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1140689447}
+  - component: {fileID: 637218314}
+  m_Layer: 0
+  m_Name: GroundPatches
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1140689447
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820179933}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &637218314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820179933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c0a722ed6a4ddc97f973ec85801a71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Terrain.Scripts.TerrainScatter
+  prefabs:
+  - {fileID: 5292212135470364799, guid: b57065e20f7a429abf6df5cd1efc5c54, type: 3}
+  - {fileID: 1443339262093132719, guid: af601aefe7324a8ab50d419fc6a9b450, type: 3}
+  - {fileID: 4326460751096360647, guid: ed038de83cf34af387ed5d8d7fa17fb8, type: 3}
+  - {fileID: 5960942423805112257, guid: 3a361ad10f024b6eb3062853998d6998, type: 3}
+  - {fileID: 1619439972226737280, guid: b755170e7184420386c4afabb7d25487, type: 3}
+  - {fileID: 7528903264340656252, guid: 4cd3c984bb5849efa540a936dd41e5af, type: 3}
+  - {fileID: 8923294259536076831, guid: d264c534eb92408ea84dc480cdec9d31, type: 3}
+  - {fileID: 530887636543995226, guid: fcab53f9cf0c45ce975fcc5e6ae2bac0, type: 3}
+  count: 12
+  area:
+    serializedVersion: 2
+    x: -13
+    y: -8
+    width: 26
+    height: 23
+  minSpacing: 6
+  playerClearRadius: 0
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+  waterClearance: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1140689447}
   - {fileID: 1380925520}
   - {fileID: 619394802}
   - {fileID: 393597390020592500}
