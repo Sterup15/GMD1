@@ -16,7 +16,6 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
 
         private Rigidbody2D _rb;
         private Stats _stats;
-        private EnemyPathfinder _pathfinder;
         private ActorEvents _events;
         private UnityEngine.Camera _camera;
         private Vector2 _direction;
@@ -24,10 +23,9 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
 
         private void Awake()
         {
-            _rb         = GetComponent<Rigidbody2D>();
-            _stats      = GetComponent<Stats>();
-            _pathfinder = GetComponent<EnemyPathfinder>();
-            _events     = GetComponent<ActorEvents>();
+            _rb     = GetComponent<Rigidbody2D>();
+            _stats  = GetComponent<Stats>();
+            _events = GetComponent<ActorEvents>();
         }
 
         private void OnEnable()  => GlobalEvents.OnBossSpawned += StartRetreat;
@@ -41,7 +39,6 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
             if (_direction == Vector2.zero) _direction = Vector2.right;
 
             _isRetreating = true;
-            _pathfinder.Stop();
 
             // Disabling the colliders stops the enemy taking or dealing damage and lets it pass through water on the way out
             foreach (var col in GetComponentsInChildren<Collider2D>())

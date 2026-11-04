@@ -11,7 +11,6 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         [SerializeField] private SpriteRenderer spriteRenderer;
         private BossMelee _mover;
         private Rigidbody2D _rb;
-        private EnemyPathfinder _pathfinder;
         private ActorEvents _events;
         private const string IdleAnim = "Idle";
         private const string MoveAnim = "Move";
@@ -24,7 +23,6 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         {
             _mover = GetComponent<BossMelee>();
             _rb = GetComponent<Rigidbody2D>();
-            _pathfinder = GetComponent<EnemyPathfinder>();
             _events = GetComponent<ActorEvents>();
         }
 
@@ -46,7 +44,6 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
 
         private void OnDeathStarted()
         {
-            _pathfinder.Stop();
             _rb.linearVelocity = Vector2.zero;
             CurrentMoveState = EnemyMoveStateEnum.Die;
             animator.speed = 1f;
@@ -81,12 +78,10 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
                     animator.Play(IdleAnim);
                     break;
                 case EnemyMoveStateEnum.Move:
-                    _pathfinder.Resume();
                     animator.speed = 1f;
                     animator.Play(MoveAnim);
                     break;
                 case EnemyMoveStateEnum.Windup:
-                    _pathfinder.Stop();
                     animator.speed = 1f;
                     animator.Play(WindupAnim);
                     break;
@@ -95,12 +90,10 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
                     animator.Play(AttackAnim);
                     break;
                 case EnemyMoveStateEnum.Recover:
-                    _pathfinder.Stop();
                     animator.speed = 1f;
                     animator.Play(RecoverAnim);
                     break;
                 case EnemyMoveStateEnum.Die:
-                    _pathfinder.Stop();
                     _rb.linearVelocity = Vector2.zero;
                     animator.speed = 1f;
                     animator.Play(DieAnim);

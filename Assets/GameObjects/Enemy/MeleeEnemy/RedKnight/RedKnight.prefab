@@ -245,7 +245,6 @@ GameObject:
   - component: {fileID: -5726670134324076611}
   - component: {fileID: 2212302401239365186}
   - component: {fileID: 4139985785035661939}
-  - component: {fileID: -9038507217140776818}
   - component: {fileID: 1565910758337609219}
   - component: {fileID: 6181758257063437484}
   - component: {fileID: 4521416057782266425}
@@ -275,7 +274,6 @@ Transform:
   m_Children:
   - {fileID: 6337538466518278921}
   - {fileID: 5712282365237807379}
-  - {fileID: 455110211004500388}
   - {fileID: 5359072329448967516}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -449,18 +447,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0.030967116, y: -0.054241717}
   m_Size: {x: 0.7475908, y: 0.88448393}
   m_Direction: 0
---- !u!114 &-9038507217140776818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5558930510443425097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee3a1e668dd0bf4438496fb9f390d210, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.Behaviour.EnemyPathfinder
 --- !u!114 &1565910758337609219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,68 +702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
---- !u!1001 &2901549637149423465
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 7972099313107295745}
-    m_Modifications:
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.11615
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.60582
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8215352435173084298, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_Name
-      value: 2DNavMeshAgent
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
---- !u!4 &455110211004500388 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-  m_PrefabInstance: {fileID: 2901549637149423465}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &4521416057782266425
 MonoBehaviour:
   m_ObjectHideFlags: 0

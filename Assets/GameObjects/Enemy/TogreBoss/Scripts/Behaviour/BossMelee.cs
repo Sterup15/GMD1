@@ -13,7 +13,6 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
 
         private Rigidbody2D _rb;
         private Transform _player;
-        private EnemyPathfinder _pathfinder;
         private BossMeleeMovementState _movementState;
         private Stats _stats;
         private ActorEvents _events;
@@ -27,7 +26,6 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
-            _pathfinder = GetComponent<EnemyPathfinder>();
             _movementState = GetComponent<BossMeleeMovementState>();
             _stats = GetComponent<Stats>();
             _events = GetComponent<ActorEvents>();
@@ -81,14 +79,15 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
                     return;
             }
 
-            float dist = Vector2.Distance(transform.position, _player.position);
-            if (dist <= _stats.ShootRange.Value)
+            Vector2 toPlayer = (Vector2)_player.position - _rb.position;
+            float range = _stats.ShootRange.Value;
+            if (toPlayer.sqrMagnitude <= range * range)
             {
                 _movementState.SetMoveState(EnemyMoveStateEnum.Windup);
                 return;
             }
 
-            _moveDirection = _pathfinder.GetSteerDirection();
+            _moveDirection = toPlayer.normalized;
             _rb.linearVelocity = _moveDirection * _stats.MoveSpeed.Value;
         }
 

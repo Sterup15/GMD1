@@ -13,7 +13,6 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         private Rigidbody2D rb;
         private Transform player;
         private EnemyMeleeMovementState meleeMovementState;
-        private EnemyPathfinder pathfinder;
         private Stats stats;
         private ActorEvents events;
         private float nextDamageTime;
@@ -28,7 +27,6 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         {
             rb = GetComponent<Rigidbody2D>();
             meleeMovementState = GetComponent<EnemyMeleeMovementState>();
-            pathfinder = GetComponent<EnemyPathfinder>();
             stats = GetComponent<Stats>();
             events = GetComponent<ActorEvents>();
         }
@@ -52,7 +50,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         {
             if (player == null) return;
 
-            moveDirection = pathfinder.GetSteerDirection();
+            moveDirection = ((Vector2)player.position - rb.position).normalized;
             rb.linearVelocity = moveDirection * stats.MoveSpeed.Value;
         }
 

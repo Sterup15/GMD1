@@ -10,7 +10,6 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
         private Rigidbody2D _rb;
         private Transform _player;
         private Stats _stats;
-        private EnemyPathfinder _pathfinder;
         private EnemyRangedMovementState _movementState;
         private ActorEvents _events;
         private Vector2 _moveDirection;
@@ -22,7 +21,6 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
         {
             _rb = GetComponent<Rigidbody2D>();
             _stats = GetComponent<Stats>();
-            _pathfinder = GetComponent<EnemyPathfinder>();
             _movementState = GetComponent<EnemyRangedMovementState>();
             _events = GetComponent<ActorEvents>();
         }
@@ -53,17 +51,13 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
                 return;
             }
 
-            float dist = Vector2.Distance(transform.position, _player.position);
+            Vector2 toPlayer = (Vector2)_player.position - _rb.position;
+            _moveDirection = toPlayer.normalized;
 
-            if (dist < _stats.ShootRange.Value)
-            {
-                _moveDirection = ((Vector2)_player.position - _rb.position).normalized;
-                _rb.linearVelocity = Vector2.zero;
-                return;
-            }
-
-            _moveDirection = _pathfinder.GetSteerDirection();
-            _rb.linearVelocity = _moveDirection * _stats.MoveSpeed.Value;
+            float range = _stats.ShootRange.Value;
+            _rb.linearVelocity = toPlayer.sqrMagnitude < range * range
+                ? Vector2.zero
+                : _moveDirection * _stats.MoveSpeed.Value;
         }
 
 #if UNITY_EDITOR

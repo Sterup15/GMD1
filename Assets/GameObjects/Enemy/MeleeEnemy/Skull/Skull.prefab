@@ -245,7 +245,6 @@ GameObject:
   - component: {fileID: 3434614772628891341}
   - component: {fileID: -8512627565249852934}
   - component: {fileID: 240959092622660240}
-  - component: {fileID: -4531062634688243281}
   - component: {fileID: 1244403517302143415}
   - component: {fileID: -4905636830888332599}
   - component: {fileID: -7791645353856418039}
@@ -275,7 +274,6 @@ Transform:
   m_Children:
   - {fileID: -1025300102890368158}
   - {fileID: -7585661368477964766}
-  - {fileID: 3958743790737775091}
   - {fileID: 5412680252912895327}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -449,18 +447,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.02}
   m_Size: {x: 0.62, y: 0.68}
   m_Direction: 0
---- !u!114 &-4531062634688243281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4246426441429001677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee3a1e668dd0bf4438496fb9f390d210, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.Behaviour.EnemyPathfinder
 --- !u!114 &1244403517302143415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -603,68 +589,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1001 &1793779373507258174
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: -2020196382391702792}
-    m_Modifications:
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.11615
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.60582
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8215352435173084298, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-      propertyPath: m_Name
-      value: 2DNavMeshAgent
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
---- !u!4 &3958743790737775091 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3320419935370870477, guid: fa570b0f33e8bce48aa29df4ac072c66, type: 3}
-  m_PrefabInstance: {fileID: 1793779373507258174}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8849432524033042360
 PrefabInstance:
   m_ObjectHideFlags: 0
