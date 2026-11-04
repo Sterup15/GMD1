@@ -151,7 +151,10 @@ namespace GameObjects.Enemy.Spawner.Scripts
             var config = PickConfig();
             if (config?.prefab == null) return;
 
-            var enemy = Instantiate(config.prefab, GetSpawnPosition(), Quaternion.identity);
+            // Enemies walk straight at the player, so one spawned in the water would get stuck there. Try again next tick instead
+            if (!TryGetSpawnPosition(out var position)) return;
+
+            var enemy = Instantiate(config.prefab, position, Quaternion.identity);
 
             _aliveEnemyCount++;
             var enemyEvents = enemy.GetComponent<ActorEvents>();
@@ -176,7 +179,10 @@ namespace GameObjects.Enemy.Spawner.Scripts
             var config = bossTypes[Random.Range(0, bossTypes.Count)];
             if (config?.prefab == null) return;
 
-            var boss = Instantiate(config.prefab, GetSpawnPosition(), Quaternion.identity);
+            if (!TryGetSpawnPosition(out var position))
+                position = (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
+
+            var boss = Instantiate(config.prefab, position, Quaternion.identity);
 
             var actorEvents = boss.GetComponent<ActorEvents>();
             if (actorEvents != null)
@@ -209,18 +215,19 @@ namespace GameObjects.Enemy.Spawner.Scripts
             curve != null && curve.length > 0 ? curve.Evaluate(time) : fallback;
 
         [SerializeField] private LayerMask obstacleLayer = 1 << 4;
-        private const int MaxSpawnAttempts = 10;
+        private const int MaxSpawnAttempts = 30;
 
-        private Vector2 GetSpawnPosition()
+        private bool TryGetSpawnPosition(out Vector2 position)
         {
             for (int i = 0; i < MaxSpawnAttempts; i++)
             {
-                Vector2 candidate = (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
-                if (Physics2D.OverlapPoint(candidate, obstacleLayer) == null)
-                    return candidate;
+                position = (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
+                if (Physics2D.OverlapPoint(position, obstacleLayer) == null)
+                    return true;
             }
 
-            return (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
+            position = default;
+            return false;
         }
 
 #if UNITY_EDITOR
