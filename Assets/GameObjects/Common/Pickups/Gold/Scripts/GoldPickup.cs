@@ -1,5 +1,5 @@
 using GameObjects.Common.Pickups.Scripts;
-using GameObjects.Player.Scripts.Gold;
+using GameObjects.Player.Shared.Scripts.Gold;
 using UnityEngine;
 
 namespace GameObjects.Common.Pickups.Gold.Scripts

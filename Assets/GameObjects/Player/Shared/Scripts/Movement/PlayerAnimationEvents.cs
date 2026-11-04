@@ -1,7 +1,7 @@
 using GameObjects.Common.Events;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Movement
+namespace GameObjects.Player.Shared.Scripts.Movement
 {
     public class PlayerAnimationEvents : MonoBehaviour
     {

@@ -4,7 +4,7 @@ using GameObjects.Common.Projectiles.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Movement
+namespace GameObjects.Player.Shared.Scripts.Movement
 {
     public class PlayerMovementState : MonoBehaviour
     {

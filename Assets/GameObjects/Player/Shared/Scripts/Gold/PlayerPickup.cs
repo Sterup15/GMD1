@@ -2,7 +2,7 @@ using GameObjects.Common.Pickups.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Gold
+namespace GameObjects.Player.Shared.Scripts.Gold
 {
     public class PlayerPickup : MonoBehaviour
     {

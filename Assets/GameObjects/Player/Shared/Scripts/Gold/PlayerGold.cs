@@ -3,7 +3,7 @@ using GameObjects.Common.Events;
 using GameObjects.Common.Utils;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Gold
+namespace GameObjects.Player.Shared.Scripts.Gold
 {
     public class PlayerGold : MonoBehaviour
     {

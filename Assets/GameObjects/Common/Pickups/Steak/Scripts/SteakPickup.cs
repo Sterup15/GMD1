@@ -1,5 +1,5 @@
 using GameObjects.Common.Pickups.Scripts;
-using GameObjects.Player.Scripts.Health;
+using GameObjects.Player.Shared.Scripts.Health;
 using UnityEngine;
 
 namespace GameObjects.Common.Pickups.Steak.Scripts

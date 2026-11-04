@@ -1,4 +1,4 @@
-﻿namespace GameObjects.Player.Scripts.Movement
+﻿namespace GameObjects.Player.Shared.Scripts.Movement
 {
     public enum MoveStateEnum
     {

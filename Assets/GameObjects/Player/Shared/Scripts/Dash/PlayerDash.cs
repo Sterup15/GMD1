@@ -3,7 +3,7 @@ using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Dash
+namespace GameObjects.Player.Shared.Scripts.Dash
 {
     public class PlayerDash : MonoBehaviour
     {

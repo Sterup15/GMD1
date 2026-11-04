@@ -1,4 +1,4 @@
-using GameObjects.Player.Scripts.Health;
+using GameObjects.Player.Shared.Scripts.Health;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

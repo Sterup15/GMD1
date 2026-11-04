@@ -5,7 +5,7 @@ using GameObjects.Common.Projectiles.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Health
+namespace GameObjects.Player.Shared.Scripts.Health
 {
     public class PlayerHealth : MonoBehaviour, IDamageable
     {

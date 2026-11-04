@@ -2,7 +2,7 @@ using System.Collections;
 using GameObjects.Common.Events;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Health
+namespace GameObjects.Player.Shared.Scripts.Health
 {
     public class PlayerHitBlink : MonoBehaviour
     {

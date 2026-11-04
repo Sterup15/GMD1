@@ -1,4 +1,4 @@
-using GameObjects.Player.Scripts.Gold;
+using GameObjects.Player.Shared.Scripts.Gold;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

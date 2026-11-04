@@ -1,4 +1,4 @@
-using GameObjects.Player.Scripts.Dash;
+using GameObjects.Player.Shared.Scripts.Dash;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -2,7 +2,7 @@ using GameObjects.Common.Effects.DustPuff.Scripts;
 using GameObjects.Common.Events;
 using UnityEngine;
 
-namespace GameObjects.Player.Scripts.Dash
+namespace GameObjects.Player.Shared.Scripts.Dash
 {
     public class DashDust : MonoBehaviour
     {

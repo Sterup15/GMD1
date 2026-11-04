@@ -1,7 +1,7 @@
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Events;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
-using GameObjects.Player.Scripts.Health;
+using GameObjects.Player.Shared.Scripts.Health;
 using UnityEngine;
 
 namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
