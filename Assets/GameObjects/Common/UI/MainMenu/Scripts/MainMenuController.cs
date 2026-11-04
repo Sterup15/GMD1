@@ -5,29 +5,37 @@ namespace GameObjects.Common.UI.MainMenu.Scripts
 {
     public class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private Button startButton;
-        [SerializeField] private Button quitButton;
+        [Tooltip("In on-screen order, left to right")]
+        [SerializeField] private Button[] buttons;
 
-        private Button[] _buttons;
         private int _selectedIndex;
 
         private void Start()
         {
-            _buttons = new[] { startButton, quitButton };
+            if (buttons == null || buttons.Length == 0)
+            {
+                Debug.LogWarning("MainMenuController: No buttons assigned.", this);
+                enabled = false;
+                return;
+            }
+
             _selectedIndex = 0;
-            _buttons[0].Select();
+            buttons[0].Select();
         }
 
         private void Update()
         {
-            if (GameInput.NavigateLeft || GameInput.NavigateRight || GameInput.NavigateUp || GameInput.NavigateDown)
-            {
-                _selectedIndex = 1 - _selectedIndex;
-                _buttons[_selectedIndex].Select();
-            }
+            if (GameInput.NavigateRight || GameInput.NavigateDown) Move(1);
+            else if (GameInput.NavigateLeft || GameInput.NavigateUp) Move(-1);
 
             if (GameInput.InteractPressed)
-                _buttons[_selectedIndex].onClick.Invoke();
+                buttons[_selectedIndex].onClick.Invoke();
+        }
+
+        private void Move(int step)
+        {
+            _selectedIndex = (_selectedIndex + step + buttons.Length) % buttons.Length;
+            buttons[_selectedIndex].Select();
         }
     }
 }

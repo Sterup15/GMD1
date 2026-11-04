@@ -11,6 +11,14 @@ namespace GameObjects.Common.Camera.Scripts
 
         private void Start()
         {
+            // The player is spawned at runtime by PlayerSpawner, so it can't be assigned in the scene
+            if (target == null)
+            {
+                var playerObj = GameObject.FindWithTag("Player");
+                if (playerObj != null) target = playerObj.transform;
+                else Debug.LogWarning("CameraFollow: No GameObject tagged 'Player' found.");
+            }
+
             GlobalEvents.OnBossSpawned  += Freeze;
             GlobalEvents.OnBossDefeated += Unfreeze;
         }
