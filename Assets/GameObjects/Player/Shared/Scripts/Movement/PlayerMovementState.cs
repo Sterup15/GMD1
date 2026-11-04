@@ -1,7 +1,7 @@
 using System;
 using GameObjects.Common.Events;
-using GameObjects.Common.Projectiles.Scripts;
 using GameObjects.Common.Stats.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Movement
@@ -31,14 +31,12 @@ namespace GameObjects.Player.Shared.Scripts.Movement
 
         private void OnEnable()
         {
-            _events.OnShotFired   += FireProjectile;
             _events.OnDashStarted += StartDash;
             _events.OnDashEnded   += EndDash;
         }
 
         private void OnDisable()
         {
-            _events.OnShotFired   -= FireProjectile;
             _events.OnDashStarted -= StartDash;
             _events.OnDashEnded   -= EndDash;
         }
@@ -53,8 +51,6 @@ namespace GameObjects.Player.Shared.Scripts.Movement
 
         private void EndDash() => _isDashing = false;
 
-        private void FireProjectile() => GetComponent<ProjectileSpawner>()?.Fire();
-
         private void Update()
         {
             if (_isDashing) return;
@@ -68,25 +64,8 @@ namespace GameObjects.Player.Shared.Scripts.Movement
                 spriteRenderer.flipX = playerMovement.MoveDirection.x < 0f;
         }
 
-        private GameObject NearestEnemyInRange()
-        {
-            float range = stats.ShootRange.Value;
-            float rangeSqr = range * range;
-            GameObject nearest = null;
-            float nearestDist = float.MaxValue;
-
-            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
-            {
-                float dist = (enemy.transform.position - transform.position).sqrMagnitude;
-                if (dist <= rangeSqr && dist < nearestDist)
-                {
-                    nearestDist = dist;
-                    nearest = enemy;
-                }
-            }
-
-            return nearest;
-        }
+        private GameObject NearestEnemyInRange() =>
+            Targeting.Nearest("Enemy", transform.position, stats.ShootRange.Value);
 
         public void SetMoveState(MoveStateEnum newMoveState)
         {

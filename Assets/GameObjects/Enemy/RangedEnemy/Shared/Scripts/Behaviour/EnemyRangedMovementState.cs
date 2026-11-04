@@ -38,14 +38,12 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
 
         private void OnEnable()
         {
-            _events.OnShotFired      += FireProjectile;
             _events.OnAttackComplete += OnAttackComplete;
             _events.OnRetreat        += HandleRetreat;
         }
 
         private void OnDisable()
         {
-            _events.OnShotFired      -= FireProjectile;
             _events.OnAttackComplete -= OnAttackComplete;
             _events.OnRetreat        -= HandleRetreat;
         }
@@ -79,11 +77,6 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
         {
             isAttacking = false;
             CurrentMoveState = EnemyMoveStateEnum.Idle;
-        }
-
-        private void FireProjectile()
-        {
-            GetComponent<GameObjects.Common.Projectiles.Scripts.ProjectileSpawner>().Fire();
         }
 
         private bool IsPlayerInRange()

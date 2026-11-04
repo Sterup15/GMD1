@@ -1,6 +1,10 @@
+using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using UnityEngine;
+
 namespace GameObjects.Common.Projectiles.Scripts
 {
+    // Fires a projectile on every ShotFired animation event of its actor
     public class ProjectileSpawner : MonoBehaviour
     {
         [SerializeField] private GameObject projectilePrefab;
@@ -8,13 +12,28 @@ namespace GameObjects.Common.Projectiles.Scripts
         [SerializeField] private TargetModeEnum targetMode;
 
         private Stats.Scripts.Stats _stats;
+        private ActorEvents _events;
+        private Transform _player;
 
         private void Awake()
         {
-            _stats = GetComponent<Stats.Scripts.Stats>();
+            _stats  = GetComponent<Stats.Scripts.Stats>();
+            _events = GetComponent<ActorEvents>();
+            if (spawnPoint == null) spawnPoint = transform;
         }
 
-        public void Fire()
+        private void Start()
+        {
+            if (targetMode != TargetModeEnum.Player) return;
+
+            var playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null) _player = playerObj.transform;
+        }
+
+        private void OnEnable()  => _events.OnShotFired += Fire;
+        private void OnDisable() => _events.OnShotFired -= Fire;
+
+        private void Fire()
         {
             Vector2? targetPosition = GetTargetPosition();
             if (targetPosition == null) return;
@@ -36,36 +55,15 @@ namespace GameObjects.Common.Projectiles.Scripts
             switch (targetMode)
             {
                 case TargetModeEnum.Player:
-                    var player = GameObject.FindWithTag("Player");
-                    return player != null ? (Vector2?)player.transform.position : null;
+                    return _player != null ? (Vector2?)_player.position : null;
 
                 case TargetModeEnum.NearestEnemy:
-                    return FindNearestTaggedPosition("Enemy");
+                    var enemy = Targeting.Nearest("Enemy", spawnPoint.position);
+                    return enemy != null ? (Vector2?)enemy.transform.position : null;
 
                 default:
                     return null;
             }
-        }
-
-        private Vector2? FindNearestTaggedPosition(string tag)
-        {
-            var enemies = GameObject.FindGameObjectsWithTag(tag);
-            if (enemies.Length == 0) return null;
-
-            GameObject nearest = null;
-            float nearestDist = float.MaxValue;
-
-            foreach (var enemy in enemies)
-            {
-                float dist = Vector2.SqrMagnitude(enemy.transform.position - spawnPoint.position);
-                if (dist < nearestDist)
-                {
-                    nearestDist = dist;
-                    nearest = enemy;
-                }
-            }
-
-            return nearest != null ? (Vector2?)nearest.transform.position : null;
         }
     }
 }
