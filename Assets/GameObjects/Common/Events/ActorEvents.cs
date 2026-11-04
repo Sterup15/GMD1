@@ -22,6 +22,8 @@ namespace GameObjects.Common.Events
         public event Action OnInvulnerabilityStarted;
         public event Action OnInvulnerabilityEnded;
         public event Action<Vector2> OnRetreat;
+        public event Action<Vector2> OnDashStarted;
+        public event Action OnDashEnded;
 
         public bool HasDeathStartedListeners => OnDeathStarted != null;
 
@@ -42,5 +44,7 @@ namespace GameObjects.Common.Events
         public void InvulnerabilityStarted() => OnInvulnerabilityStarted?.Invoke();
         public void InvulnerabilityEnded()   => OnInvulnerabilityEnded?.Invoke();
         public void Retreat(Vector2 direction) => OnRetreat?.Invoke(direction);
+        public void DashStarted(Vector2 velocity)  => OnDashStarted?.Invoke(velocity);
+        public void DashEnded()                    => OnDashEnded?.Invoke();
     }
 }

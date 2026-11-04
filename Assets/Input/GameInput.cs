@@ -9,6 +9,7 @@ public class GameInput : MonoBehaviour
 
     public static Vector2 Move          { get; private set; }
     public static bool InteractPressed  { get; private set; }
+    public static bool DashPressed      { get; private set; }
     public static bool NavigateLeft     { get; private set; }
     public static bool NavigateRight    { get; private set; }
     public static bool NavigateUp       { get; private set; }
@@ -18,6 +19,7 @@ public class GameInput : MonoBehaviour
 
     private InputAction moveAction;
     private InputAction interactAction;
+    private InputAction dashAction;
     private InputAction quitAction;
     private InputAction navLeftAction;
     private InputAction navRightAction;
@@ -27,6 +29,7 @@ public class GameInput : MonoBehaviour
         var player = controls.FindActionMap("Player", throwIfNotFound: true);
         moveAction     = player.FindAction("Move",          throwIfNotFound: true);
         interactAction = player.FindAction("Interact",      throwIfNotFound: true);
+        dashAction     = player.FindAction("Dash",          throwIfNotFound: true);
         quitAction     = player.FindAction("Quit",          throwIfNotFound: true);
         navLeftAction  = player.FindAction("NavigateLeft",  throwIfNotFound: true);
         navRightAction = player.FindAction("NavigateRight", throwIfNotFound: true);
@@ -36,6 +39,7 @@ public class GameInput : MonoBehaviour
     {
         moveAction.Enable();
         interactAction.Enable();
+        dashAction.Enable();
         quitAction.Enable();
         navLeftAction.Enable();
         navRightAction.Enable();
@@ -46,6 +50,7 @@ public class GameInput : MonoBehaviour
     {
         moveAction.Disable();
         interactAction.Disable();
+        dashAction.Disable();
         quitAction.Disable();
         navLeftAction.Disable();
         navRightAction.Disable();
@@ -56,6 +61,7 @@ public class GameInput : MonoBehaviour
     {
         Move            = moveAction.ReadValue<Vector2>();
         InteractPressed = interactAction.WasPressedThisFrame();
+        DashPressed     = dashAction.WasPressedThisFrame();
         NavigateLeft    = navLeftAction.WasPressedThisFrame();
         NavigateRight   = navRightAction.WasPressedThisFrame();
         NavigateUp      = Move.y >  0.5f && _prevMoveY <=  0.5f;

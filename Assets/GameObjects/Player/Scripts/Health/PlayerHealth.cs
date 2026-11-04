@@ -15,8 +15,12 @@ namespace GameObjects.Player.Scripts.Health
         public static Action<int, int> OnHealthChanged;
 
         [SerializeField] private string enemyLayerName = "Enemy";
+        [SerializeField] private string enemyProjectileLayerName = "EnemyProjectile";
         private const float InvulnerabilityDuration = 2f;
         private bool _isInvulnerable;
+        private bool _isDashing;
+        private int _enemyLayer;
+        private int _enemyProjectileLayer;
         private Coroutine _invulnerabilityCoroutine;
 
         private Stats _stats;
@@ -26,19 +30,31 @@ namespace GameObjects.Player.Scripts.Health
         {
             _stats = GetComponent<Stats>();
             _events = GetComponent<ActorEvents>();
+            _enemyLayer = LayerMask.NameToLayer(enemyLayerName);
+            _enemyProjectileLayer = LayerMask.NameToLayer(enemyProjectileLayerName);
             MaxHealth = Mathf.RoundToInt(_stats.MaxHealth.Value);
             CurrentHealth = MaxHealth;
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
-        private void OnEnable()  => _stats.MaxHealth.OnValueChanged += OnMaxHealthUpgraded;
+        private void OnEnable()
+        {
+            _stats.MaxHealth.OnValueChanged += OnMaxHealthUpgraded;
+            _events.OnDashStarted           += StartDashInvulnerability;
+            _events.OnDashEnded             += EndDashInvulnerability;
+        }
+
         private void OnDisable()
         {
             _stats.MaxHealth.OnValueChanged -= OnMaxHealthUpgraded;
+            _events.OnDashStarted           -= StartDashInvulnerability;
+            _events.OnDashEnded             -= EndDashInvulnerability;
 
             // Layer collision settings survive scene loads, so restore them if a run ends mid-invulnerability
-            Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer(enemyLayerName), false);
+            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyLayer, false);
+            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, false);
             _isInvulnerable = false;
+            _isDashing = false;
             _invulnerabilityCoroutine = null;
         }
 
@@ -54,7 +70,7 @@ namespace GameObjects.Player.Scripts.Health
         public void TakeDamage(int amount)
         {
             if (CurrentHealth <= 0) return;
-            if (_isInvulnerable) return;
+            if (_isInvulnerable || _isDashing) return;
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
@@ -81,6 +97,27 @@ namespace GameObjects.Player.Scripts.Health
             _events.Healed();
         }
 
+        // Arrows fly through a dashing player instead of hitting it for no damage
+        private void StartDashInvulnerability(Vector2 _)
+        {
+            _isDashing = true;
+            UpdateEnemyCollision();
+            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, true);
+        }
+
+        private void EndDashInvulnerability()
+        {
+            _isDashing = false;
+            UpdateEnemyCollision();
+            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, false);
+        }
+
+        // Hit i-frames and the dash can overlap, so enemies only collide again once both are over
+        private void UpdateEnemyCollision()
+        {
+            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyLayer, _isInvulnerable || _isDashing);
+        }
+
         private void BeginInvulnerability()
         {
             if (_invulnerabilityCoroutine != null)
@@ -91,14 +128,13 @@ namespace GameObjects.Player.Scripts.Health
         private IEnumerator InvulnerabilityRoutine()
         {
             _isInvulnerable = true;
-            int enemyLayer = LayerMask.NameToLayer(enemyLayerName);
-            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, true);
+            UpdateEnemyCollision();
             _events.InvulnerabilityStarted();
 
             yield return new WaitForSeconds(InvulnerabilityDuration);
 
-            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, false);
             _isInvulnerable = false;
+            UpdateEnemyCollision();
             _invulnerabilityCoroutine = null;
             _events.InvulnerabilityEnded();
         }

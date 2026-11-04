@@ -1,3 +1,4 @@
+using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
@@ -14,6 +15,9 @@ namespace GameObjects.Player.Scripts.Movement
         private Stats stats;
         private Vector2 inputDirection;
         private Vector2 currentVelocity;
+        private ActorEvents _events;
+        private Vector2 _dashVelocity;
+        private bool _isDashing;
 
         private void Awake()
         {
@@ -21,6 +25,32 @@ namespace GameObjects.Player.Scripts.Movement
             rb.freezeRotation = true;
             rb.gravityScale = 0f;
             stats = GetComponent<Stats>();
+            _events = GetComponent<ActorEvents>();
+        }
+
+        private void OnEnable()
+        {
+            _events.OnDashStarted += StartDash;
+            _events.OnDashEnded   += EndDash;
+        }
+
+        private void OnDisable()
+        {
+            _events.OnDashStarted -= StartDash;
+            _events.OnDashEnded   -= EndDash;
+        }
+
+        private void StartDash(Vector2 velocity)
+        {
+            _dashVelocity = velocity;
+            _isDashing = true;
+        }
+
+        // Continue at normal running speed instead of sliding out of the dash
+        private void EndDash()
+        {
+            _isDashing = false;
+            currentVelocity = inputDirection * stats.MoveSpeed.Value;
         }
 
         private void Update()
@@ -32,6 +62,12 @@ namespace GameObjects.Player.Scripts.Movement
 
         private void FixedUpdate()
         {
+            if (_isDashing)
+            {
+                rb.linearVelocity = _dashVelocity;
+                return;
+            }
+
             Vector2 targetVelocity = inputDirection * stats.MoveSpeed.Value;
 
             if (inputDirection.sqrMagnitude > 0f)

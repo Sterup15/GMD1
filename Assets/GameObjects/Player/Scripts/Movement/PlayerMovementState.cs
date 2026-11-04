@@ -16,6 +16,7 @@ namespace GameObjects.Player.Scripts.Movement
         private PlayerMovement playerMovement;
         private Stats stats;
         private ActorEvents _events;
+        private bool _isDashing;
         private const string idleAnim = "Idle";
         private const string moveAnim = "Move";
         private const string attackAnim = "Attack";
@@ -28,13 +29,36 @@ namespace GameObjects.Player.Scripts.Movement
             _events = GetComponent<ActorEvents>();
         }
 
-        private void OnEnable()  => _events.OnShotFired += FireProjectile;
-        private void OnDisable() => _events.OnShotFired -= FireProjectile;
+        private void OnEnable()
+        {
+            _events.OnShotFired   += FireProjectile;
+            _events.OnDashStarted += StartDash;
+            _events.OnDashEnded   += EndDash;
+        }
+
+        private void OnDisable()
+        {
+            _events.OnShotFired   -= FireProjectile;
+            _events.OnDashStarted -= StartDash;
+            _events.OnDashEnded   -= EndDash;
+        }
+
+        // A dash from standing still has no move input, so face the dash and play the run clip instead of attacking
+        private void StartDash(Vector2 velocity)
+        {
+            _isDashing = true;
+            SetMoveState(MoveStateEnum.Move);
+            if (velocity.x != 0f) spriteRenderer.flipX = velocity.x < 0f;
+        }
+
+        private void EndDash() => _isDashing = false;
 
         private void FireProjectile() => GetComponent<ProjectileSpawner>()?.Fire();
 
         private void Update()
         {
+            if (_isDashing) return;
+
             if (playerMovement.IsMoving)
                 SetMoveState(MoveStateEnum.Move);
             else

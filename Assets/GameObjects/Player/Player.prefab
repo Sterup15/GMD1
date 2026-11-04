@@ -59,6 +59,10 @@ MonoBehaviour:
     clips: []
     volume: 1
     cooldown: 0
+  onDeathPool:
+    clips: []
+    volume: 1
+    cooldown: 0
   onHitPool:
     clips:
     - {fileID: 8300000, guid: 15e9cd89c12f3524891be6877941af12, type: 3}
@@ -198,6 +202,8 @@ GameObject:
   - component: {fileID: 897273270636199396}
   - component: {fileID: 3966971216776533575}
   - component: {fileID: 1097445083443872963}
+  - component: {fileID: 6301002804418835649}
+  - component: {fileID: 5601507511839838329}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -329,6 +335,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ec63fbe1c140e4fb99144278ec8734, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Player.Scripts.Health.PlayerHealth
+  enemyLayerName: Enemy
+  enemyProjectileLayerName: EnemyProjectile
 --- !u!114 &-492562059946344226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,6 +448,52 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   thresholdBonusPerLevel: 2
+--- !u!114 &1097445083443872963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2be429267ddb4d31a052467c36403298, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Scripts.Health.PlayerHitBlink
+  spriteRenderer: {fileID: 2164286328790560882}
+  blinkInterval: 0.1
+  blinkAlpha: 0.2
+--- !u!114 &6301002804418835649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee8fb4bc79d04f6cb58ef4e311c7a5f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Scripts.Dash.PlayerDash
+  baseCooldown: 4
+  dashSpeed: 18
+  dashDuration: 0.09
+--- !u!114 &5601507511839838329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 160380c5463d429dbd4211928cdf83cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Scripts.Dash.DashDust
+  dustPuffPrefab: {fileID: 2982554850998808992, guid: ecf8074280ae4470a1950651b59ef425, type: 3}
+  puffCount: 3
+  spreadRadius: 0.3
+  scaleRange: {x: 1, y: 1.4}
 --- !u!1001 &4819897903630161129
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -516,18 +570,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3503401323347541027, guid: 949c40ec9594ada4c8e1e20db6d54cd6, type: 3}
   m_PrefabInstance: {fileID: 4819897903630161129}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1097445083443872963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2904057035740938740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2be429267ddb4d31a052467c36403298, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Scripts.Health.PlayerHitBlink
-  spriteRenderer: {fileID: 2164286328790560882}
-  blinkInterval: 0.1
-  blinkAlpha: 0.2
