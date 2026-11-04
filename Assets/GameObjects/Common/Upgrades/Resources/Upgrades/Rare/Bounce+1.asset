@@ -18,4 +18,5 @@ MonoBehaviour:
   bonusAmount: 1
   applyBonusScale: 0
   rarity: 2
+  requirement: 1
   canRepeat: 1

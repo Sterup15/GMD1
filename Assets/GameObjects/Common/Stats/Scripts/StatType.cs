@@ -11,6 +11,7 @@ namespace GameObjects.Common.Stats.Scripts
         Bounce,
         Penetration,
         Haste,
-        DashCharges
+        DashCharges,
+        Area
     }
 }

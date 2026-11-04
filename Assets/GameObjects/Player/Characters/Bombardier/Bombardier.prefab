@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 897273270636199396}
   - component: {fileID: 3966971216776533575}
   - component: {fileID: 1097445083443872963}
+  - component: {fileID: 1589799212801886362}
   - component: {fileID: 6301002804418835649}
   - component: {fileID: 5601507511839838329}
   m_Layer: 8
@@ -451,6 +452,8 @@ MonoBehaviour:
   Haste:
     baseValue: 0
   DashCharges:
+    baseValue: 1
+  Area:
     baseValue: 1
 --- !u!114 &1042410967823602309
 MonoBehaviour:
@@ -638,3 +641,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3503401323347541027, guid: 9d70dc70e8a04d24bdb046b6a05085c3, type: 3}
   m_PrefabInstance: {fileID: 4819897903630161129}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1589799212801886362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b70836f3d5a4b139bfaa7619db331c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.Scripts.UpgradeEligibility
+  projectiles: 0
+  explosions: 1

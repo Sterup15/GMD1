@@ -14,7 +14,7 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
         [SerializeField] private float minFlightTime = 0.4f;
         [Tooltip("Peak height of the arc in world units")]
         [SerializeField] private float arcHeight = 1.2f;
-        [Tooltip("Damage radius of the explosion in world units")]
+        [Tooltip("Damage radius of the explosion in world units, before the thrower's Area stat")]
         [SerializeField] private float explosionRadius = 1.2f;
 
         private Vector2 _start;
@@ -22,9 +22,12 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
         private float _duration;
         private float _progress;
         private int _damage;
+        private float _radius;
 
-        public void Launch(Vector2 target, int damage)
+        // areaMultiplier is the thrower's Area stat (1 = the base radius)
+        public void Launch(Vector2 target, int damage, float areaMultiplier)
         {
+            _radius   = explosionRadius * Mathf.Max(0.1f, areaMultiplier);
             _start    = transform.position;
             _target   = target;
             _damage   = damage;
@@ -45,7 +48,7 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
         private void Explode()
         {
             var explosion = Instantiate(explosionPrefab, _target, Quaternion.identity);
-            explosion.Init(_damage, explosionRadius);
+            explosion.Init(_damage, _radius);
             Destroy(gameObject);
         }
     }

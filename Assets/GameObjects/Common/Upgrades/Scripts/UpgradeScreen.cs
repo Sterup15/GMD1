@@ -28,6 +28,7 @@ namespace GameObjects.Common.Upgrades.Scripts
         };
 
         private Stats.Scripts.Stats _playerStats;
+        private UpgradeEligibility _eligibility;
         private readonly List<UpgradeDefinition> _available = new();
         private int _selectedIndex;
         private int _activeCardCount;
@@ -36,7 +37,10 @@ namespace GameObjects.Common.Upgrades.Scripts
         {
             var playerObj = GameObject.FindWithTag("Player");
             if (playerObj != null)
+            {
                 _playerStats = playerObj.GetComponent<Stats.Scripts.Stats>();
+                _eligibility = playerObj.GetComponent<UpgradeEligibility>();
+            }
 
             _available.AddRange(Resources.LoadAll<UpgradeDefinition>("Upgrades"));
             panel.SetActive(false);
@@ -119,6 +123,9 @@ namespace GameObjects.Common.Upgrades.Scripts
         private List<UpgradeDefinition> DrawUpgrades(int count)
         {
             List<UpgradeDefinition> pool = new(_available);
+            // Checked on every level-up, so cards unlocked mid-run (e.g. by an item) show up from the next draw
+            if (_eligibility != null)
+                pool.RemoveAll(u => !_eligibility.Allows(u.requirement));
             List<UpgradeDefinition> drawn = new();
 
             for (int i = 0; i < count && pool.Count > 0; i++)

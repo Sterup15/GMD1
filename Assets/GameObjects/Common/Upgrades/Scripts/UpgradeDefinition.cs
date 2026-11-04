@@ -1,4 +1,5 @@
 using GameObjects.Common.Stats.Scripts;
+using GameObjects.Common.Upgrades.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Common.Upgrades
@@ -16,6 +17,8 @@ namespace GameObjects.Common.Upgrades
         [Tooltip("If true, a flat bonusAmount is multiplied by the bonus scale set on UpgradeScreen. Ignored for percentOfBase cards")]
         public bool applyBonusScale = true;
         public UpgradeRarity rarity = UpgradeRarity.Common;
+        [Tooltip("Only offered when the player's UpgradeEligibility allows it (e.g. bounce needs projectiles)")]
+        public UpgradeRequirementType requirement = UpgradeRequirementType.None;
         [Tooltip("If false, this upgrade is removed from the pool once chosen")]
         public bool canRepeat = true;
     }

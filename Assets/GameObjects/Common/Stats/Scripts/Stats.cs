@@ -15,6 +15,7 @@ namespace GameObjects.Common.Stats.Scripts
         public Stat Penetration;
         public Stat Haste;
         public Stat DashCharges;
+        public Stat Area;
 
         private bool _bounceUnlocked;
 
@@ -48,6 +49,7 @@ namespace GameObjects.Common.Stats.Scripts
             StatType.Penetration  => Penetration,
             StatType.Haste        => Haste,
             StatType.DashCharges  => DashCharges,
+            StatType.Area         => Area,
             _                     => null
         };
     }
