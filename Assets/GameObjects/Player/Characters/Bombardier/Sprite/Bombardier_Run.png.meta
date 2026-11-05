@@ -125,10 +125,10 @@ TextureImporter:
       name: Bombardier_Run_0
       rect:
         serializedVersion: 2
-        x: 56
-        y: 55
-        width: 72
-        height: 87
+        x: 0
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,10 +147,10 @@ TextureImporter:
       name: Bombardier_Run_1
       rect:
         serializedVersion: 2
-        x: 248
-        y: 55
-        width: 75
-        height: 91
+        x: 192
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,10 +169,10 @@ TextureImporter:
       name: Bombardier_Run_2
       rect:
         serializedVersion: 2
-        x: 442
-        y: 55
-        width: 73
-        height: 92
+        x: 384
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,10 +191,10 @@ TextureImporter:
       name: Bombardier_Run_3
       rect:
         serializedVersion: 2
-        x: 634
-        y: 55
-        width: 71
-        height: 91
+        x: 576
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
