@@ -8,7 +8,7 @@ namespace GameObjects.Enemy.Common.Scripts
         [SerializeField] private GameObject steakPickupPrefab;
         [Tooltip("Chance (0-1) to drop a steak on death")]
         [Range(0f, 1f)]
-        [SerializeField] private float dropChance = 0.02f;
+        [SerializeField] private float dropChance = 0.005f;
 
         private ActorEvents _events;
 

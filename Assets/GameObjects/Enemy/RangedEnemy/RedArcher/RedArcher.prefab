@@ -902,7 +902,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.SteakDropper
   steakPickupPrefab: {fileID: 6707327160644584348, guid: 783c967b5fff48b782a798e00790eef9, type: 3}
-  dropChance: 0.02
+  dropChance: 0.005
 --- !u!114 &384336309863278165
 MonoBehaviour:
   m_ObjectHideFlags: 0
