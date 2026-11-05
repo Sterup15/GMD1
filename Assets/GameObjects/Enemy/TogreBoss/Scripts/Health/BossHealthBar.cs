@@ -13,13 +13,23 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Health
 
         private ActorEvents _events;
 
+        // Subscribed in Awake/OnDestroy rather than OnEnable/OnDisable, because the bar hides itself
+        // (inactive) between bosses and must still hear the next one spawn
         private void Awake()
         {
+            GlobalEvents.OnBossSpawnedWithBoss += Show;
             gameObject.SetActive(false);
         }
 
-        public void Initialize(ActorEvents events, string bossName)
+        private void OnDestroy()
         {
+            GlobalEvents.OnBossSpawnedWithBoss -= Show;
+            if (_events != null) _events.OnHealthChanged -= OnHealthChanged;
+        }
+
+        private void Show(ActorEvents events, string bossName)
+        {
+            if (events == null) return;
             if (_events != null)
                 _events.OnHealthChanged -= OnHealthChanged;
 

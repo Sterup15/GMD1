@@ -4,8 +4,6 @@ using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Events;
 using GameObjects.Common.Utils;
 using GameObjects.Enemy.Common.Scripts;
-using GameObjects.Enemy.Common.Spawner;
-using GameObjects.Enemy.TogreBoss.Scripts.Health;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -39,16 +37,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
         }
     }
 
-    [Serializable]
-    public class BossSpawnConfig
-    {
-        public string name;
-        public GameObject prefab;
-
-        [Header("Gold Drop")]
-        public float goldDrop = 100f;
-    }
-
     public class EnemySpawner : MonoBehaviour
     {
         [Header("Spawn Settings")]
@@ -65,11 +53,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
         [SerializeField] private AnimationCurve minEnemiesAliveCurve = AnimationCurve.Linear(0f, 1f, 300f, 30f);
         [Tooltip("Max enemies spawned in one frame to reach the minimum, so a big gap is filled over a few frames instead of in one spike")]
         [SerializeField, Min(1)] private int maxTopUpPerFrame = 3;
-
-        [Header("Boss")]
-        [SerializeField] private BossTimer bossTimer;
-        [SerializeField] private List<BossSpawnConfig> bossTypes = new();
-        [SerializeField] private BossHealthBar bossHealthBar;
 
         private float _runTime;
         private float _nextSpawnTime;
@@ -94,16 +77,20 @@ namespace GameObjects.Enemy.Spawner.Scripts
             else
                 Debug.LogWarning("EnemySpawner: No GameObject tagged 'Player' found.");
 
-            if (bossTimer != null)
-                bossTimer.OnTimerComplete += OnBossTimerComplete;
-
             ScheduleNextSpawn();
         }
 
-        private void OnDestroy()
+        // Waves pause while a boss is out. BossSpawner owns the boss; this only listens
+        private void OnEnable()
         {
-            if (bossTimer != null)
-                bossTimer.OnTimerComplete -= OnBossTimerComplete;
+            GlobalEvents.OnBossSpawned  += PauseWaves;
+            GlobalEvents.OnBossDefeated += ResumeWaves;
+        }
+
+        private void OnDisable()
+        {
+            GlobalEvents.OnBossSpawned  -= PauseWaves;
+            GlobalEvents.OnBossDefeated -= ResumeWaves;
         }
 
         private void Update()
@@ -124,20 +111,17 @@ namespace GameObjects.Enemy.Spawner.Scripts
                 SpawnEnemy();
         }
 
-        private void OnBossTimerComplete()
+        private void PauseWaves()
         {
             _isBossFightActive = true;
             // Regular enemies leave without dying, so OnDeath never counts them down
             _aliveEnemyCount = 0;
-            SpawnBoss();
         }
 
-        private void OnBossDeath()
+        private void ResumeWaves()
         {
             _isBossFightActive = false;
-            bossTimer.ResetAndStart();
             ScheduleNextSpawn();
-            GlobalEvents.BossDefeated();
         }
 
         private void ScheduleNextSpawn()
@@ -153,8 +137,8 @@ namespace GameObjects.Enemy.Spawner.Scripts
             var config = PickConfig();
             if (config?.prefab == null) return;
 
-            // Enemies walk straight at the player, so one spawned in the water would get stuck there. Try again next tick instead
-            if (!TryGetSpawnPosition(out var position)) return;
+            // No dry spot this time: try again next tick instead
+            if (!SpawnPoints.TryAround(_player.position, spawnRadius, obstacleLayer, out var position)) return;
 
             var enemy = Instantiate(config.prefab, position, Quaternion.identity);
 
@@ -172,29 +156,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
             }
 
             enemy.GetComponent<GoldDropper>()?.SetAmount(Mathf.RoundToInt(Evaluate(config.goldDropCurve, _runTime, 10f)));
-        }
-
-        private void SpawnBoss()
-        {
-            if (_player == null || bossTypes.Count == 0) return;
-
-            var config = bossTypes[Random.Range(0, bossTypes.Count)];
-            if (config?.prefab == null) return;
-
-            if (!TryGetSpawnPosition(out var position))
-                position = (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
-
-            var boss = Instantiate(config.prefab, position, Quaternion.identity);
-
-            var actorEvents = boss.GetComponent<ActorEvents>();
-            if (actorEvents != null)
-            {
-                boss.GetComponent<GoldDropper>()?.SetAmount(Mathf.RoundToInt(config.goldDrop));
-                actorEvents.OnDeath += OnBossDeath;
-                bossHealthBar?.Initialize(actorEvents, config.name);
-            }
-
-            GlobalEvents.BossSpawned();
         }
 
         private EnemySpawnConfig PickConfig()
@@ -217,20 +178,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
             curve != null && curve.length > 0 ? curve.Evaluate(time) : fallback;
 
         [SerializeField] private LayerMask obstacleLayer = 1 << 4;
-        private const int MaxSpawnAttempts = 30;
-
-        private bool TryGetSpawnPosition(out Vector2 position)
-        {
-            for (int i = 0; i < MaxSpawnAttempts; i++)
-            {
-                position = (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
-                if (Physics2D.OverlapPoint(position, obstacleLayer) == null)
-                    return true;
-            }
-
-            position = default;
-            return false;
-        }
 
 #if UNITY_EDITOR
         private void OnValidate()
