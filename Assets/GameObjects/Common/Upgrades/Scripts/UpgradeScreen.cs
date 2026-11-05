@@ -43,6 +43,7 @@ namespace GameObjects.Common.Upgrades.Scripts
 
         private Stats.Scripts.Stats _playerStats;
         private UpgradeEligibility _eligibility;
+        private UpgradeScaling _scaling;
         private readonly List<UpgradeDefinition> _available = new();
         private MenuNavigator _navigator;
 
@@ -53,6 +54,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             {
                 _playerStats = playerObj.GetComponent<Stats.Scripts.Stats>();
                 _eligibility = playerObj.GetComponent<UpgradeEligibility>();
+                _scaling = playerObj.GetComponent<UpgradeScaling>();
             }
 
             _available.AddRange(Resources.LoadAll<UpgradeDefinition>("Upgrades"));
@@ -121,15 +123,18 @@ namespace GameObjects.Common.Upgrades.Scripts
             Time.timeScale = 1f;
         }
 
-        // Percentage stats scale with the character's own base value, so one card set works for every character
+        // Percentage stats scale with the character's own base value, so one card set works for every character,
+        // and the character's UpgradeScaling tunes how much it gets out of each stat
         private float BonusFor(UpgradeDefinition definition, Stat stat)
         {
+            float multiplier = _scaling != null ? _scaling.For(definition.statType) : 1f;
+
             int index = pointValues.FindIndex(p => p.stat == definition.statType);
-            if (index < 0) return definition.points;
+            if (index < 0) return definition.points * multiplier;
 
             var value = pointValues[index];
             float perPoint = value.percentOfBase ? stat.BaseValue * value.perPoint / 100f : value.perPoint;
-            return perPoint * definition.points;
+            return perPoint * definition.points * multiplier;
         }
 
         private List<UpgradeDefinition> DrawUpgrades(int count)
