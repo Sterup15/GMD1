@@ -113,6 +113,12 @@ The whole game is **component-based and event-driven**. These rules come from th
 - When a cheap arithmetic compensation fixes a problem (e.g. a trigger firing twice), prefer it over tracking collections like `HashSet`s of hit targets. Add a collection only if the arithmetic would be wrong or fragile.
 - Keep scripts small. No speculative abstraction, managers, or base classes "for later".
 
+### 8. Keep things modular
+- Build features as self-contained pieces that can be added, removed or swapped without editing unrelated code: a component, prefab or screen owns one feature and talks to the rest through `ActorEvents`/`GlobalEvents`, `GameInput`, data assets (`UpgradeDefinition`, `CharacterRoster`) or a small public API (`SettingsMenu.Open(onClosed)`), never through references into another feature's internals.
+- Content is data, not code: a new character, upgrade, enemy or setting should be new assets plus at most a new enum value, with no lists of content hardcoded in scripts and no `if (character == ...)` branches.
+- Prefabs work on their own when dropped into a scene: they find what they need by tag, events or self-loading (`SelectionPointer`, `GameCursor`) instead of needing scene-specific wiring, and a missing optional piece logs a warning instead of breaking.
+- Modular doesn't mean abstract (rule 7): split along real feature boundaries that already exist, not for hypothetical future reuse.
+
 ## Unity and physics conventions
 
 - 2D physics only: `Rigidbody2D`, `Collider2D`, `OnTriggerEnter2D/Stay2D`, `Physics2D.*`. Movement sets `rb.linearVelocity` in `FixedUpdate`, and input is read in `Update`.
@@ -175,9 +181,10 @@ Mention these when they matter for your change. Ask before broad refactors.
   - Don't reorder or regenerate existing fileIDs/GUIDs, because other assets reference them.
   - Things that still need the editor: slicing new spritesheets when no frame size is known, and anything that needs visual tuning (collider sizes, offsets). List those steps for the user, and always say that the result must be checked by opening the prefab and playing in the editor.
 - New character art can start from `Tools/SpriteGen/bombardier_gen.py` (numpy + Pillow): it draws Idle/Run/Shoot sheets as full 192px cells in the Tiny Swords palette with 2px outlines (1px only on tiny details), sized to match the other units via `K`, and writes a preview next to the archer to `Tools/SpriteGen/out/` (gitignored). Copy it per character, change `frame()` and the pose lists, and check the preview before installing the sheets.
-- **Optimisation review after every feature or fix.** Before committing, review the change (and the code it touches) so the game runs as smoothly as possible:
+- **Review after every feature or fix.** Before committing, review the change (and the code it touches) so the game runs as smoothly as possible and stays modular:
   - Performance: no allocations or `GetComponent`/`Find*` calls in `Update`/`FixedUpdate` or in per-hit/per-shot paths, cache what can be cached, avoid per-frame work that an event could replace, and keep asset import settings lean (audio, textures).
   - Over-engineering: remove code, fields, events or abstractions the change doesn't need, and prefer the simpler solution (rule 7).
+  - Modularity (rule 8): the feature is self-contained, talks to others only through events, `GameInput`, data assets or a small public API, adds content as data instead of hardcoded lists, and can be removed without touching unrelated scripts.
   - Optimisations must not break the other rules in this file (component split, event buses, animation-driven timing, Inspector tunables, all input through `GameInput`), and they go in their own commit when they are separate from the feature. Report what the review found and changed, or say that nothing needed changing.
 - Always keep `.meta` files with their assets, and never delete or regenerate GUIDs.
 - Don't touch `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `obj/`, or third-party folders (`NavMeshPlus-master`, `Tiny Swords`, `TextMesh Pro`). Leave `_Recovery/` to the user.
