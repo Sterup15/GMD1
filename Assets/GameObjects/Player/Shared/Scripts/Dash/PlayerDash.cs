@@ -21,6 +21,7 @@ namespace GameObjects.Player.Shared.Scripts.Dash
         private float _dashTimer;
         private float _rechargeTimer;
         private int _maxCharges;
+        private bool _wasPaused;
 
         public int Charges { get; private set; }
         public int MaxCharges => Mathf.Max(1, Mathf.RoundToInt(_stats.DashCharges.Value));
@@ -52,7 +53,14 @@ namespace GameObjects.Player.Shared.Scripts.Dash
 
         private void Update()
         {
-            if (Time.timeScale == 0f) return;
+            // Space both confirms menus (Resume, upgrade cards) and dashes, so the press that unpauses must not also dash
+            if (Time.timeScale == 0f)
+            {
+                _wasPaused = true;
+                return;
+            }
+            bool justResumed = _wasPaused;
+            _wasPaused = false;
 
             if (GameInput.Move.sqrMagnitude > 0f)
                 _lastDirection = GameInput.Move.normalized;
@@ -67,7 +75,7 @@ namespace GameObjects.Player.Shared.Scripts.Dash
                 return;
             }
 
-            if (GameInput.DashPressed && Charges > 0)
+            if (GameInput.DashPressed && Charges > 0 && !justResumed)
                 StartDash();
         }
 
