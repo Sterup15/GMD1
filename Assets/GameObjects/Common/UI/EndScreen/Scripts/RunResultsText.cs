@@ -19,11 +19,17 @@ namespace GameObjects.Common.UI.EndScreen.Scripts
             int minutes = Mathf.FloorToInt(result.Seconds / 60f);
             int seconds = Mathf.FloorToInt(result.Seconds % 60f);
 
-            string lines = $"Kills {result.Kills}  +{result.KillPoints}\n" +
-                           $"Time {minutes}:{seconds:00}  +{result.TimePoints}\n";
+            string lines = $"Kills {result.Kills}  +{result.KillPoints}      Time {minutes}:{seconds:00}  +{result.TimePoints}\n";
             if (result.Won)
                 lines += $"Victory  +{result.VictoryPoints}\n";
             lines += $"<b>+{result.GloryEarned} Glory</b>  ({result.GloryTotal} total)";
+
+            if (!string.IsNullOrEmpty(result.CharacterName))
+            {
+                lines += $"\n+{result.MasteryXpEarned} {result.CharacterName} XP  (Mastery {result.MasteryLevelAfter})";
+                if (result.MasteryLevelAfter > result.MasteryLevelBefore)
+                    lines += "  <color=#FFD54A>Level up!</color>";
+            }
 
             text.text = lines;
         }

@@ -1,10 +1,12 @@
 using GameObjects.Common.Events;
+using GameObjects.Player.Shared.Scripts.Selection;
 using UnityEngine;
 
 namespace GameObjects.Common.Progression.Scripts
 {
-    // Counts what the run earns (kills, time survived, winning) and, when the run ends, banks it as Glory and
-    // raises GlobalEvents.OnRunEnded with the breakdown. A defeat keeps everything earned so far
+    // Counts what the run earns (kills, time survived, winning) and, when the run ends, banks it as Glory and as
+    // mastery XP for the character that was played, then raises GlobalEvents.OnRunEnded with the breakdown.
+    // A defeat keeps everything earned so far
     public class RunPoints : MonoBehaviour
     {
         [Header("Points")]
@@ -17,6 +19,8 @@ namespace GameObjects.Common.Progression.Scripts
         [Header("Conversion")]
         [Tooltip("Glory banked per run point when the run ends")]
         [SerializeField, Min(0f)] private float gloryPerPoint = 1f;
+        [Tooltip("Mastery XP for the played character per run point when the run ends")]
+        [SerializeField, Min(0f)] private float masteryXpPerPoint = 1f;
 
         private int _kills;
         private float _seconds;
@@ -57,11 +61,34 @@ namespace GameObjects.Common.Progression.Scripts
             int killPoints = _kills * pointsPerKill;
             int timePoints = Mathf.FloorToInt(_seconds / 60f * pointsPerMinute);
             int victoryPoints = won ? victoryBonus : 0;
-            int glory = Mathf.RoundToInt((killPoints + timePoints + victoryPoints) * gloryPerPoint);
+            int points = killPoints + timePoints + victoryPoints;
 
+            int glory = Mathf.RoundToInt(points * gloryPerPoint);
             Glory.Add(glory);
-            GlobalEvents.RunEnded(new RunResult(won, _kills, _seconds, killPoints, timePoints, victoryPoints,
-                                                glory, Glory.Balance));
+
+            var result = new RunResult
+            {
+                Won = won,
+                Kills = _kills,
+                Seconds = _seconds,
+                KillPoints = killPoints,
+                TimePoints = timePoints,
+                VictoryPoints = victoryPoints,
+                GloryEarned = glory,
+                GloryTotal = Glory.Balance,
+            };
+
+            var character = CharacterSelection.Selected;
+            if (character != null)
+            {
+                result.CharacterName = character.DisplayName;
+                result.MasteryLevelBefore = Mastery.Level(character.name);
+                result.MasteryXpEarned = Mathf.RoundToInt(points * masteryXpPerPoint);
+                Mastery.Add(character.name, result.MasteryXpEarned);
+                result.MasteryLevelAfter = Mastery.Level(character.name);
+            }
+
+            GlobalEvents.RunEnded(result);
         }
     }
 }

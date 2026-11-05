@@ -1,4 +1,5 @@
 using System;
+using GameObjects.Common.Progression.Scripts;
 using GameObjects.Common.UI.Navigation.Scripts;
 using GameObjects.Player.Shared.Scripts.Selection;
 using TMPro;
@@ -100,9 +101,20 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         {
             _characterIndex = index;
             var character = roster[index];
-            nameText.text = character.DisplayName;
+            nameText.text = $"{character.DisplayName}  <size=60%>{MasteryLine(character)}</size>";
             descriptionText.text = character.Description;
             statsText.text = StatsLine(character);
+        }
+
+        private static string MasteryLine(CharacterDefinition character)
+        {
+            int xp = Mastery.Xp(character.name);
+            int level = Mastery.LevelFor(xp);
+            if (level >= Mastery.MaxLevel) return $"Mastery {level} (max)";
+
+            int progress = xp - Mastery.XpToReach(level);
+            int needed = Mastery.XpToReach(level + 1) - Mastery.XpToReach(level);
+            return $"Mastery {level}  ({progress}/{needed} XP)";
         }
 
         private static string StatsLine(CharacterDefinition character)

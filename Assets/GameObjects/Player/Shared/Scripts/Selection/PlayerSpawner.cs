@@ -17,10 +17,14 @@ namespace GameObjects.Player.Shared.Scripts.Selection
                 return;
             }
 
-            // Playing the game scene directly (no pick yet) uses the last picked character
+            // Playing the game scene directly (no pick yet) uses the last picked character, and selects it so the
+            // rest of the run (e.g. mastery XP) knows who is playing
             var character = CharacterSelection.Selected;
             if (character == null || roster.IndexOf(character) < 0)
+            {
                 character = roster[CharacterSelection.LastPickIndex(roster)];
+                CharacterSelection.Select(character);
+            }
 
             Instantiate(character.Prefab, transform.position, Quaternion.identity);
         }
