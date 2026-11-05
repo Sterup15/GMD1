@@ -25,7 +25,7 @@ Everything belonging to one entity lives in that entity's folder: scripts, sprit
 ```
 Assets/GameObjects/
   Common/            shared systems: Audio, Camera, DamageNumber, Events, Health (bar UI),
-                     Projectiles, Settings (saved player settings), Stats, UI (buttons, main/pause/settings/character select menus,
+                     Progression (run points, Glory), Projectiles, Settings (saved player settings), Stats, UI (buttons, main/pause/settings/character select menus,
                      EndScreen for victory/defeat, Navigation (MenuNavigator), Pointer: mouse cursor and selection hand), Upgrades, Utils
     Effects/         shared visual effects, one folder each: DustPuff (death and dash smoke), Explosion (area damage, used by bombs), Fire (imported, not used yet)
     Pickups/         things the player collects, one folder each: Gold, Steak
@@ -72,7 +72,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ### 2. Two event buses: decouple, don't reference siblings
 - **`ActorEvents`** (`Common/Events/ActorEvents.cs`) is a per-actor bus on each actor's root GameObject. Components on the same actor talk through it, not through direct references to each other. Adding a signal means: add `public event Action OnX;` plus a `public void X() => OnX?.Invoke();` raiser.
-- **`GlobalEvents`** (`Common/Events/GlobalEvents.cs`) is a static, game-wide bus for moments the whole game cares about: boss spawned/defeated, player died/won, level up. `OnBossSpawnedWithBoss` fires at the same moment as `OnBossSpawned` and carries the boss's `ActorEvents` and name, for listeners that need the boss itself (its health bar). Use it for cross-system reactions (music, UI screens, camera, victory) so nothing has to reference the spawner or the player.
+- **`GlobalEvents`** (`Common/Events/GlobalEvents.cs`) is a static, game-wide bus for moments the whole game cares about: boss spawned/defeated, player died/won, level up, enemy killed, run ended. `OnBossSpawnedWithBoss` fires at the same moment as `OnBossSpawned` and carries the boss's `ActorEvents` and name, for listeners that need the boss itself (its health bar). Use it for cross-system reactions (music, UI screens, camera, victory) so nothing has to reference the spawner or the player.
 - Subscribe in `OnEnable` and **always unsubscribe in `OnDisable`**. Static events survive scene reloads, so a missing unsubscribe leads to null-reference errors after a restart. Cache `ActorEvents` in `Awake` (`GetComponent`, or `GetComponentInParent` from a child sprite).
 - Don't over-decouple. Plain local events are fine for one-to-one wiring (e.g. `BossTimer.OnTimerComplete` → `BossSpawner`, `BossHitbox.OnHit` → `BossMelee`).
 
@@ -141,7 +141,12 @@ The whole game is **component-based and event-driven**. These rules come from th
 - Menus get their keyboard/gamepad selection from `MenuNavigator` (`Common/UI/Navigation`), a plain class the menu creates with its buttons in rows (`new MenuNavigator(buttons)` for one row, or one array per row). Each frame the menu calls `Navigate()` and `Submit()` on Interact. It wraps, skips disabled or hidden buttons, follows the EventSystem's selection (a button a click selected), remembers the last button per row, raises `OnSelectionChanged`, and `BlockInputThisFrame()`/`InputBlocked` keep the key that opened a menu or closed a screen on top of it from also acting on it. A menu only adds its own extras (settings change values with left/right, character select moves Interact on a portrait down to Start). Every menu button needs Navigation set to None: the scenes' UI input module uses Unity's default UI actions, so arrow keys would otherwise move the selection twice, and Enter/Space/gamepad South already click the selected button (so never add those keys to Interact).
 - The selected button is marked by `SelectionPointer`, a Tiny Swords pointing hand that follows `EventSystem.currentSelectedGameObject` on every canvas. It and the arrow mouse cursor (`GameCursor`) load themselves from `Common/UI/Pointer/Resources` at startup, so menus only need to select their buttons.
 - Reusable buttons are self-wiring components with `[RequireComponent(typeof(Button))]` that add their listener in `Start` (`RestartButton`, `MainMenuButton`, `QuitButton`). The main menu is Play / Settings / Quit Game: Play opens the `CharacterSelectScreen` (portraits on top; Back / Talents / Start below, with Talents disabled until the talent system exists and skipped by keyboard navigation). Picking a portrait only selects the character; only Start begins the run.
-- Victory and defeat share one `EndScreen` script (`Common/UI/EndScreen`), set to `Victory` or `Defeat` on each prefab: it subscribes to `OnPlayerWon` or `OnPlayerDied`, shows its panel and pauses.
+- Victory and defeat share one `EndScreen` script (`Common/UI/EndScreen`), set to `Victory` or `Defeat` on each prefab: it subscribes to `OnPlayerWon` or `OnPlayerDied`, shows its panel and pauses. A `RunResultsText` next to it fills the panel's results from `OnRunEnded`.
+
+## Between runs
+
+- `RunPoints` (one object in the game scene, `Common/Progression`) counts the run's points from `GlobalEvents`: kills (`OnEnemyKilled`, raised by `EnemyHealth` before `Death` so the boss's kill counts before the run ends), time survived (pro rata per minute, paused time excluded) and a victory bonus. On `OnPlayerDied`/`OnPlayerWon` it converts the points to **Glory**, banks them, and raises `OnRunEnded(RunResult)` with the breakdown. A defeat keeps what was earned; leaving through the pause menu banks nothing. All rates are Inspector fields on `RunPoints`.
+- `Glory` is the static currency kept between runs (PlayerPrefs, saved straight away because the web build only writes on `Save`). Persistent upgrades and unlocks will spend it.
 - Menu windows use the scroll (`UI/Background Textures/Banner.png`) as a Tiled image with a dark title. Patterned backgrounds must be Tiled, not Sliced: slicing stretches the middle of the texture across the window.
 - UI should match the cartoonish Tiny Swords style. Text uses TextMeshPro.
 
