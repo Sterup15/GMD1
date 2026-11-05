@@ -15,8 +15,7 @@ MonoBehaviour:
   displayName: Bodkin Arrows
   description: Makes your projectiles penetrate 1 more enemy before being destroyed
   statType: 7
-  bonusAmount: 1
-  applyBonusScale: 0
+  points: 1
   rarity: 2
   requirement: 1
   canRepeat: 1

@@ -10,12 +10,8 @@ namespace GameObjects.Common.Upgrades
         public string displayName;
         [TextArea] public string description;
         public StatType statType;
-        [Tooltip("Flat amount, or a percentage of the character's base value when percentOfBase is on")]
-        public float bonusAmount;
-        [Tooltip("If true, bonusAmount is a percentage of the character's base value, so the card scales with each character's stats")]
-        public bool percentOfBase;
-        [Tooltip("If true, a flat bonusAmount is multiplied by the bonus scale set on UpgradeScreen. Ignored for percentOfBase cards")]
-        public bool applyBonusScale = true;
+        [Tooltip("The +N on the card. What one point is worth per stat is set in UpgradeScreen's point values")]
+        [Range(1, 4)] public int points = 1;
         public UpgradeRarity rarity = UpgradeRarity.Common;
         [Tooltip("Only offered when the player's UpgradeEligibility allows it (e.g. bounce needs projectiles)")]
         public UpgradeRequirementType requirement = UpgradeRequirementType.None;

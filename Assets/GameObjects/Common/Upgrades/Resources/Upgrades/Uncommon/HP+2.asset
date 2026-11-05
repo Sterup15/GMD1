@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: HP+2
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
-  displayName: Health +2
-  description: Increases your max Health by +2
+  displayName: Vitality +2
+  description: Raises your max health
   statType: 4
-  bonusAmount: 2
-  applyBonusScale: 0
+  points: 2
   rarity: 1
   canRepeat: 1

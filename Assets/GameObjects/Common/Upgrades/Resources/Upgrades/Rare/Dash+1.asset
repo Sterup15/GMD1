@@ -15,7 +15,6 @@ MonoBehaviour:
   displayName: Second Wind
   description: Gives you 1 extra dash charge!
   statType: 9
-  bonusAmount: 1
-  applyBonusScale: 0
+  points: 1
   rarity: 2
   canRepeat: 0

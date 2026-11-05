@@ -15,7 +15,6 @@ MonoBehaviour:
   displayName: Boots of the Bolting Bard
   description: Gives you 2 extra dash charges!
   statType: 9
-  bonusAmount: 2
-  applyBonusScale: 0
+  points: 2
   rarity: 3
   canRepeat: 0

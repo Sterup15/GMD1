@@ -15,8 +15,7 @@ MonoBehaviour:
   displayName: Sir Bounce's Arrow Tips
   description: Makes your projectiles bounce against the walls!
   statType: 6
-  bonusAmount: 1
-  applyBonusScale: 0
+  points: 1
   rarity: 2
   requirement: 1
   canRepeat: 1

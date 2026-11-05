@@ -13,11 +13,9 @@ MonoBehaviour:
   m_Name: Area+4
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
   displayName: Bigger Badder Booms
-  description: Your explosions are 40% bigger!
+  description: +4 Blast. Your explosions are much bigger!
   statType: 10
-  bonusAmount: 40
-  percentOfBase: 1
-  applyBonusScale: 0
+  points: 4
   rarity: 3
   requirement: 2
   canRepeat: 1

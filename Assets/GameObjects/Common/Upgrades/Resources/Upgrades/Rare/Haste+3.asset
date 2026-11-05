@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: Haste+3
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
-  displayName: Haste +30
-  description: Your dash recharges faster (+30 haste)
+  displayName: Haste +3
+  description: Your dash recharges faster
   statType: 8
-  bonusAmount: 30
-  applyBonusScale: 0
+  points: 3
   rarity: 2
   canRepeat: 1

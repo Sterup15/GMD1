@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: AS+2
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
-  displayName: Attack Speed +2
-  description: Increases your attack speed by 80%
+  displayName: Agility +2
+  description: You attack faster
   statType: 2
-  bonusAmount: 80
-  percentOfBase: 1
-  applyBonusScale: 1
+  points: 2
   rarity: 1
   canRepeat: 1

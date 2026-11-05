@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: MS+2
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
-  displayName: Movement Speed +2
-  description: Increases your movement speed by 27%
+  displayName: Swiftness +2
+  description: You move faster
   statType: 1
-  bonusAmount: 26.6667
-  percentOfBase: 1
-  applyBonusScale: 1
+  points: 2
   rarity: 1
   canRepeat: 1

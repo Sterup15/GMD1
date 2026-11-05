@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: AR+1
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Common.Upgrades.UpgradeDefinition
-  displayName: Attack Range +1
-  description: Increases your attack range by 8%
+  displayName: Sight +1
+  description: You spot enemies from further away
   statType: 3
-  bonusAmount: 8
-  percentOfBase: 1
+  points: 1
   canRepeat: 1

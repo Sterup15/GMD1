@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: AD+4
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
   displayName: Lord Commander's Holster
-  description: Increases your attack damage by 4!
+  description: +4 Strength. Your attacks hit much harder!
   statType: 0
-  bonusAmount: 4
-  applyBonusScale: 0
+  points: 4
   rarity: 3
   canRepeat: 1

@@ -15,8 +15,7 @@ MonoBehaviour:
   displayName: Golden Bodkin Arrow Tips
   description: Makes your projectiles penetrate 2 more enemies before being destroyed!
   statType: 7
-  bonusAmount: 2
-  applyBonusScale: 0
+  points: 2
   rarity: 3
   requirement: 1
   canRepeat: 1

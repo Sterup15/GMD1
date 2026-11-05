@@ -18,7 +18,19 @@ namespace GameObjects.Common.Upgrades.Scripts
     {
         [SerializeField] private GameObject panel;
         [SerializeField] private UpgradeCard[] cards;
-        [SerializeField] private float bonusScale = 1f;
+        [Header("Balance")]
+        [Tooltip("What one card point is worth for each stat. Stats missing here get 1 flat per point")]
+        [SerializeField] private List<StatPointValue> pointValues = new()
+        {
+            new StatPointValue(StatType.Damage,      1f),
+            new StatPointValue(StatType.MaxHealth,   1f),
+            new StatPointValue(StatType.FireRate,    40f,      true),
+            new StatPointValue(StatType.MoveSpeed,   13.3333f, true),
+            new StatPointValue(StatType.ShootRange,  8f,       true),
+            new StatPointValue(StatType.PickupRange, 40f,      true),
+            new StatPointValue(StatType.Area,        10f,      true),
+            new StatPointValue(StatType.Haste,       10f),
+        };
         [SerializeField] private List<RarityWeight> rarityWeights = new()
         {
             new RarityWeight { rarity = UpgradeRarity.Common,    weight = 60f },
@@ -113,11 +125,15 @@ namespace GameObjects.Common.Upgrades.Scripts
             Time.timeScale = 1f;
         }
 
-        // Percentage cards scale with the character's own base value, so one card set works for every character
+        // Percentage stats scale with the character's own base value, so one card set works for every character
         private float BonusFor(UpgradeDefinition definition, Stat stat)
         {
-            if (definition.percentOfBase) return stat.BaseValue * definition.bonusAmount / 100f;
-            return definition.bonusAmount * (definition.applyBonusScale ? bonusScale : 1f);
+            int index = pointValues.FindIndex(p => p.stat == definition.statType);
+            if (index < 0) return definition.points;
+
+            var value = pointValues[index];
+            float perPoint = value.percentOfBase ? stat.BaseValue * value.perPoint / 100f : value.perPoint;
+            return perPoint * definition.points;
         }
 
         private List<UpgradeDefinition> DrawUpgrades(int count)

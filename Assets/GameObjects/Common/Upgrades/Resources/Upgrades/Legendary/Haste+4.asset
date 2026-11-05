@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Haste+4
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
   displayName: Windrunner Boots
-  description: Your dash recharges much faster (+40 haste)!
+  description: +4 Haste. Your dash recharges much faster!
   statType: 8
-  bonusAmount: 40
-  applyBonusScale: 0
+  points: 4
   rarity: 3
   canRepeat: 1

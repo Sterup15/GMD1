@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: AD+2
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
-  displayName: Attack Damage +2
-  description: Increases your attack damage by 2
+  displayName: Strength +2
+  description: Your attacks hit harder
   statType: 0
-  bonusAmount: 2
-  applyBonusScale: 0
+  points: 2
   rarity: 1
   canRepeat: 1

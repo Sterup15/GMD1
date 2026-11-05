@@ -129,7 +129,31 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c52875b6aa2efaf4dad94a92f8b35ad9, type: 2}
   - {fileID: 11400000, guid: 505a71abf117529498f32ec11b9852dd, type: 2}
   - {fileID: 11400000, guid: 339d63fc83454a94cb686af8669e0942, type: 2}
-  bonusScale: 0.4
+  pointValues:
+  - stat: 0
+    perPoint: 1
+    percentOfBase: 0
+  - stat: 4
+    perPoint: 1
+    percentOfBase: 0
+  - stat: 2
+    perPoint: 40
+    percentOfBase: 1
+  - stat: 1
+    perPoint: 13.3333
+    percentOfBase: 1
+  - stat: 3
+    perPoint: 8
+    percentOfBase: 1
+  - stat: 5
+    perPoint: 40
+    percentOfBase: 1
+  - stat: 10
+    perPoint: 10
+    percentOfBase: 1
+  - stat: 8
+    perPoint: 10
+    percentOfBase: 0
   rarityWeights:
   - rarity: 0
     weight: 60

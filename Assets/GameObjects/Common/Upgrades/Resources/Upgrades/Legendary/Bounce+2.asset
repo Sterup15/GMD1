@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: Bounce+2
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
   displayName: Golden Bouncy Arrow Tips
-  description: Makes you projectiles bounce 2 more times before being destroyed
+  description: Makes your projectiles bounce 2 more times before being destroyed
   statType: 6
-  bonusAmount: 2
-  applyBonusScale: 0
+  points: 2
   rarity: 3
   requirement: 1
   canRepeat: 1

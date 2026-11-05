@@ -12,12 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0abce52ad6e9b4bae48f7567aecbe2, type: 3}
   m_Name: Area+3
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Upgrades.UpgradeDefinition
-  displayName: Area +3
-  description: Your explosions are 30% bigger
+  displayName: Blast +3
+  description: Your explosions are bigger
   statType: 10
-  bonusAmount: 30
-  percentOfBase: 1
-  applyBonusScale: 0
+  points: 3
   rarity: 2
   requirement: 2
   canRepeat: 1
