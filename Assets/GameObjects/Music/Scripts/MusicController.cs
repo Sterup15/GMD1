@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Settings.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Music.Scripts
@@ -11,16 +12,23 @@ namespace GameObjects.Music.Scripts
         [SerializeField] private AudioClip defeatMusic;
         [SerializeField] private AudioClip victoryMusic;
 
+        private float _baseVolume;
+
         private void Awake()
         {
             if (audioSource == null)
                 audioSource = GetComponent<AudioSource>();
+            _baseVolume = audioSource.volume;
+            ApplyVolume();
         }
+
+        private void ApplyVolume() => audioSource.volume = _baseVolume * GameSettings.MusicVolume;
 
         private void Start() => Play(normalMusic);
 
         private void OnEnable()
         {
+            GameSettings.OnVolumeChanged += ApplyVolume;
             GlobalEvents.OnBossSpawned  += PlayBossMusic;
             GlobalEvents.OnBossDefeated += PlayNormalMusic;
             GlobalEvents.OnPlayerDied   += PlayDefeatMusic;
@@ -29,6 +37,7 @@ namespace GameObjects.Music.Scripts
 
         private void OnDisable()
         {
+            GameSettings.OnVolumeChanged -= ApplyVolume;
             GlobalEvents.OnBossSpawned  -= PlayBossMusic;
             GlobalEvents.OnBossDefeated -= PlayNormalMusic;
             GlobalEvents.OnPlayerDied   -= PlayDefeatMusic;

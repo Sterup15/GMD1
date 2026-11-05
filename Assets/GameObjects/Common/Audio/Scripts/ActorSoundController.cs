@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameObjects.Common.Events;
+using GameObjects.Common.Settings.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Common.Audio.Scripts
@@ -96,7 +97,7 @@ namespace GameObjects.Common.Audio.Scripts
         {
             var clip = pool.Pick();
             if (clip == null) return;
-            audioSource.PlayOneShot(clip, pool.Volume);
+            audioSource.PlayOneShot(clip, pool.Volume * GameSettings.EffectsVolume);
         }
 
         private void PlayDetached(SoundPool pool)
@@ -110,7 +111,7 @@ namespace GameObjects.Common.Audio.Scripts
             source.outputAudioMixerGroup = audioSource.outputAudioMixerGroup;
             source.volume       = audioSource.volume;
             source.spatialBlend = audioSource.spatialBlend;
-            source.PlayOneShot(clip, pool.Volume);
+            source.PlayOneShot(clip, pool.Volume * GameSettings.EffectsVolume);
             Destroy(go, clip.length);
         }
     }

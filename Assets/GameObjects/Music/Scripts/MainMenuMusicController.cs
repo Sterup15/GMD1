@@ -1,3 +1,4 @@
+using GameObjects.Common.Settings.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Music.Scripts
@@ -7,11 +8,20 @@ namespace GameObjects.Music.Scripts
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip menuMusic;
 
+        private float _baseVolume;
+
         private void Awake()
         {
             if (audioSource == null)
                 audioSource = GetComponent<AudioSource>();
+            _baseVolume = audioSource.volume;
+            ApplyVolume();
         }
+
+        private void ApplyVolume() => audioSource.volume = _baseVolume * GameSettings.MusicVolume;
+
+        private void OnEnable()  => GameSettings.OnVolumeChanged += ApplyVolume;
+        private void OnDisable() => GameSettings.OnVolumeChanged -= ApplyVolume;
 
         private void Start()
         {
