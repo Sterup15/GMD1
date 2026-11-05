@@ -1,4 +1,3 @@
-using System;
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Utils;
@@ -20,7 +19,6 @@ namespace GameObjects.Player.Shared.Scripts.Movement
         private const string idleAnim = "Idle";
         private const string moveAnim = "Move";
         private const string attackAnim = "Attack";
-        public static Action<MoveStateEnum> OnPlayerMoveStateChanged;
 
         private void Awake()
         {
@@ -90,7 +88,6 @@ namespace GameObjects.Player.Shared.Scripts.Movement
                     break;
             }
 
-            OnPlayerMoveStateChanged?.Invoke(newMoveState);
             currentMoveState = newMoveState;
         }
 

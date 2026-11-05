@@ -10,12 +10,17 @@ namespace GameObjects.Player.Shared.Scripts.Gold
 
         private Stats _stats;
         private readonly Collider2D[] _hits = new Collider2D[32];
+        private ContactFilter2D _filter;
 
-        private void Awake() => _stats = GetComponent<Stats>();
+        private void Awake()
+        {
+            _stats  = GetComponent<Stats>();
+            _filter = new ContactFilter2D { useLayerMask = true, layerMask = pickupLayer, useTriggers = true };
+        }
 
         private void Update()
         {
-            int count = Physics2D.OverlapCircleNonAlloc(transform.position, _stats.PickupRange.Value, _hits, pickupLayer);
+            int count = Physics2D.OverlapCircle(transform.position, _stats.PickupRange.Value, _filter, _hits);
             for (int i = 0; i < count; i++)
             {
                 if (_hits[i] != null && _hits[i].TryGetComponent<IPickup>(out var pickup))

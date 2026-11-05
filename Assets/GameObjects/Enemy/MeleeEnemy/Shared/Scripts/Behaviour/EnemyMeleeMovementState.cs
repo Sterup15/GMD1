@@ -1,4 +1,3 @@
-using System;
 using GameObjects.Common.Events;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using UnityEngine;
@@ -15,7 +14,6 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         private const string idleAnim = "Idle";
         private const string moveAnim = "Move";
         private const string attackAnim = "Attack";
-        public static Action<EnemyMoveStateEnum> OnEnemyMoveStateChanged;
 
         private void Awake()
         {
@@ -76,7 +74,6 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
                     break;
             }
 
-            OnEnemyMoveStateChanged?.Invoke(newMoveState);
             CurrentMoveState = newMoveState;
         }
 

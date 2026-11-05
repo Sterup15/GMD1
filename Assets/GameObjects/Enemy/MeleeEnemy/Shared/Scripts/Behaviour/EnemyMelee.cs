@@ -20,8 +20,6 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
 
         public Vector2 MoveDirection => moveDirection;
         public bool IsMoving => player != null && (player.position - transform.position).sqrMagnitude > 0.01f;
-        public bool IsAttacking => false;
-        public float AttackAnimSpeed => 1f;
 
         private void Awake()
         {
