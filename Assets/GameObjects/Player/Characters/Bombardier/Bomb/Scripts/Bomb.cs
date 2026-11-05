@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using ExplosionEffect = GameObjects.Common.Effects.Explosion.Scripts.Explosion;
 
@@ -23,10 +24,12 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
         private float _progress;
         private int _damage;
         private float _radius;
+        private Action<Vector2, int, float> _onExploded;
 
-        // areaMultiplier is the thrower's Area stat (1 = the base radius)
-        public void Launch(Vector2 target, int damage, float areaMultiplier)
+        // areaMultiplier is the thrower's Area stat (1 = the base radius). onExploded reports where it went off
+        public void Launch(Vector2 target, int damage, float areaMultiplier, Action<Vector2, int, float> onExploded = null)
         {
+            _onExploded = onExploded;
             _radius   = explosionRadius * Mathf.Max(0.1f, areaMultiplier);
             _start    = transform.position;
             _target   = target;
@@ -49,6 +52,7 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
         {
             var explosion = Instantiate(explosionPrefab, _target, Quaternion.identity);
             explosion.Init(_damage, _radius);
+            _onExploded?.Invoke(_target, _damage, _radius);
             Destroy(gameObject);
         }
     }

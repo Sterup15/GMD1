@@ -17,3 +17,6 @@ MonoBehaviour:
     explosion hits a whole group.
   portrait: {fileID: 21300000, guid: 1ae77def86fe54f889da24e43f32ae32, type: 3}
   prefab: {fileID: 2904057035740938740, guid: 32ba4c0eaded49a98ab1b32a175645bd, type: 3}
+  talents:
+  - {fileID: 11400000, guid: 976029da848e41d4aa9f043e7608532e, type: 2}
+  - {fileID: 11400000, guid: 285cd1e18a42426fa48dd8e02add40bc, type: 2}

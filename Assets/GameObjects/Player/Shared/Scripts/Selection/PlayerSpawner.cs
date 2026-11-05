@@ -26,7 +26,8 @@ namespace GameObjects.Player.Shared.Scripts.Selection
                 CharacterSelection.Select(character);
             }
 
-            Instantiate(character.Prefab, transform.position, Quaternion.identity);
+            var player = Instantiate(character.Prefab, transform.position, Quaternion.identity);
+            Talents.Talents.Apply(character, player);
         }
     }
 }

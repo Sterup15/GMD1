@@ -1,6 +1,7 @@
 using System;
 using GameObjects.Common.Armory.Scripts;
 using GameObjects.Common.Progression.Scripts;
+using GameObjects.Common.UI.Loadout.Scripts;
 using GameObjects.Common.UI.Navigation.Scripts;
 using GameObjects.Player.Shared.Scripts.Selection;
 using TMPro;
@@ -13,7 +14,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
     // Pick a character before a run. One portrait per roster entry, built when the screen is created, so a new
     // character only needs a CharacterDefinition in the roster. Two rows: the portraits (left/right or a click picks
     // a character, Interact moves down to Start) and Back / Armory / Start below them (down/up moves between the
-    // rows). Armory opens the shop for permanent upgrades on top of this screen. Pause also goes back
+    // rows). Armory opens the shop for permanent upgrades on top of this screen, and Start opens the chosen
+    // character's talent loadout, from which the run begins. Pause also goes back
     public class CharacterSelectScreen : MonoBehaviour
     {
         [SerializeField] private GameObject panel;
@@ -28,6 +30,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         [SerializeField] private Button backButton;
         [SerializeField] private Button armoryButton;
         [SerializeField] private ArmoryScreen armoryPrefab;
+        [Tooltip("Talent loadout shown after Start. Without it (or for a character with no talents) Start begins the run at once")]
+        [SerializeField] private LoadoutScreen loadoutPrefab;
         [SerializeField] private int gameSceneIndex = 1;
 
         private const int PortraitRowIndex = 0;
@@ -36,6 +40,7 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         private int _characterIndex;
         private Action _onClosed;
         private ArmoryScreen _armory;
+        private LoadoutScreen _loadout;
 
         public bool IsOpen => panel.activeSelf;
 
@@ -55,7 +60,7 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
             _navigator = new MenuNavigator(portraits, new[] { backButton, armoryButton, startButton });
             _navigator.OnSelectionChanged += OnSelectionChanged;
-            startButton.onClick.AddListener(StartRun);
+            startButton.onClick.AddListener(OpenLoadout);
             backButton.onClick.AddListener(Close);
             if (armoryPrefab != null) armoryButton.onClick.AddListener(OpenArmory);
             else armoryButton.interactable = false;
@@ -81,8 +86,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         private void Update()
         {
-            // While the Armory is open on top, it has the input
-            if (!IsOpen || _navigator.InputBlocked || (_armory != null && _armory.IsOpen)) return;
+            // While the Armory or the loadout is open on top, it has the input
+            if (!IsOpen || _navigator.InputBlocked || (_armory != null && _armory.IsOpen) || (_loadout != null && _loadout.IsOpen)) return;
 
             if (GameInput.PausePressed)
             {
@@ -108,6 +113,25 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         {
             _navigator.BlockInputThisFrame();
             _navigator.Select(armoryButton);
+        }
+
+        private void OpenLoadout()
+        {
+            var character = roster[_characterIndex];
+            if (loadoutPrefab == null || character.Talents.Count == 0)
+            {
+                StartRun();
+                return;
+            }
+
+            if (_loadout == null) _loadout = Instantiate(loadoutPrefab);
+            _loadout.Open(character, StartRun, OnLoadoutClosed);
+        }
+
+        private void OnLoadoutClosed()
+        {
+            _navigator.BlockInputThisFrame();
+            _navigator.Select(startButton);
         }
 
         private void OnSelectionChanged(int row, int column)

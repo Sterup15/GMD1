@@ -17,3 +17,6 @@ MonoBehaviour:
     off walls and pierce through enemies.
   portrait: {fileID: 21300000, guid: 8fd2d0449599e4f7a9a1f1f170b6a2b0, type: 3}
   prefab: {fileID: 2904057035740938740, guid: 5ac8e7c8e63d1384683c10c0bfd5596a, type: 3}
+  talents:
+  - {fileID: 11400000, guid: 3abd07fc34a24a31a590a32928d8bd35, type: 2}
+  - {fileID: 11400000, guid: b7c561a0f38c4567a7301209b11b811c, type: 2}

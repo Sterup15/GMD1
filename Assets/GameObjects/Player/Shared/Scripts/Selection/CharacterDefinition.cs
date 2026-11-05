@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using GameObjects.Player.Shared.Scripts.Talents;
 using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Selection
@@ -11,10 +13,13 @@ namespace GameObjects.Player.Shared.Scripts.Selection
         [TextArea] [SerializeField] private string description;
         [SerializeField] private Sprite portrait;
         [SerializeField] private GameObject prefab;
+        [Tooltip("This character's talents, in the order the loadout screen lists them")]
+        [SerializeField] private List<TalentDefinition> talents = new();
 
         public string DisplayName => displayName;
         public string Description => description;
         public Sprite Portrait    => portrait;
         public GameObject Prefab  => prefab;
+        public List<TalentDefinition> Talents => talents;
     }
 }

@@ -39,13 +39,21 @@ namespace GameObjects.Common.Projectiles.Scripts
             if (targetPosition == null) return;
 
             Vector2 direction = (targetPosition.Value - (Vector2)spawnPoint.position).normalized;
-            var go = PrefabPool.Spawn(projectilePrefab, spawnPoint.position, Quaternion.identity);
+            Spawn(projectilePrefab, spawnPoint.position, direction, _stats);
+            _events.ProjectileFired(spawnPoint.position, direction);
+        }
+
+        // Fires one projectile carrying the shooter's Damage, Bounce and Penetration. Also used by talents that
+        // add extra projectiles, which doesn't raise ProjectileFired again
+        public static void Spawn(GameObject prefab, Vector2 position, Vector2 direction, Stats.Scripts.Stats stats)
+        {
+            var go = PrefabPool.Spawn(prefab, position, Quaternion.identity);
             var projectile = go.GetComponent<Projectile>();
-            if (_stats != null)
+            if (stats != null)
             {
-                projectile.SetDamage(Mathf.RoundToInt(_stats.Damage.Value));
-                projectile.SetBounces(Mathf.RoundToInt(_stats.Bounce.Value));
-                projectile.SetPenetration(Mathf.RoundToInt(_stats.Penetration.Value));
+                projectile.SetDamage(Mathf.RoundToInt(stats.Damage.Value));
+                projectile.SetBounces(Mathf.RoundToInt(stats.Bounce.Value));
+                projectile.SetPenetration(Mathf.RoundToInt(stats.Penetration.Value));
             }
             projectile.Launch(direction);
         }

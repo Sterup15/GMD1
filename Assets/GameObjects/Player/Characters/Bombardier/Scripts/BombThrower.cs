@@ -32,7 +32,7 @@ namespace GameObjects.Player.Characters.Bombardier.Scripts
             if (target == null) return;
 
             var bomb = Instantiate(bombPrefab, spawnPoint.position, Quaternion.identity);
-            bomb.Launch(target.position, Mathf.RoundToInt(_stats.Damage.Value), _stats.Area.Value);
+            bomb.Launch(target.position, Mathf.RoundToInt(_stats.Damage.Value), _stats.Area.Value, _events.BombExploded);
         }
     }
 }
