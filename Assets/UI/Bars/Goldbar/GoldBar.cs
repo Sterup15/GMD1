@@ -1,25 +1,49 @@
-using GameObjects.Player.Shared.Scripts.Gold;
+using GameObjects.Common.Events;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI.Bars.Goldbar
 {
+    // Gold towards the next level, and the level. Listens to the player's own ActorEvents, found by tag when the run starts
     public class GoldBar : MonoBehaviour
     {
         [SerializeField] private Slider slider;
         [SerializeField] private TextMeshProUGUI levelText; // optional
 
-        private void OnEnable()  => PlayerGold.OnGoldChanged += OnGoldChanged;
-        private void OnDisable() => PlayerGold.OnGoldChanged -= OnGoldChanged;
+        private ActorEvents _events;
 
-        private void Start() => OnGoldChanged(0, 1);
+        private void Start()
+        {
+            OnGoldChanged(0, 1, 0);
 
-        private void OnGoldChanged(int current, int threshold)
+            var player = GameObject.FindWithTag("Player");
+            if (player == null)
+            {
+                Debug.LogWarning("GoldBar: No GameObject tagged 'Player' found.", this);
+                return;
+            }
+
+            _events = player.GetComponent<ActorEvents>();
+            _events.OnGoldChanged += OnGoldChanged;
+        }
+
+        // The player is only found in Start, so the first subscription happens there
+        private void OnEnable()
+        {
+            if (_events != null) _events.OnGoldChanged += OnGoldChanged;
+        }
+
+        private void OnDisable()
+        {
+            if (_events != null) _events.OnGoldChanged -= OnGoldChanged;
+        }
+
+        private void OnGoldChanged(int current, int threshold, int level)
         {
             slider.value = (float)current / threshold;
             if (levelText != null)
-                levelText.text = $"Lvl {FindFirstObjectByType<PlayerGold>()?.Level ?? 0}";
+                levelText.text = $"Lvl {level}";
         }
     }
 }

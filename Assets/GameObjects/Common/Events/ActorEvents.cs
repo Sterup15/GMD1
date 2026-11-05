@@ -6,6 +6,7 @@ namespace GameObjects.Common.Events
     public class ActorEvents : MonoBehaviour
     {
         public event Action<int, int> OnHealthChanged;
+        public event Action<int, int, int> OnGoldChanged;
         public event Action OnDeathStarted;
         public event Action OnDeath;
         public event Action OnShotFired;
@@ -28,6 +29,7 @@ namespace GameObjects.Common.Events
         public bool HasDeathStartedListeners => OnDeathStarted != null;
 
         public void HealthChanged(int current, int max) => OnHealthChanged?.Invoke(current, max);
+        public void GoldChanged(int current, int threshold, int level) => OnGoldChanged?.Invoke(current, threshold, level);
         public void DeathStarted() => OnDeathStarted?.Invoke();
         public void Death()        => OnDeath?.Invoke();
         public void ShotFired()    => OnShotFired?.Invoke();

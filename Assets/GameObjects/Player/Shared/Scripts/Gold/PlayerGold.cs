@@ -1,4 +1,3 @@
-using System;
 using GameObjects.Common.Events;
 using GameObjects.Common.Utils;
 using UnityEngine;
@@ -10,12 +9,13 @@ namespace GameObjects.Player.Shared.Scripts.Gold
         [Tooltip("X = player level, Y = gold needed to reach the next level")]
         [SerializeField] private AnimationCurve goldThresholdCurve;
 
-        public static event Action<int, int> OnGoldChanged; // (current, threshold)
-
         [SerializeField] private int thresholdBonusPerLevel = 3;
+
+        private ActorEvents _events;
 
         private void Awake()
         {
+            _events = GetComponent<ActorEvents>();
             if (goldThresholdCurve == null || goldThresholdCurve.length == 0)
                 goldThresholdCurve = CurveUtils.EaseIn(0f, 3f, 500f, 20f);
         }
@@ -44,7 +44,7 @@ namespace GameObjects.Player.Shared.Scripts.Gold
                 threshold = GetThreshold();
             }
 
-            OnGoldChanged?.Invoke(CurrentGold, threshold);
+            _events.GoldChanged(CurrentGold, threshold, Level);
         }
 
         private int GetThreshold() => Mathf.Max(1, Mathf.RoundToInt(goldThresholdCurve.Evaluate(Level)) + Level * thresholdBonusPerLevel);

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using GameObjects.Common.Events;
 using GameObjects.Common.Projectiles.Scripts;
@@ -12,8 +11,6 @@ namespace GameObjects.Player.Shared.Scripts.Health
         public int MaxHealth { get; private set; }
         public int CurrentHealth { get; private set; }
         public bool IsFullHealth => CurrentHealth >= MaxHealth;
-        public static Action<int, int> OnHealthChanged;
-
         [SerializeField] private string enemyLayerName = "Enemy";
         [SerializeField] private string enemyProjectileLayerName = "EnemyProjectile";
         private const float InvulnerabilityDuration = 2f;
@@ -34,7 +31,7 @@ namespace GameObjects.Player.Shared.Scripts.Health
             _enemyProjectileLayer = LayerMask.NameToLayer(enemyProjectileLayerName);
             MaxHealth = Mathf.RoundToInt(_stats.MaxHealth.Value);
             CurrentHealth = MaxHealth;
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            _events.HealthChanged(CurrentHealth, MaxHealth);
         }
 
         private void OnEnable()
@@ -64,7 +61,7 @@ namespace GameObjects.Player.Shared.Scripts.Health
             int diff = newMax - MaxHealth;
             MaxHealth = newMax;
             CurrentHealth = Mathf.Min(CurrentHealth + diff, MaxHealth);
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            _events.HealthChanged(CurrentHealth, MaxHealth);
         }
 
         public void TakeDamage(int amount)
@@ -73,7 +70,7 @@ namespace GameObjects.Player.Shared.Scripts.Health
             if (_isInvulnerable || _isDashing) return;
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            _events.HealthChanged(CurrentHealth, MaxHealth);
 
             if (CurrentHealth > 0)
             {
@@ -93,7 +90,7 @@ namespace GameObjects.Player.Shared.Scripts.Health
             if (CurrentHealth <= 0 || IsFullHealth) return;
 
             CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            _events.HealthChanged(CurrentHealth, MaxHealth);
             _events.Healed();
         }
 
