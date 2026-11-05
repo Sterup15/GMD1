@@ -63,6 +63,8 @@ namespace GameObjects.Enemy.Spawner.Scripts
         [Header("Minimum Enemies Alive")]
         [Tooltip("X = run time in seconds, Y = minimum number of enemies that must be alive")]
         [SerializeField] private AnimationCurve minEnemiesAliveCurve = AnimationCurve.Linear(0f, 1f, 300f, 30f);
+        [Tooltip("Max enemies spawned in one frame to reach the minimum, so a big gap is filled over a few frames instead of in one spike")]
+        [SerializeField, Min(1)] private int maxTopUpPerFrame = 3;
 
         [Header("Boss")]
         [SerializeField] private BossTimer bossTimer;
@@ -117,7 +119,7 @@ namespace GameObjects.Enemy.Spawner.Scripts
             }
 
             int minAlive = Mathf.RoundToInt(minEnemiesAliveCurve.Evaluate(_runTime));
-            int deficit = minAlive - _aliveEnemyCount;
+            int deficit = Mathf.Min(minAlive - _aliveEnemyCount, maxTopUpPerFrame);
             for (int i = 0; i < deficit; i++)
                 SpawnEnemy();
         }

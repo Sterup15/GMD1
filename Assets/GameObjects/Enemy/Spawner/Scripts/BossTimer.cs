@@ -13,6 +13,7 @@ namespace GameObjects.Enemy.Common.Spawner
 
         private float _timeRemaining;
         private bool _isRunning;
+        private int _shownSeconds = -1;
 
         private void Start()
         {
@@ -41,21 +42,19 @@ namespace GameObjects.Enemy.Common.Spawner
         {
             _timeRemaining = duration;
             _isRunning = true;
+            _shownSeconds = -1;
             if (timerText != null) timerText.gameObject.SetActive(true);
             UpdateText();
         }
 
-        public void Stop()
-        {
-            _isRunning = false;
-        }
-
+        // Only rebuilds the text when the shown second changes, instead of a new string every frame
         private void UpdateText()
         {
             if (timerText == null) return;
-            int minutes = Mathf.FloorToInt(_timeRemaining / 60f);
-            int seconds = Mathf.FloorToInt(_timeRemaining % 60f);
-            timerText.text = $"{minutes:00}:{seconds:00}";
+            int totalSeconds = Mathf.FloorToInt(_timeRemaining);
+            if (totalSeconds == _shownSeconds) return;
+            _shownSeconds = totalSeconds;
+            timerText.text = $"{totalSeconds / 60:00}:{totalSeconds % 60:00}";
         }
     }
 }
