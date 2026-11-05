@@ -40,7 +40,7 @@ Assets/GameObjects/
       Shared/        Scripts/Behaviour (EnemyRanged*) used by every ranged enemy
       RedArcher/     Sprite/Anims, RedArcher.prefab
     TogreBoss/       Scripts/Behaviour, Scripts/Health (BossHealthBar), Sprite/Anims, AudioFiles, prefab
-    Spawner/         EnemySpawner, BossTimer
+    Spawner/         EnemySpawner (waves), BossSpawner (boss), BossTimer, SpawnPoints (dry spawn spot on the ring)
   Music/             MusicController, MainMenuMusicController, AudioFiles
   Player/
     Shared/          Scripts/{Movement,Health,Gold,Dash,Selection}, AudioFiles used by every character, CharacterRoster.asset
@@ -72,9 +72,9 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ### 2. Two event buses: decouple, don't reference siblings
 - **`ActorEvents`** (`Common/Events/ActorEvents.cs`) is a per-actor bus on each actor's root GameObject. Components on the same actor talk through it, not through direct references to each other. Adding a signal means: add `public event Action OnX;` plus a `public void X() => OnX?.Invoke();` raiser.
-- **`GlobalEvents`** (`Common/Events/GlobalEvents.cs`) is a static, game-wide bus for moments the whole game cares about: boss spawned/defeated, player died/won, level up. Use it for cross-system reactions (music, UI screens, camera, victory) so nothing has to reference the spawner or the player.
+- **`GlobalEvents`** (`Common/Events/GlobalEvents.cs`) is a static, game-wide bus for moments the whole game cares about: boss spawned/defeated, player died/won, level up. `OnBossSpawnedWithBoss` fires at the same moment as `OnBossSpawned` and carries the boss's `ActorEvents` and name, for listeners that need the boss itself (its health bar). Use it for cross-system reactions (music, UI screens, camera, victory) so nothing has to reference the spawner or the player.
 - Subscribe in `OnEnable` and **always unsubscribe in `OnDisable`**. Static events survive scene reloads, so a missing unsubscribe leads to null-reference errors after a restart. Cache `ActorEvents` in `Awake` (`GetComponent`, or `GetComponentInParent` from a child sprite).
-- Don't over-decouple. Plain local events are fine for one-to-one wiring (e.g. `BossTimer.OnTimerComplete` → spawner, `BossHitbox.OnHit` → `BossMelee`).
+- Don't over-decouple. Plain local events are fine for one-to-one wiring (e.g. `BossTimer.OnTimerComplete` → `BossSpawner`, `BossHitbox.OnHit` → `BossMelee`).
 
 ### 3. Animation drives gameplay timing
 - Gameplay moments (firing a shot, finishing an attack, the end of a windup, opening and closing the hitbox, footsteps, swings, death complete) are **Animation Events** on the clips, not timers. The one exception is the dash: there's no dash clip, so `PlayerDash` times it and raises `DashStarted`/`DashEnded` on `ActorEvents`, which movement (dash velocity), `PlayerHealth` (dash i-frames) and `DashDust` listen to.
