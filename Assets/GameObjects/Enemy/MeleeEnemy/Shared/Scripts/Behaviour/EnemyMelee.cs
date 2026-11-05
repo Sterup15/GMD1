@@ -1,7 +1,7 @@
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
-using GameObjects.Player.Shared.Scripts.Health;
+using GameObjects.Common.Projectiles.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
@@ -57,9 +57,9 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
             if (Time.time < nextDamageTime) return;
             if (!other.CompareTag("Player")) return;
 
-            if (other.TryGetComponent<PlayerHealth>(out var health))
+            if (other.TryGetComponent<IDamageable>(out var target))
             {
-                health.TakeDamage(Mathf.RoundToInt(stats.Damage.Value));
+                target.TakeDamage(Mathf.RoundToInt(stats.Damage.Value));
                 nextDamageTime = Time.time + damageCooldown;
                 meleeMovementState.SetMoveState(EnemyMoveStateEnum.Attack);
             }

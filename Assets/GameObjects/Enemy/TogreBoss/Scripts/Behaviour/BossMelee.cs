@@ -1,7 +1,7 @@
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Events;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
-using GameObjects.Player.Shared.Scripts.Health;
+using GameObjects.Common.Projectiles.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
@@ -103,8 +103,8 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         private void HandleHitboxContact(Collider2D other)
         {
             if (!other.CompareTag("Player")) return;
-            if (other.TryGetComponent<PlayerHealth>(out var health))
-                health.TakeDamage(Mathf.RoundToInt(_stats.Damage.Value));
+            if (other.TryGetComponent<IDamageable>(out var target))
+                target.TakeDamage(Mathf.RoundToInt(_stats.Damage.Value));
         }
 
 #if UNITY_EDITOR
