@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Common.DamageNumber.Scripts
@@ -18,7 +19,7 @@ namespace GameObjects.Common.DamageNumber.Scripts
         private void Spawn(int amount)
         {
             if (damageNumberPrefab == null) return;
-            Instantiate(damageNumberPrefab, transform.position, Quaternion.identity).Setup(amount);
+            PrefabPool.Spawn(damageNumberPrefab, transform.position, Quaternion.identity).Setup(amount);
         }
     }
 }

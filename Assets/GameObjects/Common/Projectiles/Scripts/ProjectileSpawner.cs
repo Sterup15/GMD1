@@ -39,7 +39,7 @@ namespace GameObjects.Common.Projectiles.Scripts
             if (targetPosition == null) return;
 
             Vector2 direction = (targetPosition.Value - (Vector2)spawnPoint.position).normalized;
-            var go = Instantiate(projectilePrefab, spawnPoint.position, Quaternion.identity);
+            var go = PrefabPool.Spawn(projectilePrefab, spawnPoint.position, Quaternion.identity);
             var projectile = go.GetComponent<Projectile>();
             if (_stats != null)
             {

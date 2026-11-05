@@ -1,5 +1,6 @@
 using GameObjects.Common.Events;
 using GameObjects.Common.Pickups.Gold.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Enemy.Common.Scripts
@@ -20,7 +21,7 @@ namespace GameObjects.Enemy.Common.Scripts
         private void Drop()
         {
             if (goldPickupPrefab == null || _amount <= 0) return;
-            var go = Instantiate(goldPickupPrefab, transform.position, Quaternion.identity);
+            var go = PrefabPool.Spawn(goldPickupPrefab, transform.position, Quaternion.identity);
             go.GetComponent<GoldPickup>().SetAmount(_amount);
         }
     }

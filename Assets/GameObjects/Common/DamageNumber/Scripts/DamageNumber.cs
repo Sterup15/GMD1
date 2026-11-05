@@ -1,3 +1,4 @@
+using GameObjects.Common.Utils;
 using TMPro;
 using UnityEngine;
 
@@ -11,10 +12,14 @@ namespace GameObjects.Common.DamageNumber.Scripts
         private float _elapsed;
         private Color _color;
 
+        private void Awake() => _color = text.color;
+
+        // Pooled: every number starts fresh here, since a reused one still has the last number's fade
         public void Setup(int damage)
         {
             text.text = damage.ToString();
-            _color = text.color;
+            text.color = _color;
+            _elapsed = 0f;
         }
 
         private void Update()
@@ -24,7 +29,7 @@ namespace GameObjects.Common.DamageNumber.Scripts
             text.color = new Color(_color.r, _color.g, _color.b, 1f - _elapsed);
 
             if (_elapsed >= 1f)
-                Destroy(gameObject);
+                PooledObject.Release(gameObject);
         }
     }
 }

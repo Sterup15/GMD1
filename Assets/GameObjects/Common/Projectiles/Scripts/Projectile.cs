@@ -1,7 +1,9 @@
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Common.Projectiles.Scripts
 {
+    // Pooled (PrefabPool): everything a shot changes is reset in OnEnable, and it goes back to the pool instead of being destroyed
     public class Projectile : MonoBehaviour
     {
         [SerializeField] private float speed = 10f;
@@ -9,6 +11,8 @@ namespace GameObjects.Common.Projectiles.Scripts
         [SerializeField] private int damage = 1;
 
         private Rigidbody2D _rb;
+        private int _defaultDamage;
+        private float _age;
         private int _bouncesRemaining;
         private int _penetrationsRemaining;
         private float _lastBounceTime = float.MinValue;
@@ -18,7 +22,23 @@ namespace GameObjects.Common.Projectiles.Scripts
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
+            _defaultDamage = damage;
             _cameraWallsLayer = LayerMask.NameToLayer("CameraWalls");
+        }
+
+        private void OnEnable()
+        {
+            damage = _defaultDamage;
+            _age = 0f;
+            _bouncesRemaining = 0;
+            _penetrationsRemaining = 0;
+            _lastBounceTime = float.MinValue;
+        }
+
+        private void Update()
+        {
+            _age += Time.deltaTime;
+            if (_age >= lifetime) PooledObject.Release(gameObject);
         }
 
         public void SetDamage(int value)        => damage = value;
@@ -31,7 +51,6 @@ namespace GameObjects.Common.Projectiles.Scripts
             _rb.linearVelocity = direction * speed;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
-            Destroy(gameObject, lifetime);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -43,7 +62,7 @@ namespace GameObjects.Common.Projectiles.Scripts
 
                 if (_bouncesRemaining <= 0)
                 {
-                    Destroy(gameObject);
+                    PooledObject.Release(gameObject);
                     return;
                 }
 
@@ -65,7 +84,7 @@ namespace GameObjects.Common.Projectiles.Scripts
             {
                 target.TakeDamage(damage);
                 if (_penetrationsRemaining <= 0)
-                    Destroy(gameObject);
+                    PooledObject.Release(gameObject);
                 else
                     _penetrationsRemaining--;
             }

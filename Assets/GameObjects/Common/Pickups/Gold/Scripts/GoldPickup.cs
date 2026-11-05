@@ -1,4 +1,5 @@
 using GameObjects.Common.Pickups.Scripts;
+using GameObjects.Common.Utils;
 using GameObjects.Player.Shared.Scripts.Gold;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace GameObjects.Common.Pickups.Gold.Scripts
             if (collector.TryGetComponent<PlayerGold>(out var gold))
                 gold.AddGold(_amount);
 
-            Destroy(gameObject);
+            PooledObject.Release(gameObject);
         }
     }
 }
