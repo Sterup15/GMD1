@@ -158,7 +158,8 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 - `MusicController` swaps looping clips on `GlobalEvents` (normal / boss / defeat / victory) and doesn't restart a clip that is already playing.
 - Volumes come from `GameSettings`: master sets `AudioListener.volume`, music controllers scale their source by `MusicVolume` (and listen to `OnVolumeChanged`), and sound effects multiply their `PlayOneShot` volume by `EffectsVolume`. A new sound source must apply one of these.
-- `ActorSoundController` sits on each actor, listens to `ActorEvents`, and plays a random clip from a `SoundPool` with `PlayOneShot`. New SFX = new pool field + subscription, with clips assigned in the Inspector. Audio files go in the owning entity's `AudioFiles/` folder.
+- `ActorSoundController` sits on each actor, listens to `ActorEvents`, and plays a random clip from a `SoundPool` with `PlayOneShot`.
+- **Hit sounds belong to what hits, not to what is hit:** `Projectile` and `Explosion` each have a `hitSound` pool (the arrow and the bomb sound different), played through the static `SoundEffects` (one shared 2D source, so a pooled or destroyed object's sound isn't cut off and no GameObject is made per sound). An explosion plays it once per blast. Enemies keep their own death sounds; the player keeps its own sound for taking damage, so enemy projectiles have no hit sound. New SFX = new pool field + subscription, with clips assigned in the Inspector. Audio files go in the owning entity's `AudioFiles/` folder.
 
 ## Code style
 
