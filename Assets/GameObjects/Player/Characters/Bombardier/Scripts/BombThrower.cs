@@ -28,11 +28,11 @@ namespace GameObjects.Player.Characters.Bombardier.Scripts
 
         private void Throw()
         {
-            var target = Targeting.Nearest("Enemy", spawnPoint.position);
+            var target = Targeting.NearestEnemy(spawnPoint.position);
             if (target == null) return;
 
             var bomb = Instantiate(bombPrefab, spawnPoint.position, Quaternion.identity);
-            bomb.Launch(target.transform.position, Mathf.RoundToInt(_stats.Damage.Value), _stats.Area.Value);
+            bomb.Launch(target.position, Mathf.RoundToInt(_stats.Damage.Value), _stats.Area.Value);
         }
     }
 }

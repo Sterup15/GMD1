@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: -703298326790458542}
   - component: {fileID: 3496521347260699125}
   - component: {fileID: 6334619825647556115}
+  - component: {fileID: 3669498883523437280}
   m_Layer: 9
   m_Name: RedKnight
   m_TagString: Enemy
@@ -887,3 +888,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.SteakDropper
   steakPickupPrefab: {fileID: 6707327160644584348, guid: 783c967b5fff48b782a798e00790eef9, type: 3}
   dropChance: 0.02
+--- !u!114 &3669498883523437280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeef0a0bc1b3f0e75705b7a9f9774708, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.EnemyTarget

@@ -58,8 +58,8 @@ namespace GameObjects.Common.Projectiles.Scripts
                     return _player != null ? (Vector2?)_player.position : null;
 
                 case TargetModeEnum.NearestEnemy:
-                    var enemy = Targeting.Nearest("Enemy", spawnPoint.position);
-                    return enemy != null ? (Vector2?)enemy.transform.position : null;
+                    var enemy = Targeting.NearestEnemy(spawnPoint.position);
+                    return enemy != null ? (Vector2?)enemy.position : null;
 
                 default:
                     return null;

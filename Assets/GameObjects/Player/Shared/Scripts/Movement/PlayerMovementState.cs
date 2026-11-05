@@ -64,8 +64,8 @@ namespace GameObjects.Player.Shared.Scripts.Movement
                 spriteRenderer.flipX = playerMovement.MoveDirection.x < 0f;
         }
 
-        private GameObject NearestEnemyInRange() =>
-            Targeting.Nearest("Enemy", transform.position, stats.ShootRange.Value);
+        private Transform NearestEnemyInRange() =>
+            Targeting.NearestEnemy(transform.position, stats.ShootRange.Value);
 
         public void SetMoveState(MoveStateEnum newMoveState)
         {
@@ -98,7 +98,7 @@ namespace GameObjects.Player.Shared.Scripts.Movement
         {
             var target = NearestEnemyInRange();
             if (target != null)
-                spriteRenderer.flipX = target.transform.position.x < transform.position.x;
+                spriteRenderer.flipX = target.position.x < transform.position.x;
 
             animator.speed = shootAnimLength * stats.FireRate.Value;
             animator.Play(attackAnim);
