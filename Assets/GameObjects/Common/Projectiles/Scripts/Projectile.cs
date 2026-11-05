@@ -1,3 +1,4 @@
+using GameObjects.Common.Audio.Scripts;
 using GameObjects.Common.Utils;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace GameObjects.Common.Projectiles.Scripts
         [SerializeField] private float speed = 10f;
         [SerializeField] private float lifetime = 3f;
         [SerializeField] private int damage = 1;
+        [Tooltip("Played when it hits something it damages. The target plays its own sounds (e.g. death) itself")]
+        [SerializeField] private SoundPool hitSound = new();
 
         private Rigidbody2D _rb;
         private int _defaultDamage;
@@ -83,6 +86,7 @@ namespace GameObjects.Common.Projectiles.Scripts
             if (other.TryGetComponent<IDamageable>(out var target))
             {
                 target.TakeDamage(damage);
+                SoundEffects.Play(hitSound);
                 if (_penetrationsRemaining <= 0)
                     PooledObject.Release(gameObject);
                 else

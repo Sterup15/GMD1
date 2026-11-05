@@ -173,3 +173,13 @@ MonoBehaviour:
   speed: 5
   lifetime: 20
   damage: 1
+  hitSound:
+    clips:
+    - {fileID: 8300000, guid: 6695cc1cf6bf3c24e8b5f77a6ff46fa1, type: 3}
+    - {fileID: 8300000, guid: d7c25ca783b8cc1428d308855f81f28a, type: 3}
+    - {fileID: 8300000, guid: cbc37f7d219f7d94f87289dcccf54bb4, type: 3}
+    - {fileID: 8300000, guid: 9207598c34b71e24d80bc95ec74c19f0, type: 3}
+    - {fileID: 8300000, guid: 6475c43b7035c3a49b6ba4ee475c48be, type: 3}
+    - {fileID: 8300000, guid: fa674ce1d3679ed48967e355fce62456, type: 3}
+    volume: 0.6
+    cooldown: 0.1

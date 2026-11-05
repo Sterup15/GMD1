@@ -131,3 +131,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   spriteRadius: 1.2
+  hitSound:
+    clips:
+    - {fileID: 8300000, guid: 0181d7183e123104ab400018e981ec1b, type: 3}
+    volume: 0.6
+    cooldown: 0.1

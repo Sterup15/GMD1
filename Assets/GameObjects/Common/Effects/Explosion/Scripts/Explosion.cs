@@ -1,3 +1,4 @@
+using GameObjects.Common.Audio.Scripts;
 using GameObjects.Common.Projectiles.Scripts;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace GameObjects.Common.Effects.Explosion.Scripts
         [SerializeField] private LayerMask targetLayers = 1 << 9;
         [Tooltip("Blast radius the sprite shows at scale 1, so the visual can be scaled to the damage radius")]
         [SerializeField] private float spriteRadius = 1.2f;
+        [Tooltip("Played once per blast that damages anything")]
+        [SerializeField] private SoundPool hitSound = new();
 
         private const int MaxHits = 64;
         private static readonly Collider2D[] Hits = new Collider2D[MaxHits];
@@ -29,13 +32,16 @@ namespace GameObjects.Common.Effects.Explosion.Scripts
             var filter = new ContactFilter2D { useLayerMask = true, layerMask = targetLayers, useTriggers = true };
             int count = Physics2D.OverlapCircle(transform.position, _radius, filter, Hits);
 
+            bool hitAny = false;
             for (int i = 0; i < count; i++)
             {
                 // An enemy can have several colliders, so only damage each GameObject once
                 if (HitEarlier(i)) continue;
-                if (Hits[i].TryGetComponent<IDamageable>(out var target))
-                    target.TakeDamage(_damage);
+                if (!Hits[i].TryGetComponent<IDamageable>(out var target)) continue;
+                target.TakeDamage(_damage);
+                hitAny = true;
             }
+            if (hitAny) SoundEffects.Play(hitSound);
         }
 
         private static bool HitEarlier(int index)
