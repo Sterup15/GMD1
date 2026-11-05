@@ -152,6 +152,8 @@ GameObject:
   - component: {fileID: 7065489996659437598}
   - component: {fileID: 377685209947848422}
   - component: {fileID: 384336309863278165}
+  - component: {fileID: 552288284148006108}
+  - component: {fileID: 2992381233673110903}
   m_Layer: 9
   m_Name: RedArcher
   m_TagString: Enemy
@@ -253,8 +255,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4072d3f999e1f449900da30fbc7404c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Actors.Enemy.Scripts.EnemyHealth
-  damageNumberPrefab: {fileID: 5418003599515814950, guid: 64ae3196ed0fdf44f8caacc46dedf1fe, type: 3}
-  slider: {fileID: 7086594009721506124}
 --- !u!114 &2212302401239365186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -915,3 +915,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeef0a0bc1b3f0e75705b7a9f9774708, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.EnemyTarget
+--- !u!114 &552288284148006108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13bcd5c753e3e287b717220b570d068e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.DamageNumber.Scripts.DamageNumberSpawner
+  damageNumberPrefab: {fileID: 3722326909509200501, guid: 64ae3196ed0fdf44f8caacc46dedf1fe, type: 3}
+--- !u!114 &2992381233673110903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e26dff201ab8471f971076953caec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.Health.EnemyHealthBar
+  slider: {fileID: 7086594009721506124}
