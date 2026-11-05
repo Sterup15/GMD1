@@ -1,4 +1,5 @@
 using System;
+using GameObjects.Common.Progression.Scripts;
 
 namespace GameObjects.Common.Events
 {
@@ -11,6 +12,9 @@ namespace GameObjects.Common.Events
         public static event Action OnPlayerDied;
         public static event Action OnPlayerWon;
         public static event Action<int> OnLevelUp;
+        public static event Action OnEnemyKilled;
+        // After OnPlayerDied/OnPlayerWon, once the run's points are counted and banked
+        public static event Action<RunResult> OnRunEnded;
 
         public static void BossSpawned(ActorEvents boss, string bossName)
         {
@@ -22,5 +26,7 @@ namespace GameObjects.Common.Events
         public static void PlayerDied()       => OnPlayerDied?.Invoke();
         public static void PlayerWon()        => OnPlayerWon?.Invoke();
         public static void LevelUp(int level) => OnLevelUp?.Invoke(level);
+        public static void EnemyKilled()      => OnEnemyKilled?.Invoke();
+        public static void RunEnded(RunResult result) => OnRunEnded?.Invoke(result);
     }
 }

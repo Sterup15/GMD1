@@ -52,6 +52,8 @@ namespace GameObjects.Enemy.Common.Scripts.Health
 
         public void FinaliseDeath()
         {
+            // Before Death, because the boss's Death ends the run and the kill must count first
+            GlobalEvents.EnemyKilled();
             _events.Death();
             Destroy(gameObject);
         }
