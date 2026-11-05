@@ -29,14 +29,23 @@ namespace GameObjects.Player.Shared.Scripts.Movement
 
         private void OnEnable()
         {
-            _events.OnDashStarted += StartDash;
-            _events.OnDashEnded   += EndDash;
+            _events.OnDashStarted       += StartDash;
+            _events.OnDashEnded         += EndDash;
+            stats.FireRate.OnValueChanged += UpdateAttackSpeed;
         }
 
         private void OnDisable()
         {
-            _events.OnDashStarted -= StartDash;
-            _events.OnDashEnded   -= EndDash;
+            _events.OnDashStarted       -= StartDash;
+            _events.OnDashEnded         -= EndDash;
+            stats.FireRate.OnValueChanged -= UpdateAttackSpeed;
+        }
+
+        // Attack speed can change mid-volley (talents, timed buffs), so a running attack follows it at once
+        private void UpdateAttackSpeed()
+        {
+            if (currentMoveState == MoveStateEnum.Attack)
+                animator.speed = shootAnimLength * stats.FireRate.Value;
         }
 
         // A dash from standing still has no move input, so face the dash and play the run clip instead of attacking
