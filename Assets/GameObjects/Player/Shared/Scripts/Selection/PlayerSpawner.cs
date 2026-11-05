@@ -2,24 +2,27 @@ using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Selection
 {
-    // Spawns the character picked in the main menu. Runs in Awake, so everything that looks for the
+    // Spawns the character picked on the select screen. Runs in Awake, so everything that looks for the
     // "Player" tag in Start (camera, spawner, HUD, upgrades) finds it
     [DefaultExecutionOrder(-50)]
     public class PlayerSpawner : MonoBehaviour
     {
-        [Tooltip("Indexed by CharacterSelection.SelectedIndex, in the same order as the main menu buttons")]
-        [SerializeField] private GameObject[] characters;
+        [SerializeField] private CharacterRoster roster;
 
         private void Awake()
         {
-            if (characters == null || characters.Length == 0)
+            if (roster == null || roster.Count == 0)
             {
-                Debug.LogError("PlayerSpawner: No character prefabs assigned.", this);
+                Debug.LogError("PlayerSpawner: No character roster assigned.", this);
                 return;
             }
 
-            int index = Mathf.Clamp(CharacterSelection.SelectedIndex, 0, characters.Length - 1);
-            Instantiate(characters[index], transform.position, Quaternion.identity);
+            // Playing the game scene directly (no pick yet) uses the last picked character
+            var character = CharacterSelection.Selected;
+            if (character == null || roster.IndexOf(character) < 0)
+                character = roster[CharacterSelection.LastPickIndex(roster)];
+
+            Instantiate(character.Prefab, transform.position, Quaternion.identity);
         }
     }
 }

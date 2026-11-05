@@ -351148,9 +351148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22224fdeb61d4a12b2f214dbee9ab554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Selection.PlayerSpawner
-  characters:
-  - {fileID: 2904057035740938740, guid: 5ac8e7c8e63d1384683c10c0bfd5596a, type: 3}
-  - {fileID: 2904057035740938740, guid: 32ba4c0eaded49a98ab1b32a175645bd, type: 3}
+  roster: {fileID: 11400000, guid: 63c6502b1c3dc654481aba5eed21711f, type: 2}
 --- !u!4 &1731162523 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1418891716720078571, guid: 28df6d1cb72fbb041bce26fb9c781d23, type: 3}

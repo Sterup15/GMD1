@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d502d3e3fce345c41b08fcaea97a3d4c, type: 3}
+  m_Name: CharacterRoster
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Selection.CharacterRoster
+  characters:
+  - {fileID: 11400000, guid: 5ab02d2a7b2e8364aaa0767c92f7b9fa, type: 2}
+  - {fileID: 11400000, guid: f00991ce6dddea34caf0e3aa1b9511e3, type: 2}
