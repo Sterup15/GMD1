@@ -275,6 +275,7 @@ GameObject:
   - component: {fileID: 5601507511839838329}
   - component: {fileID: 4818704258758665313}
   - component: {fileID: 7689558051871315043}
+  - component: {fileID: 1490889376502713421}
   m_Layer: 8
   m_Name: Bombardier
   m_TagString: Player
@@ -688,3 +689,15 @@ MonoBehaviour:
     multiplier: 0.5
   - stat: 3
     multiplier: 0.5
+--- !u!114 &1490889376502713421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2904057035740938740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2eed52832ec497194375b69078b9aa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Armory.Scripts.ArmoryBonuses

@@ -1,4 +1,5 @@
 using System;
+using GameObjects.Common.Armory.Scripts;
 using GameObjects.Common.Progression.Scripts;
 using GameObjects.Common.UI.Navigation.Scripts;
 using GameObjects.Player.Shared.Scripts.Selection;
@@ -11,8 +12,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 {
     // Pick a character before a run. One portrait per roster entry, built when the screen is created, so a new
     // character only needs a CharacterDefinition in the roster. Two rows: the portraits (left/right or a click picks
-    // a character, Interact moves down to Start) and Back / Talents / Start below them (down/up moves between the
-    // rows, disabled buttons are skipped). Pause also goes back
+    // a character, Interact moves down to Start) and Back / Armory / Start below them (down/up moves between the
+    // rows). Armory opens the shop for permanent upgrades on top of this screen. Pause also goes back
     public class CharacterSelectScreen : MonoBehaviour
     {
         [SerializeField] private GameObject panel;
@@ -25,8 +26,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         [SerializeField] private TextMeshProUGUI statsText;
         [SerializeField] private Button startButton;
         [SerializeField] private Button backButton;
-        [Tooltip("Opens the chosen character's talents. Not interactable until the talent system exists")]
-        [SerializeField] private Button talentsButton;
+        [SerializeField] private Button armoryButton;
+        [SerializeField] private ArmoryScreen armoryPrefab;
         [SerializeField] private int gameSceneIndex = 1;
 
         private const int PortraitRowIndex = 0;
@@ -34,6 +35,7 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         private MenuNavigator _navigator;
         private int _characterIndex;
         private Action _onClosed;
+        private ArmoryScreen _armory;
 
         public bool IsOpen => panel.activeSelf;
 
@@ -51,10 +53,12 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
                 portraits[i] = portrait;
             }
 
-            _navigator = new MenuNavigator(portraits, new[] { backButton, talentsButton, startButton });
+            _navigator = new MenuNavigator(portraits, new[] { backButton, armoryButton, startButton });
             _navigator.OnSelectionChanged += OnSelectionChanged;
             startButton.onClick.AddListener(StartRun);
             backButton.onClick.AddListener(Close);
+            if (armoryPrefab != null) armoryButton.onClick.AddListener(OpenArmory);
+            else armoryButton.interactable = false;
             panel.SetActive(false);
         }
 
@@ -77,7 +81,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         private void Update()
         {
-            if (!IsOpen || _navigator.InputBlocked) return;
+            // While the Armory is open on top, it has the input
+            if (!IsOpen || _navigator.InputBlocked || (_armory != null && _armory.IsOpen)) return;
 
             if (GameInput.PausePressed)
             {
@@ -90,6 +95,19 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
             if (!GameInput.InteractPressed) return;
             if (_navigator.Row == PortraitRowIndex) _navigator.Select(startButton);
             else _navigator.Submit();
+        }
+
+        private void OpenArmory()
+        {
+            if (_armory == null) _armory = Instantiate(armoryPrefab);
+            _armory.Open(OnArmoryClosed);
+        }
+
+        // The key that closed the Armory must not also act on this screen
+        private void OnArmoryClosed()
+        {
+            _navigator.BlockInputThisFrame();
+            _navigator.Select(armoryButton);
         }
 
         private void OnSelectionChanged(int row, int column)

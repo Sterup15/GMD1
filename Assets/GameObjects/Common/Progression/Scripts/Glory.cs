@@ -16,5 +16,13 @@ namespace GameObjects.Common.Progression.Scripts
             // The web build only writes PlayerPrefs to the browser's storage on Save
             PlayerPrefs.Save();
         }
+
+        public static bool TrySpend(int amount)
+        {
+            if (amount < 0 || Balance < amount) return false;
+            PlayerPrefs.SetInt(BalanceKey, Balance - amount);
+            PlayerPrefs.Save();
+            return true;
+        }
     }
 }
