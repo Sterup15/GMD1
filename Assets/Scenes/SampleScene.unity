@@ -351040,23 +351040,21 @@ MonoBehaviour:
   - {fileID: 5770621521947117929, guid: 169fd65e9a1f46d9a49392447694b1c1, type: 3}
   - {fileID: 7949931728189947885, guid: 573d43ca70674b30a96eacf68ec3e4b5, type: 3}
   - {fileID: 2130934982820452157, guid: 09106b0fb0584227b62b5256ab6277d0, type: 3}
-  - {fileID: 4631836740968946085, guid: 6f4a907ff3fd4921b82e13cd2d2cb4a3, type: 3}
-  - {fileID: 1452339931679232927, guid: 4dcb5aacdc034d8d991d61d16f918dc3, type: 3}
-  - {fileID: 7476691393260694188, guid: 038b55677d0b4f3e8ec0f9e3fed8625c, type: 3}
-  - {fileID: 6418599908202013942, guid: 61085f26dad14d24b4d8766daf9f612e, type: 3}
-  count: 8
+  count: 12
   area:
     serializedVersion: 2
     x: -15
     y: -9
     width: 30
     height: 25
-  minSpacing: 11
+  minSpacing: 8
   playerClearRadius: 3
   waterLayer:
     serializedVersion: 2
     m_Bits: 16
   waterClearance: 1
+  avoid: []
+  avoidDistance: 2
 --- !u!1 &1298399246
 GameObject:
   m_ObjectHideFlags: 0
@@ -352304,6 +352302,71 @@ MonoBehaviour:
   pointsPerMinute: 10
   victoryBonus: 100
   gloryPerPoint: 1
+--- !u!1 &1772840401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1772840402}
+  - component: {fileID: 1772840403}
+  m_Layer: 0
+  m_Name: Bushes
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1772840402
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772840401}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1772840403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772840401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c0a722ed6a4ddc97f973ec85801a71, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.Terrain.Scripts.TerrainScatter
+  prefabs:
+  - {fileID: 3438584873755399738, guid: 45633e07212a4c3ab207acde63ae697e, type: 3}
+  - {fileID: 2882294643973214740, guid: 136e63489c9a464ea575cade2f7347c6, type: 3}
+  - {fileID: 7268368452205558566, guid: 783aa662841842f681a5dba694eb613e, type: 3}
+  - {fileID: 7062871463183875123, guid: 233cd3f5c6394471a6e612a81e426174, type: 3}
+  count: 20
+  area:
+    serializedVersion: 2
+    x: -15
+    y: -9
+    width: 30
+    height: 25
+  minSpacing: 3.5
+  playerClearRadius: 2
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+  waterClearance: 0.6
+  avoid:
+  - {fileID: 1209184716}
+  avoidDistance: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -352322,3 +352385,4 @@ SceneRoots:
   - {fileID: 4150386783664054148}
   - {fileID: 147460032}
   - {fileID: 1772840392}
+  - {fileID: 1772840402}

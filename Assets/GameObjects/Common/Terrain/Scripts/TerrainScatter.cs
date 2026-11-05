@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameObjects.Common.Terrain.Scripts
 {
-    // Scatters a few map decorations (trees and stumps, ground patches) at run start, so the open grass doesn't all look the same
+    // Scatters a few map decorations (trees, bushes, ground patches) at run start, so the open grass doesn't all look the same
     public class TerrainScatter : MonoBehaviour
     {
         [Tooltip("Picked at random, one per placed piece")]
@@ -20,25 +20,43 @@ namespace GameObjects.Common.Terrain.Scripts
         [Tooltip("Min distance from the water, so no piece hangs over the coast")]
         [SerializeField] private float waterClearance = 1f;
 
+        [Tooltip("Other scatters whose pieces these keep away from (e.g. bushes away from trees)")]
+        [SerializeField] private TerrainScatter[] avoid;
+        [Tooltip("Min distance from the avoided scatters' pieces")]
+        [SerializeField, Min(0f)] private float avoidDistance = 2f;
+
         private const int MaxAttemptsPerPiece = 30;
 
-        private void Start()
+        private readonly List<Vector2> _placed = new();
+        private bool _done;
+
+        private void Start() => EnsurePlaced();
+
+        // Places the pieces once. A scatter that avoids this one calls it first, so the order of Start calls
+        // between scatters doesn't matter
+        public void EnsurePlaced()
         {
+            if (_done) return;
+            _done = true;
+
             if (prefabs == null || prefabs.Length == 0)
             {
                 Debug.LogWarning("TerrainScatter: No prefabs assigned.", this);
                 return;
             }
 
+            if (avoid != null)
+                foreach (var other in avoid)
+                    if (other != null && other != this) other.EnsurePlaced();
+
             var playerObj = GameObject.FindWithTag("Player");
             Vector2 playerStart = playerObj != null ? playerObj.transform.position : Vector2.zero;
 
-            var placed = new List<Vector2>(count);
             for (int i = 0; i < count; i++)
             {
-                if (!TryFindSpot(playerStart, placed, out var position)) continue;
+                if (!TryFindSpot(playerStart, _placed, out var position)) continue;
 
-                placed.Add(position);
+                _placed.Add(position);
                 Instantiate(prefabs[Random.Range(0, prefabs.Length)], position, Quaternion.identity, transform);
             }
         }
@@ -62,6 +80,14 @@ namespace GameObjects.Common.Terrain.Scripts
 
             foreach (var other in placed)
                 if ((position - other).sqrMagnitude < minSpacing * minSpacing) return false;
+
+            if (avoid != null)
+                foreach (var scatter in avoid)
+                {
+                    if (scatter == null || scatter == this) continue;
+                    foreach (var other in scatter._placed)
+                        if ((position - other).sqrMagnitude < avoidDistance * avoidDistance) return false;
+                }
 
             return true;
         }
