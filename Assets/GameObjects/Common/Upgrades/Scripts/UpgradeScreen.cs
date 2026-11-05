@@ -13,7 +13,10 @@ namespace GameObjects.Common.Upgrades.Scripts
     public struct RarityWeight
     {
         public UpgradeRarity rarity;
+        [Tooltip("Chance in percent when the weights add up to 100")]
         public float weight;
+        [Tooltip("Percentage points added per point of Luck (negative takes them away, e.g. from Common)")]
+        public float luckBonus;
     }
 
     public class UpgradeScreen : MonoBehaviour
@@ -32,13 +35,16 @@ namespace GameObjects.Common.Upgrades.Scripts
             new StatPointValue(StatType.PickupRange, 40f,      true),
             new StatPointValue(StatType.Area,        10f,      true),
             new StatPointValue(StatType.Haste,       10f),
+            new StatPointValue(StatType.Luck,        1f),
         };
+        [Tooltip("Luck stops counting above this, and Luck cards stop showing up once it's reached")]
+        [SerializeField, Min(0f)] private float maxLuck = 10f;
         [SerializeField] private List<RarityWeight> rarityWeights = new()
         {
-            new RarityWeight { rarity = UpgradeRarity.Common,    weight = 60f },
-            new RarityWeight { rarity = UpgradeRarity.Uncommon,  weight = 25f },
-            new RarityWeight { rarity = UpgradeRarity.Rare,      weight = 12f },
-            new RarityWeight { rarity = UpgradeRarity.Legendary, weight = 3f  },
+            new RarityWeight { rarity = UpgradeRarity.Common,    weight = 60f, luckBonus = -6f },
+            new RarityWeight { rarity = UpgradeRarity.Uncommon,  weight = 25f, luckBonus = 3f  },
+            new RarityWeight { rarity = UpgradeRarity.Rare,      weight = 12f, luckBonus = 2f  },
+            new RarityWeight { rarity = UpgradeRarity.Legendary, weight = 3f,  luckBonus = 1f  },
         };
 
         private Stats.Scripts.Stats _playerStats;
@@ -143,6 +149,8 @@ namespace GameObjects.Common.Upgrades.Scripts
             // Checked on every level-up, so cards unlocked mid-run (e.g. by an item) show up from the next draw
             if (_eligibility != null)
                 pool.RemoveAll(u => !_eligibility.Allows(u.requirement));
+            if (Luck >= maxLuck)
+                pool.RemoveAll(u => u.statType == StatType.Luck);
             List<UpgradeDefinition> drawn = new();
 
             for (int i = 0; i < count && pool.Count > 0; i++)
@@ -161,7 +169,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             foreach (var rw in rarityWeights)
             {
                 if (pool.Exists(u => u.rarity == rw.rarity))
-                    totalWeight += rw.weight;
+                    totalWeight += WeightOf(rw);
             }
 
             if (totalWeight <= 0f)
@@ -174,12 +182,21 @@ namespace GameObjects.Common.Upgrades.Scripts
             {
                 var candidates = pool.FindAll(u => u.rarity == rw.rarity);
                 if (candidates.Count == 0) continue;
-                cumulative += rw.weight;
+                cumulative += WeightOf(rw);
                 if (roll < cumulative)
                     return candidates[Random.Range(0, candidates.Count)];
             }
 
             return pool[Random.Range(0, pool.Count)];
         }
+
+        // Each point of Luck moves luckBonus percentage points onto a rarity (by default +3 Uncommon, +2 Rare,
+        // +1 Legendary, taken from Common). Luck is capped at maxLuck
+        private float WeightOf(RarityWeight rw)
+        {
+            return Mathf.Max(0f, rw.weight + Mathf.Min(Luck, maxLuck) * rw.luckBonus);
+        }
+
+        private float Luck => _playerStats != null ? Mathf.Max(0f, _playerStats.Luck.Value) : 0f;
     }
 }

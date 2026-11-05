@@ -15,6 +15,7 @@ namespace GameObjects.Common.Stats.Scripts
         public Stat Haste;
         public Stat DashCharges;
         public Stat Area;
+        public Stat Luck;
 
         public Stat GetStat(StatType type) => type switch
         {
@@ -29,6 +30,7 @@ namespace GameObjects.Common.Stats.Scripts
             StatType.Haste        => Haste,
             StatType.DashCharges  => DashCharges,
             StatType.Area         => Area,
+            StatType.Luck         => Luck,
             _                     => null
         };
     }

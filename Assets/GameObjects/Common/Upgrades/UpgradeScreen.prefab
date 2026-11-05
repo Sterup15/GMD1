@@ -154,15 +154,22 @@ MonoBehaviour:
   - stat: 8
     perPoint: 10
     percentOfBase: 0
+  - stat: 11
+    perPoint: 1
+    percentOfBase: 0
   rarityWeights:
   - rarity: 0
     weight: 60
+    luckBonus: -6
   - rarity: 1
     weight: 25
+    luckBonus: 3
   - rarity: 2
     weight: 12
+    luckBonus: 2
   - rarity: 3
     weight: 3
+    luckBonus: 1
 --- !u!1 &8755532687491358398
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ namespace GameObjects.Common.Stats.Scripts
         Penetration,
         Haste,
         DashCharges,
-        Area
+        Area,
+        Luck
     }
 }
