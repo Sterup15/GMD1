@@ -45,10 +45,11 @@ Assets/GameObjects/
     Shared/          Scripts/{Movement,Health,Gold,Dash,Selection} and AudioFiles used by every character
     Characters/      one folder per playable character
       Archer/        Sprite/Anims, ArcherSprite.prefab, AudioFiles, Archer.prefab (arrows via ProjectileSpawner)
-      Bombardier/    Sprite/Anims (prototype: copies of the archer art), Scripts (BombThrower), Bomb/ (Bomb script, sprite, prefab), Bombardier.prefab
+      Bombardier/    Sprite/Anims (own art: kettle helmet and tabard in the archer's palette), Scripts (BombThrower), Bomb/ (Bomb script, sprite, prefab), Bombardier.prefab
 Assets/Input/        GameInput.cs + GameControls.inputactions
 Assets/UI/           HUD bars (HealthBar, GoldBar, StaminaBar with dash charge pips) and UI textures
 Assets/World/        tilemaps
+Tools/SpriteGen/     Python pixel-art generator for character sheets (outside Assets, not imported by Unity)
 ```
 
 Enemies are grouped by **type** (see rule 1): `Enemy/<Type>/Shared/` holds everything the enemies of that type share (behaviour scripts, and any shared audio or assets), and `Enemy/<Type>/<EnemyName>/` holds only what is unique to that enemy (sprites, animation clips, Animator Controller, prefab, and its own audio).
@@ -168,6 +169,7 @@ Mention these when they matter for your change. Ask before broad refactors.
   - Serialized field names in YAML must match the C# field names exactly.
   - Don't reorder or regenerate existing fileIDs/GUIDs, because other assets reference them.
   - Things that still need the editor: slicing new spritesheets when no frame size is known, and anything that needs visual tuning (collider sizes, offsets). List those steps for the user, and always say that the result must be checked by opening the prefab and playing in the editor.
+- New character art can start from `Tools/SpriteGen/bombardier_gen.py` (numpy + Pillow): it draws Idle/Run/Shoot sheets as full 192px cells in the Tiny Swords palette with 2px outlines (1px only on tiny details), sized to match the other units via `K`, and writes a preview next to the archer to `Tools/SpriteGen/out/` (gitignored). Copy it per character, change `frame()` and the pose lists, and check the preview before installing the sheets.
 - **Optimisation review after every feature or fix.** Before committing, review the change (and the code it touches) so the game runs as smoothly as possible:
   - Performance: no allocations or `GetComponent`/`Find*` calls in `Update`/`FixedUpdate` or in per-hit/per-shot paths, cache what can be cached, avoid per-frame work that an event could replace, and keep asset import settings lean (audio, textures).
   - Over-engineering: remove code, fields, events or abstractions the change doesn't need, and prefer the simpler solution (rule 7).
