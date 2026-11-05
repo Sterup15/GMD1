@@ -25,7 +25,8 @@ Everything belonging to one entity lives in that entity's folder: scripts, sprit
 ```
 Assets/GameObjects/
   Common/            shared systems: Audio, Camera, DamageNumber, Events, Health (bar UI),
-                     Projectiles, Stats, UI (buttons, menus, victory/defeat), Upgrades, Utils
+                     Projectiles, Settings (saved player settings), Stats, UI (buttons, main/pause/settings menus,
+                     victory/defeat, Pointer: mouse cursor and selection hand), Upgrades, Utils
     Effects/         shared visual effects, one folder each: DustPuff (death and dash smoke), Explosion (area damage, used by bombs), Fire (imported, not used yet)
     Pickups/         things the player collects, one folder each: Gold, Steak
     Terrain/         map decoration: Scripts (TerrainScatter, RandomAnimationStart, CanopyFade), Trees/ (Sprite/Anims, Tree1-4 and Stump1-4 prefabs), GroundPatches/ (Sprite, GroundPatch_<Colour>_<Shape> prefabs)
@@ -127,16 +128,20 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ## Input and UI (keyboard and touch)
 
-- **All input goes through the static `GameInput`** (`Assets/Input/GameInput.cs`, execution order -100): `Move`, `InteractPressed`, `DashPressed` (Space / gamepad south), `NavigateLeft/Right/Up/Down`. Never read `Keyboard.current`, the mouse or touches directly in gameplay scripts. The game must be fully playable with the keyboard alone, and on phones and tablets with on-screen touch controls: a joystick on the left that moves the player and a dash button on the right. Touch controls feed the same `GameInput` actions, so gameplay code never knows which device is used. Menus and upgrade cards must work with both keyboard navigation and taps.
-- The Quit action returns to the main menu (scene 0).
-- Menus handle their own selection with `GameInput` (select index, call `Button.Select()`, `onClick.Invoke()` on Interact). Follow `DefeatScreen`/`VictoryScreen`/`UpgradeScreen`.
+- **All input goes through the static `GameInput`** (`Assets/Input/GameInput.cs`, execution order -100): `Move`, `InteractPressed`, `DashPressed` (Space / gamepad south), `PausePressed` (Esc / P / gamepad Start), `NavigateLeft/Right/Up/Down`. Never read `Keyboard.current`, the mouse or touches directly in gameplay scripts. The game must be fully playable with the keyboard alone, and on phones and tablets with on-screen touch controls: a joystick on the left that moves the player and a dash button on the right. Touch controls feed the same `GameInput` actions, so gameplay code never knows which device is used. Menus and upgrade cards must work with both keyboard navigation and taps.
+- Pause opens the `PauseMenu` (Resume, Settings, Main Menu) unless another screen has already paused the game (`Time.timeScale == 0`). Nothing quits a run instantly; leaving goes through `MainMenuButton`. Esc is not enough on the web, because browsers use it to leave fullscreen, so P is also bound.
+- The settings page (`SettingsMenu`, rows of `SettingsRow`) opens from the main menu and the pause menu, which instantiate the prefab and pass a callback to return to. Values live in the static `GameSettings` (PlayerPrefs). A new setting is a value appended to `SettingType`, a case in `GameSettings`, and a row in the prefab.
+- Menus handle their own selection with `GameInput` (select index, call `Button.Select()`, `onClick.Invoke()` on Interact). Follow `DefeatScreen`/`VictoryScreen`/`UpgradeScreen`, or `PauseMenu`/`SettingsMenu`/`MainMenuController`, which also pick up a mouse click (they read the EventSystem's selection each frame). Menus that do that must set their buttons' Navigation to None: the scenes' UI input module uses Unity's default UI actions, so arrow keys would otherwise move the selection twice, and Enter/Space/gamepad South already click the selected button (so never add those keys to Interact).
+- The selected button is marked by `SelectionPointer`, a Tiny Swords pointing hand that follows `EventSystem.currentSelectedGameObject` on every canvas. It and the arrow mouse cursor (`GameCursor`) load themselves from `Common/UI/Pointer/Resources` at startup, so menus only need to select their buttons.
 - Reusable buttons are self-wiring components with `[RequireComponent(typeof(Button))]` that add their listener in `Start` (`RestartButton`, `MainMenuButton`, `StartAsCharacterButton`, `QuitButton`). The main menu has one start button per character.
 - Victory and defeat screens follow the same pattern: subscribe to a `GlobalEvents` event, show the panel, pause.
+- Menu windows use the scroll (`UI/Background Textures/Banner.png`) as a Tiled image with a dark title. Patterned backgrounds must be Tiled, not Sliced: slicing stretches the middle of the texture across the window.
 - UI should match the cartoonish Tiny Swords style. Text uses TextMeshPro.
 
 ## Audio
 
 - `MusicController` swaps looping clips on `GlobalEvents` (normal / boss / defeat / victory) and doesn't restart a clip that is already playing.
+- Volumes come from `GameSettings`: master sets `AudioListener.volume`, music controllers scale their source by `MusicVolume` (and listen to `OnVolumeChanged`), and sound effects multiply their `PlayOneShot` volume by `EffectsVolume`. A new sound source must apply one of these.
 - `ActorSoundController` sits on each actor, listens to `ActorEvents`, and plays a random clip from a `SoundPool` with `PlayOneShot`. New SFX = new pool field + subscription, with clips assigned in the Inspector. Audio files go in the owning entity's `AudioFiles/` folder.
 
 ## Code style
