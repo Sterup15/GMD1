@@ -13,12 +13,15 @@ namespace GameObjects.Player.Shared.Scripts.Health
         public bool IsFullHealth => CurrentHealth >= MaxHealth;
         [SerializeField] private string enemyLayerName = "Enemy";
         [SerializeField] private string enemyProjectileLayerName = "EnemyProjectile";
+        [Tooltip("Extra seconds of dash invulnerability after the dash ends, so landing next to an enemy doesn't hit at once (0 = only during the dash)")]
+        [SerializeField, Min(0f)] private float dashGraceTime = 0.15f;
         private const float InvulnerabilityDuration = 2f;
         private bool _isInvulnerable;
         private bool _isDashing;
         private int _enemyLayer;
         private int _enemyProjectileLayer;
         private Coroutine _invulnerabilityCoroutine;
+        private Coroutine _dashGraceCoroutine;
 
         private Stats _stats;
         private ActorEvents _events;
@@ -53,6 +56,7 @@ namespace GameObjects.Player.Shared.Scripts.Health
             _isInvulnerable = false;
             _isDashing = false;
             _invulnerabilityCoroutine = null;
+            _dashGraceCoroutine = null;
         }
 
         private void OnMaxHealthUpgraded()
@@ -97,12 +101,33 @@ namespace GameObjects.Player.Shared.Scripts.Health
         // Arrows fly through a dashing player instead of hitting it for no damage
         private void StartDashInvulnerability(Vector2 _)
         {
+            if (_dashGraceCoroutine != null)
+            {
+                StopCoroutine(_dashGraceCoroutine);
+                _dashGraceCoroutine = null;
+            }
             _isDashing = true;
             UpdateEnemyCollision();
             Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, true);
         }
 
+        // The dash itself only lasts a few frames, so the protection runs on for a short grace time after it
         private void EndDashInvulnerability()
+        {
+            if (dashGraceTime > 0f)
+                _dashGraceCoroutine = StartCoroutine(DashGraceRoutine());
+            else
+                ClearDashInvulnerability();
+        }
+
+        private IEnumerator DashGraceRoutine()
+        {
+            yield return new WaitForSeconds(dashGraceTime);
+            _dashGraceCoroutine = null;
+            ClearDashInvulnerability();
+        }
+
+        private void ClearDashInvulnerability()
         {
             _isDashing = false;
             UpdateEnemyCollision();
