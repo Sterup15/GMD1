@@ -19,14 +19,14 @@ namespace GameObjects.Player.Shared.Scripts.Health
 
         private void OnEnable()
         {
-            _events.OnInvulnerabilityStarted += StartBlink;
-            _events.OnInvulnerabilityEnded   += StopBlink;
+            _events.OnHitInvulnerabilityStarted += StartBlink;
+            _events.OnHitInvulnerabilityEnded   += StopBlink;
         }
 
         private void OnDisable()
         {
-            _events.OnInvulnerabilityStarted -= StartBlink;
-            _events.OnInvulnerabilityEnded   -= StopBlink;
+            _events.OnHitInvulnerabilityStarted -= StartBlink;
+            _events.OnHitInvulnerabilityEnded   -= StopBlink;
             StopBlink();
         }
 

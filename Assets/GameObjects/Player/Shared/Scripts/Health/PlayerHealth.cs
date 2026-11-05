@@ -1,4 +1,3 @@
-using System.Collections;
 using GameObjects.Common.Events;
 using GameObjects.Common.Projectiles.Scripts;
 using GameObjects.Common.Stats.Scripts;
@@ -11,17 +10,9 @@ namespace GameObjects.Player.Shared.Scripts.Health
         public int MaxHealth { get; private set; }
         public int CurrentHealth { get; private set; }
         public bool IsFullHealth => CurrentHealth >= MaxHealth;
-        [SerializeField] private string enemyLayerName = "Enemy";
-        [SerializeField] private string enemyProjectileLayerName = "EnemyProjectile";
-        [Tooltip("Extra seconds of dash invulnerability after the dash ends, so landing next to an enemy doesn't hit at once (0 = only during the dash)")]
-        [SerializeField, Min(0f)] private float dashGraceTime = 0.15f;
-        private const float InvulnerabilityDuration = 2f;
-        private bool _isInvulnerable;
-        private bool _isDashing;
-        private int _enemyLayer;
-        private int _enemyProjectileLayer;
-        private Coroutine _invulnerabilityCoroutine;
-        private Coroutine _dashGraceCoroutine;
+
+        // Set by PlayerInvulnerability (after a hit, during a dash)
+        private bool _invulnerable;
 
         private Stats _stats;
         private ActorEvents _events;
@@ -30,8 +21,6 @@ namespace GameObjects.Player.Shared.Scripts.Health
         {
             _stats = GetComponent<Stats>();
             _events = GetComponent<ActorEvents>();
-            _enemyLayer = LayerMask.NameToLayer(enemyLayerName);
-            _enemyProjectileLayer = LayerMask.NameToLayer(enemyProjectileLayerName);
             MaxHealth = Mathf.RoundToInt(_stats.MaxHealth.Value);
             CurrentHealth = MaxHealth;
             _events.HealthChanged(CurrentHealth, MaxHealth);
@@ -40,24 +29,17 @@ namespace GameObjects.Player.Shared.Scripts.Health
         private void OnEnable()
         {
             _stats.MaxHealth.OnValueChanged += OnMaxHealthUpgraded;
-            _events.OnDashStarted           += StartDashInvulnerability;
-            _events.OnDashEnded             += EndDashInvulnerability;
+            _events.OnInvulnerableChanged   += SetInvulnerable;
         }
 
         private void OnDisable()
         {
             _stats.MaxHealth.OnValueChanged -= OnMaxHealthUpgraded;
-            _events.OnDashStarted           -= StartDashInvulnerability;
-            _events.OnDashEnded             -= EndDashInvulnerability;
-
-            // Layer collision settings survive scene loads, so restore them if a run ends mid-invulnerability
-            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyLayer, false);
-            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, false);
-            _isInvulnerable = false;
-            _isDashing = false;
-            _invulnerabilityCoroutine = null;
-            _dashGraceCoroutine = null;
+            _events.OnInvulnerableChanged   -= SetInvulnerable;
+            _invulnerable = false;
         }
+
+        private void SetInvulnerable(bool invulnerable) => _invulnerable = invulnerable;
 
         private void OnMaxHealthUpgraded()
         {
@@ -70,23 +52,20 @@ namespace GameObjects.Player.Shared.Scripts.Health
 
         public void TakeDamage(int amount)
         {
-            if (CurrentHealth <= 0) return;
-            if (_isInvulnerable || _isDashing) return;
+            if (CurrentHealth <= 0 || _invulnerable) return;
 
             CurrentHealth = Mathf.Max(0, CurrentHealth - amount);
             _events.HealthChanged(CurrentHealth, MaxHealth);
 
             if (CurrentHealth > 0)
             {
+                // PlayerInvulnerability starts the safe window on this, before any further hit this frame
                 _events.Hit();
-                BeginInvulnerability();
+                return;
             }
 
-            if (CurrentHealth == 0)
-            {
-                _events.Death();
-                GlobalEvents.PlayerDied();
-            }
+            _events.Death();
+            GlobalEvents.PlayerDied();
         }
 
         public void Heal(int amount)
@@ -96,69 +75,6 @@ namespace GameObjects.Player.Shared.Scripts.Health
             CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
             _events.HealthChanged(CurrentHealth, MaxHealth);
             _events.Healed();
-        }
-
-        // Arrows fly through a dashing player instead of hitting it for no damage
-        private void StartDashInvulnerability(Vector2 _)
-        {
-            if (_dashGraceCoroutine != null)
-            {
-                StopCoroutine(_dashGraceCoroutine);
-                _dashGraceCoroutine = null;
-            }
-            _isDashing = true;
-            UpdateEnemyCollision();
-            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, true);
-        }
-
-        // The dash itself only lasts a few frames, so the protection runs on for a short grace time after it
-        private void EndDashInvulnerability()
-        {
-            if (dashGraceTime > 0f)
-                _dashGraceCoroutine = StartCoroutine(DashGraceRoutine());
-            else
-                ClearDashInvulnerability();
-        }
-
-        private IEnumerator DashGraceRoutine()
-        {
-            yield return new WaitForSeconds(dashGraceTime);
-            _dashGraceCoroutine = null;
-            ClearDashInvulnerability();
-        }
-
-        private void ClearDashInvulnerability()
-        {
-            _isDashing = false;
-            UpdateEnemyCollision();
-            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyProjectileLayer, false);
-        }
-
-        // Hit i-frames and the dash can overlap, so enemies only collide again once both are over
-        private void UpdateEnemyCollision()
-        {
-            Physics2D.IgnoreLayerCollision(gameObject.layer, _enemyLayer, _isInvulnerable || _isDashing);
-        }
-
-        private void BeginInvulnerability()
-        {
-            if (_invulnerabilityCoroutine != null)
-                StopCoroutine(_invulnerabilityCoroutine);
-            _invulnerabilityCoroutine = StartCoroutine(InvulnerabilityRoutine());
-        }
-
-        private IEnumerator InvulnerabilityRoutine()
-        {
-            _isInvulnerable = true;
-            UpdateEnemyCollision();
-            _events.InvulnerabilityStarted();
-
-            yield return new WaitForSeconds(InvulnerabilityDuration);
-
-            _isInvulnerable = false;
-            UpdateEnemyCollision();
-            _invulnerabilityCoroutine = null;
-            _events.InvulnerabilityEnded();
         }
     }
 }

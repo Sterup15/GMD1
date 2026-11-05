@@ -21,8 +21,10 @@ namespace GameObjects.Common.Events
         public event Action OnHit;
         public event Action<int> OnDamaged;
         public event Action OnHealed;
-        public event Action OnInvulnerabilityStarted;
-        public event Action OnInvulnerabilityEnded;
+        // The window after a hit (the player blinks); OnInvulnerableChanged also covers the dash
+        public event Action OnHitInvulnerabilityStarted;
+        public event Action OnHitInvulnerabilityEnded;
+        public event Action<bool> OnInvulnerableChanged;
         public event Action<Vector2> OnRetreat;
         public event Action<Vector2> OnDashStarted;
         public event Action OnDashEnded;
@@ -45,8 +47,9 @@ namespace GameObjects.Common.Events
         public void Hit()             => OnHit?.Invoke();
         public void Damaged(int amount) => OnDamaged?.Invoke(amount);
         public void Healed()          => OnHealed?.Invoke();
-        public void InvulnerabilityStarted() => OnInvulnerabilityStarted?.Invoke();
-        public void InvulnerabilityEnded()   => OnInvulnerabilityEnded?.Invoke();
+        public void HitInvulnerabilityStarted() => OnHitInvulnerabilityStarted?.Invoke();
+        public void HitInvulnerabilityEnded()   => OnHitInvulnerabilityEnded?.Invoke();
+        public void InvulnerableChanged(bool invulnerable) => OnInvulnerableChanged?.Invoke(invulnerable);
         public void Retreat(Vector2 direction) => OnRetreat?.Invoke(direction);
         public void DashStarted(Vector2 velocity)  => OnDashStarted?.Invoke(velocity);
         public void DashEnded()                    => OnDashEnded?.Invoke();
