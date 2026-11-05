@@ -31,7 +31,7 @@ Assets/GameObjects/
     Pickups/         things the player collects, one folder each: Gold, Steak
     Terrain/         map decoration: Scripts (TerrainScatter, RandomAnimationStart, CanopyFade), Trees/ (Sprite/Anims, Tree1-4 and Stump1-4 prefabs), GroundPatches/ (Sprite, GroundPatch_<Colour>_<Shape> prefabs)
   Enemy/
-    Common/          components shared by all enemies (EnemyHealth, EnemyRetreat, GoldDropper)
+    Common/          components shared by all enemies (EnemyHealth, EnemyHealthBar, EnemyTarget, EnemyRetreat, GoldDropper)
     MeleeEnemy/      enemy type folder
       Shared/        Scripts/Behaviour (EnemyMelee*) used by every melee enemy
       RedKnight/     Sprite/Anims, RedKnight.prefab
@@ -66,7 +66,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ### 1. Composition over inheritance, one job per component (SRP)
 - Actors have no class hierarchy. They are a GameObject built from small components (`Stats`, `ActorEvents`, `EnemyHealth`, `ProjectileSpawner`, `GoldDropper`, `ActorSoundController`, ...).
-- When a component starts doing a second job, pull that job out into its own component. Example: gold dropping was moved out of `EnemyHealth` into `GoldDropper`.
+- When a component starts doing a second job, pull that job out into its own component. Example: gold dropping, the health bar and damage numbers were moved out of `EnemyHealth` into `GoldDropper`, `EnemyHealthBar` and `DamageNumberSpawner` (which listen to `OnDeath`, `OnHealthChanged` and `OnDamaged`).
 - **Every enemy type gets its own dedicated scripts.** An enemy *type* is a behaviour archetype (melee, ranged, boss, and later things like a grenade thrower), not a specific enemy or skin. Never add an `enemyType` enum or `if (isBoss)` branches to a shared script. Each type has its own `<Type>` (behaviour/movement), `<Type>MovementState` (state machine and animation), and `<Type>AnimationEvents` scripts. They share only the generic components in `Enemy/Common`.
 - **A new enemy of an existing type reuses that type's scripts.** It only gets its own folder with sprites, an Animator Controller (same state names, e.g. Idle/Move/Attack), stats and a prefab. Example: `Skull` is a melee enemy that uses the `EnemyMelee*` scripts. Write new scripts only when the enemy needs behaviour its type doesn't have, and then it's a new type.
 
