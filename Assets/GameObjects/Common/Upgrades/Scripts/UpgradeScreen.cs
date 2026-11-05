@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
+using GameObjects.Common.UI.Navigation.Scripts;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace GameObjects.Common.Upgrades.Scripts
@@ -42,8 +44,7 @@ namespace GameObjects.Common.Upgrades.Scripts
         private Stats.Scripts.Stats _playerStats;
         private UpgradeEligibility _eligibility;
         private readonly List<UpgradeDefinition> _available = new();
-        private int _selectedIndex;
-        private int _activeCardCount;
+        private MenuNavigator _navigator;
 
         private void Start()
         {
@@ -55,6 +56,13 @@ namespace GameObjects.Common.Upgrades.Scripts
             }
 
             _available.AddRange(Resources.LoadAll<UpgradeDefinition>("Upgrades"));
+
+            // The cards are listed right to left, the navigator wants them in on-screen order
+            var buttons = new Button[cards.Length];
+            for (int i = 0; i < cards.Length; i++)
+                buttons[i] = cards[cards.Length - 1 - i].Button;
+            _navigator = new MenuNavigator(buttons);
+
             panel.SetActive(false);
         }
 
@@ -65,21 +73,10 @@ namespace GameObjects.Common.Upgrades.Scripts
 
         private void Update()
         {
-            if (!panel.activeSelf) return;
+            if (!panel.activeSelf || _navigator.InputBlocked) return;
 
-            if (GameInput.NavigateLeft)
-            {
-                _selectedIndex = (_selectedIndex + 1) % _activeCardCount;
-                cards[_selectedIndex].Select();
-            }
-            else if (GameInput.NavigateRight)
-            {
-                _selectedIndex = (_selectedIndex - 1 + _activeCardCount) % _activeCardCount;
-                cards[_selectedIndex].Select();
-            }
-
-            if (GameInput.InteractPressed)
-                cards[_selectedIndex].Confirm();
+            _navigator.Navigate();
+            if (GameInput.InteractPressed) _navigator.Submit();
         }
 
         private void Show()
@@ -87,7 +84,6 @@ namespace GameObjects.Common.Upgrades.Scripts
             if (_available.Count == 0) return;
 
             List<UpgradeDefinition> drawn = DrawUpgrades(Mathf.Min(3, _available.Count));
-            _activeCardCount = drawn.Count;
 
             for (int i = 0; i < cards.Length; i++)
             {
@@ -106,8 +102,8 @@ namespace GameObjects.Common.Upgrades.Scripts
             panel.SetActive(true);
             Time.timeScale = 0f;
 
-            _selectedIndex = 0;
-            cards[0].Select();
+            _navigator.BlockInputThisFrame();
+            _navigator.Select(cards[0].Button);
         }
 
         private void Pick(UpgradeDefinition definition)

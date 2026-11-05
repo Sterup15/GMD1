@@ -1,7 +1,7 @@
 using GameObjects.Common.UI.CharacterSelect.Scripts;
+using GameObjects.Common.UI.Navigation.Scripts;
 using GameObjects.Common.UI.Settings.Scripts;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace GameObjects.Common.UI.MainMenu.Scripts
@@ -17,8 +17,7 @@ namespace GameObjects.Common.UI.MainMenu.Scripts
         [SerializeField] private Button settingsButton;
         [SerializeField] private SettingsMenu settingsPrefab;
 
-        private int _selectedIndex;
-        private int _ignoreInputFrame = -1;
+        private MenuNavigator _navigator;
         private SettingsMenu _settings;
         private CharacterSelectScreen _characterSelect;
 
@@ -39,20 +38,16 @@ namespace GameObjects.Common.UI.MainMenu.Scripts
             if (settingsButton != null && settingsPrefab != null)
                 settingsButton.onClick.AddListener(OpenSettings);
 
-            Select(0);
+            _navigator = new MenuNavigator(buttons);
+            _navigator.Select(0, 0);
         }
 
         private void Update()
         {
-            if (ScreenOpen || Time.frameCount == _ignoreInputFrame) return;
+            if (ScreenOpen || _navigator.InputBlocked) return;
 
-            SyncWithMouseSelection();
-
-            if (GameInput.NavigateRight || GameInput.NavigateDown) Select(_selectedIndex + 1);
-            else if (GameInput.NavigateLeft || GameInput.NavigateUp) Select(_selectedIndex - 1);
-
-            if (GameInput.InteractPressed)
-                buttons[_selectedIndex].onClick.Invoke();
+            _navigator.Navigate();
+            if (GameInput.InteractPressed) _navigator.Submit();
         }
 
         private void OpenCharacterSelect()
@@ -70,21 +65,8 @@ namespace GameObjects.Common.UI.MainMenu.Scripts
         // The key that closed a screen must not also press a main menu button on the same frame
         private void ReturnTo(Button button)
         {
-            _ignoreInputFrame = Time.frameCount;
-            button.Select();
-        }
-
-        private void SyncWithMouseSelection()
-        {
-            var selected = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
-            for (int i = 0; i < buttons.Length; i++)
-                if (buttons[i].gameObject == selected) _selectedIndex = i;
-        }
-
-        private void Select(int index)
-        {
-            _selectedIndex = (index + buttons.Length) % buttons.Length;
-            buttons[_selectedIndex].Select();
+            _navigator.BlockInputThisFrame();
+            _navigator.Select(button);
         }
     }
 }

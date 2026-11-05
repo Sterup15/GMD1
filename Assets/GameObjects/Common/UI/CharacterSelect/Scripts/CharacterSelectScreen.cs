@@ -1,8 +1,8 @@
 using System;
+using GameObjects.Common.UI.Navigation.Scripts;
 using GameObjects.Player.Shared.Scripts.Selection;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -28,19 +28,17 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         [SerializeField] private Button talentsButton;
         [SerializeField] private int gameSceneIndex = 1;
 
-        private Button[] _portraits;
-        private Button[] _bottomButtons;
-        private int _selectedIndex;
-        private bool _onBottomRow;
-        private int _bottomIndex;
-        private int _openedFrame = -1;
+        private const int PortraitRowIndex = 0;
+
+        private MenuNavigator _navigator;
+        private int _characterIndex;
         private Action _onClosed;
 
         public bool IsOpen => panel.activeSelf;
 
         private void Awake()
         {
-            _portraits = new Button[roster.Count];
+            var portraits = new Button[roster.Count];
             for (int i = 0; i < roster.Count; i++)
             {
                 var portrait = Instantiate(portraitTemplate, portraitRow);
@@ -48,11 +46,12 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
                 portrait.name = roster[i].name;
                 portrait.GetComponent<Image>().sprite = roster[i].Portrait;
                 int index = i;
-                portrait.onClick.AddListener(() => Show(index));
-                _portraits[i] = portrait;
+                portrait.onClick.AddListener(() => _navigator.Select(PortraitRowIndex, index));
+                portraits[i] = portrait;
             }
 
-            _bottomButtons = new[] { backButton, talentsButton, startButton };
+            _navigator = new MenuNavigator(portraits, new[] { backButton, talentsButton, startButton });
+            _navigator.OnSelectionChanged += OnSelectionChanged;
             startButton.onClick.AddListener(StartRun);
             backButton.onClick.AddListener(Close);
             panel.SetActive(false);
@@ -61,10 +60,11 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         public void Open(Action onClosed)
         {
             _onClosed = onClosed;
-            _openedFrame = Time.frameCount;
             panel.SetActive(true);
-            _onBottomRow = false;
-            Show(CharacterSelection.LastPickIndex(roster));
+            _navigator.BlockInputThisFrame();
+            // Selecting Start first makes it the button that moving down from the portraits lands on
+            _navigator.Select(startButton);
+            _navigator.Select(PortraitRowIndex, CharacterSelection.LastPickIndex(roster));
         }
 
         public void Close()
@@ -76,8 +76,7 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         private void Update()
         {
-            // The key press that opened the screen must not also act on it
-            if (!IsOpen || Time.frameCount == _openedFrame) return;
+            if (!IsOpen || _navigator.InputBlocked) return;
 
             if (GameInput.PausePressed)
             {
@@ -85,69 +84,22 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
                 return;
             }
 
-            SyncWithMouseSelection();
+            _navigator.Navigate();
 
-            if (GameInput.NavigateDown && !_onBottomRow)
-            {
-                _onBottomRow = true;
-                SelectBottom(Array.IndexOf(_bottomButtons, startButton), 1);
-            }
-            else if (GameInput.NavigateUp && _onBottomRow)
-            {
-                _onBottomRow = false;
-                Show(_selectedIndex);
-            }
-            else if (GameInput.NavigateRight || GameInput.NavigateLeft)
-            {
-                int step = GameInput.NavigateRight ? 1 : -1;
-                if (_onBottomRow) SelectBottom(_bottomIndex + step, step);
-                else Show(_selectedIndex + step);
-            }
-
-            if (GameInput.InteractPressed)
-            {
-                if (_onBottomRow) _bottomButtons[_bottomIndex].onClick.Invoke();
-                else
-                {
-                    _onBottomRow = true;
-                    SelectBottom(Array.IndexOf(_bottomButtons, startButton), 1);
-                }
-            }
+            if (!GameInput.InteractPressed) return;
+            if (_navigator.Row == PortraitRowIndex) _navigator.Select(startButton);
+            else _navigator.Submit();
         }
 
-        // A mouse click on Back or Start moves the keyboard focus to that row too
-        private void SyncWithMouseSelection()
+        private void OnSelectionChanged(int row, int column)
         {
-            var selected = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
-            for (int i = 0; i < _bottomButtons.Length; i++)
-            {
-                if (_bottomButtons[i].gameObject != selected) continue;
-                _onBottomRow = true;
-                _bottomIndex = i;
-                return;
-            }
-            foreach (var portrait in _portraits)
-                if (portrait.gameObject == selected) _onBottomRow = false;
-        }
-
-        // Steps past buttons that aren't interactable yet (e.g. Talents), in the direction of travel
-        private void SelectBottom(int index, int step)
-        {
-            for (int tries = 0; tries < _bottomButtons.Length; tries++)
-            {
-                _bottomIndex = (index + _bottomButtons.Length) % _bottomButtons.Length;
-                if (_bottomButtons[_bottomIndex].interactable) break;
-                index += step;
-            }
-            _bottomButtons[_bottomIndex].Select();
+            if (row == PortraitRowIndex) Show(column);
         }
 
         private void Show(int index)
         {
-            _selectedIndex = (index + _portraits.Length) % _portraits.Length;
-            _portraits[_selectedIndex].Select();
-
-            var character = roster[_selectedIndex];
+            _characterIndex = index;
+            var character = roster[index];
             nameText.text = character.DisplayName;
             descriptionText.text = character.Description;
             statsText.text = StatsLine(character);
@@ -164,7 +116,7 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         private void StartRun()
         {
-            CharacterSelection.Select(roster[_selectedIndex]);
+            CharacterSelection.Select(roster[_characterIndex]);
             SceneManager.LoadScene(gameSceneIndex);
         }
     }

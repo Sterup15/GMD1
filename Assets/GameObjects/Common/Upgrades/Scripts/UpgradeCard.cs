@@ -23,7 +23,6 @@ namespace GameObjects.Common.Upgrades.Scripts
             button.onClick.AddListener(() => _onPicked?.Invoke());
         }
 
-        public void Select() => button.Select();
-        public void Confirm() => _onPicked?.Invoke();
+        public Button Button => button;
     }
 }

@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -542,7 +542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -902,12 +902,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 9119450954385890060}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e5312750f6a21441852b1a497383a31, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e02f70a4e3a3f744a8646709f176487, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.UI.VictoryScene.Scripts.VictoryScreen
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.UI.EndScreen.Scripts.EndScreen
+  showOn: 1
   panel: {fileID: 7019958195487340720}
-  restartButton: {fileID: 3806513774457398483}
-  mainMenuButton: {fileID: 2656099244021676688}
+  buttons:
+  - {fileID: 3806513774457398483}
+  - {fileID: 2656099244021676688}
 --- !u!114 &3978085459329098496
 MonoBehaviour:
   m_ObjectHideFlags: 0

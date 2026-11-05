@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -541,10 +541,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e02f70a4e3a3f744a8646709f176487, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.UI.Scripts.DefeatScreen
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.UI.EndScreen.Scripts.EndScreen
+  showOn: 0
   panel: {fileID: 7125297927363977847}
-  restartButton: {fileID: 6155433896686606111}
-  mainMenuButton: {fileID: 4762576400578928783}
+  buttons:
+  - {fileID: 6155433896686606111}
+  - {fileID: 4762576400578928783}
 --- !u!1 &5283486021490488561
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,7 +853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
