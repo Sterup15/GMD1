@@ -1,5 +1,4 @@
 using GameObjects.Common.Events;
-using GameObjects.Enemy.Common.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
