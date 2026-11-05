@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using GameObjects.Enemy.Common.Scripts;
 using GameObjects.Enemy.Common.Spawner;
 using UnityEngine;
@@ -20,11 +21,9 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void Start()
         {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-                _player = playerObj.transform;
-            else
-                Debug.LogWarning("BossSpawner: No GameObject tagged 'Player' found.");
+            // The host's player; the boss arena rework spawns it relative to the arena instead
+            _player = Players.Local;
+            if (_player == null) Debug.LogWarning("BossSpawner: No local player registered.");
 
             if (bossTimer != null)
                 bossTimer.OnTimerComplete += SpawnBoss;

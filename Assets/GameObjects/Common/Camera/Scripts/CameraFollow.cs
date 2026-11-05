@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Common.Camera.Scripts
@@ -14,9 +15,8 @@ namespace GameObjects.Common.Camera.Scripts
             // The player is spawned at runtime by PlayerSpawner, so it can't be assigned in the scene
             if (target == null)
             {
-                var playerObj = GameObject.FindWithTag("Player");
-                if (playerObj != null) target = playerObj.transform;
-                else Debug.LogWarning("CameraFollow: No GameObject tagged 'Player' found.");
+                target = Players.Local;
+                if (target == null) Debug.LogWarning("CameraFollow: No local player registered.");
             }
 
             GlobalEvents.OnBossSpawned  += Freeze;

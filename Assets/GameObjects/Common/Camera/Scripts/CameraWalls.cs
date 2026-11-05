@@ -1,5 +1,6 @@
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 // Requires a dedicated layer assigned to this GameObject (e.g. "CameraWalls").
@@ -40,7 +41,7 @@ namespace GameObjects.Common.Camera.Scripts
             GlobalEvents.OnBossDefeated += OnBossDefeated;
 
             // Player arrows only hit the walls once they can bounce, so arrows aimed at enemies past the screen edge still reach them
-            var player = GameObject.FindWithTag("Player");
+            var player = Players.Local;
             var stats = player != null ? player.GetComponent<Stats.Scripts.Stats>() : null;
             if (stats == null) return;
             _playerBounce = stats.Bounce;

@@ -1,3 +1,4 @@
+using GameObjects.Common.Utils;
 using GameObjects.Player.Shared.Scripts.Dash;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,9 +19,9 @@ namespace UI.Bars.Staminabar
 
         private void Start()
         {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-                _dash = playerObj.GetComponent<PlayerDash>();
+            var player = Players.Local;
+            if (player != null)
+                _dash = player.GetComponent<PlayerDash>();
 
             if (_dash == null)
             {

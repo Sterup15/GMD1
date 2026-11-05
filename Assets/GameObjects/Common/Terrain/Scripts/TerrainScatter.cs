@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Common.Terrain.Scripts
@@ -49,33 +50,32 @@ namespace GameObjects.Common.Terrain.Scripts
                 foreach (var other in avoid)
                     if (other != null && other != this) other.EnsurePlaced();
 
-            var playerObj = GameObject.FindWithTag("Player");
-            Vector2 playerStart = playerObj != null ? playerObj.transform.position : Vector2.zero;
-
             for (int i = 0; i < count; i++)
             {
-                if (!TryFindSpot(playerStart, _placed, out var position)) continue;
+                if (!TryFindSpot(_placed, out var position)) continue;
 
                 _placed.Add(position);
                 Instantiate(prefabs[Random.Range(0, prefabs.Length)], position, Quaternion.identity, transform);
             }
         }
 
-        private bool TryFindSpot(Vector2 playerStart, List<Vector2> placed, out Vector2 position)
+        private bool TryFindSpot(List<Vector2> placed, out Vector2 position)
         {
             for (int attempt = 0; attempt < MaxAttemptsPerPiece; attempt++)
             {
                 position = new Vector2(Random.Range(area.xMin, area.xMax), Random.Range(area.yMin, area.yMax));
-                if (IsFree(position, playerStart, placed)) return true;
+                if (IsFree(position, placed)) return true;
             }
 
             position = default;
             return false;
         }
 
-        private bool IsFree(Vector2 position, Vector2 playerStart, List<Vector2> placed)
+        // Players have just spawned, so their positions are where they start
+        private bool IsFree(Vector2 position, List<Vector2> placed)
         {
-            if ((position - playerStart).sqrMagnitude < playerClearRadius * playerClearRadius) return false;
+            foreach (var player in Players.All)
+                if ((position - (Vector2)player.position).sqrMagnitude < playerClearRadius * playerClearRadius) return false;
             if (Physics2D.OverlapCircle(position, waterClearance, waterLayer) != null) return false;
 
             foreach (var other in placed)

@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,10 +18,10 @@ namespace UI.Bars.Goldbar
         {
             OnGoldChanged(0, 1, 0);
 
-            var player = GameObject.FindWithTag("Player");
+            var player = Players.Local;
             if (player == null)
             {
-                Debug.LogWarning("GoldBar: No GameObject tagged 'Player' found.", this);
+                Debug.LogWarning("GoldBar: No local player registered.", this);
                 return;
             }
 

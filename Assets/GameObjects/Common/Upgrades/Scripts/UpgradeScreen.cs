@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.UI.Navigation.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -55,7 +56,7 @@ namespace GameObjects.Common.Upgrades.Scripts
 
         private void Start()
         {
-            var playerObj = GameObject.FindWithTag("Player");
+            var playerObj = Players.Local;
             if (playerObj != null)
             {
                 _playerStats = playerObj.GetComponent<Stats.Scripts.Stats>();

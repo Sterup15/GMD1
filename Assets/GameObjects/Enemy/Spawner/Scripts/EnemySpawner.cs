@@ -71,11 +71,9 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void Start()
         {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-                _player = playerObj.transform;
-            else
-                Debug.LogWarning("EnemySpawner: No GameObject tagged 'Player' found.");
+            // One anchor player for now; spawning around every player comes with the spawner rework
+            _player = Players.Local;
+            if (_player == null) Debug.LogWarning("EnemySpawner: No local player registered.");
 
             ScheduleNextSpawn();
         }
@@ -192,12 +190,7 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void OnDrawGizmosSelected()
         {
-            if (_player == null)
-            {
-                var playerObj = GameObject.FindWithTag("Player");
-                if (playerObj != null) _player = playerObj.transform;
-            }
-
+            if (_player == null) _player = Players.Local;
             if (_player == null) return;
             Gizmos.color = new Color(1f, 0f, 0f, 1f);
             Gizmos.DrawWireSphere(_player.position, spawnRadius);

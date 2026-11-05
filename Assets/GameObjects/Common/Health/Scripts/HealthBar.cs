@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using GameObjects.Player.Shared.Scripts.Health;
 using TMPro;
 using UnityEngine;
@@ -16,10 +17,10 @@ namespace GameObjects.Common.Health.Scripts
 
         private void Start()
         {
-            var player = GameObject.FindWithTag("Player");
+            var player = Players.Local;
             if (player == null)
             {
-                Debug.LogWarning("HealthBar: No GameObject tagged 'Player' found.", this);
+                Debug.LogWarning("HealthBar: No local player registered.", this);
                 return;
             }
 
