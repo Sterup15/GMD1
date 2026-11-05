@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
 // Requires a dedicated layer assigned to this GameObject (e.g. "CameraWalls").
@@ -16,11 +17,10 @@ namespace GameObjects.Common.Camera.Scripts
 
         private const float WallThickness = 1f;
         private int _wallLayer;
+        private Stat _playerBounce;
 
         private void Awake()
         {
-            // Static state survives scene reloads, so clear it at the start of every run
-            GlobalEvents.ResetRunState();
 
             _camera = UnityEngine.Camera.main;
             _wallLayer = gameObject.layer;
@@ -36,24 +36,32 @@ namespace GameObjects.Common.Camera.Scripts
             for (int i = 0; i < 32; i++)
                 Physics2D.IgnoreLayerCollision(_wallLayer, i, true);
 
-            GlobalEvents.OnBossSpawned    += OnBossSpawned;
-            GlobalEvents.OnBossDefeated   += OnBossDefeated;
-            GlobalEvents.OnBounceUnlocked += OnBounceUnlocked;
+            GlobalEvents.OnBossSpawned  += OnBossSpawned;
+            GlobalEvents.OnBossDefeated += OnBossDefeated;
 
-            if (GlobalEvents.IsBounceUnlocked)
-                OnBounceUnlocked();
+            // Player arrows only hit the walls once they can bounce, so arrows aimed at enemies past the screen edge still reach them
+            var player = GameObject.FindWithTag("Player");
+            var stats = player != null ? player.GetComponent<Stats.Scripts.Stats>() : null;
+            if (stats == null) return;
+            _playerBounce = stats.Bounce;
+            _playerBounce.OnValueChanged += OnPlayerBounceChanged;
+            OnPlayerBounceChanged();
         }
 
         private void OnDestroy()
         {
-            GlobalEvents.OnBossSpawned    -= OnBossSpawned;
-            GlobalEvents.OnBossDefeated   -= OnBossDefeated;
-            GlobalEvents.OnBounceUnlocked -= OnBounceUnlocked;
+            GlobalEvents.OnBossSpawned  -= OnBossSpawned;
+            GlobalEvents.OnBossDefeated -= OnBossDefeated;
+            if (_playerBounce != null) _playerBounce.OnValueChanged -= OnPlayerBounceChanged;
         }
 
         private void OnBossSpawned()    => EnableCollisionWithLayer(LayerMask.NameToLayer("Player"));
         private void OnBossDefeated()   => DisableCollisionWithLayer(LayerMask.NameToLayer("Player"));
-        private void OnBounceUnlocked() => EnableCollisionWithLayer(LayerMask.NameToLayer("PlayerProjectile"));
+        private void OnPlayerBounceChanged()
+        {
+            if (_playerBounce.Value >= 1f)
+                EnableCollisionWithLayer(LayerMask.NameToLayer("PlayerProjectile"));
+        }
 
         private BoxCollider2D CreateWall(string wallName)
         {

@@ -1,4 +1,3 @@
-using GameObjects.Common.Events;
 using UnityEngine;
 
 namespace GameObjects.Common.Stats.Scripts
@@ -16,26 +15,6 @@ namespace GameObjects.Common.Stats.Scripts
         public Stat Haste;
         public Stat DashCharges;
         public Stat Area;
-
-        private bool _bounceUnlocked;
-
-        private void Awake()
-        {
-            Bounce.OnValueChanged += OnBounceChanged;
-            OnBounceChanged();
-        }
-
-        private void OnDestroy()
-        {
-            Bounce.OnValueChanged -= OnBounceChanged;
-        }
-
-        private void OnBounceChanged()
-        {
-            if (_bounceUnlocked || Bounce.Value < 1f) return;
-            _bounceUnlocked = true;
-            GlobalEvents.BounceUnlocked();
-        }
 
         public Stat GetStat(StatType type) => type switch
         {
