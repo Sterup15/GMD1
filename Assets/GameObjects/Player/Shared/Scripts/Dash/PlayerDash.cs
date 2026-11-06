@@ -10,8 +10,9 @@ namespace GameObjects.Player.Shared.Scripts.Dash
         [Header("Dash")]
         [Tooltip("Seconds to recharge one dash charge before Haste")]
         [SerializeField] private float baseCooldown = 4f;
-        [Tooltip("Player speed while dashing, in units per second")]
-        [SerializeField] private float dashSpeed = 18f;
+        [Tooltip("Speed while dashing as a multiple of the Move Speed stat, so Swiftness also lengthens the dash. " +
+                 "6 with Move Speed 3 dashes about 1.6 units")]
+        [SerializeField] private float dashSpeedPerMoveSpeed = 6f;
         [Tooltip("How long a dash lasts, in seconds. The player is invulnerable for this time")]
         [SerializeField] private float dashDuration = 0.09f;
 
@@ -84,7 +85,7 @@ namespace GameObjects.Player.Shared.Scripts.Dash
             Charges--;
             _dashTimer = dashDuration;
             OnChargesChanged?.Invoke(Charges, MaxCharges);
-            _events.DashStarted(_lastDirection * dashSpeed);
+            _events.DashStarted(_lastDirection * (_stats.MoveSpeed.Value * dashSpeedPerMoveSpeed));
         }
 
         private void Recharge()

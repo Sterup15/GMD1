@@ -7,12 +7,16 @@ namespace GameObjects.Player.Characters.Bombardier.Talents.Scripts
 {
     // Bombardier talent: dashing drops bombs that go off after a short fuse and catch the enemies that chased the
     // Bombardier there. Level 1 drops one where the dash started; higher levels spread more from the start to where
-    // the dash ends. Their blasts are reported like a thrown bomb's, so bomb talents such as Cluster Bombs trigger too
+    // the dash ends, and from level 3 the count follows the distance dashed (which grows with Move Speed). Their blasts
+    // are reported like a thrown bomb's, so bomb talents such as Cluster Bombs trigger too
     public class BlastDashTalent : MonoBehaviour, ILeveledTalent
     {
         [SerializeField] private BombProjectile bombPrefab;
-        [Tooltip("Bombs dropped per dash at each talent level, level 1 first")]
+        [Tooltip("Bombs dropped per dash at each talent level, level 1 first. From the distance level on this is the minimum")]
         [SerializeField] private int[] bombsPerLevel = { 1, 2, 5 };
+        [Tooltip("From this talent level on, one bomb is dropped every bombSpacing units of the distance actually dashed")]
+        [SerializeField, Min(1)] private int distanceFromLevel = 3;
+        [SerializeField, Min(0.05f)] private float bombSpacing = 0.4f;
         [Tooltip("Seconds from the drop to the blast")]
         [SerializeField, Min(0f)] private float fuseTime = 1.5f;
         [Tooltip("Damage as a multiple of the Damage stat")]
@@ -48,9 +52,11 @@ namespace GameObjects.Player.Characters.Bombardier.Talents.Scripts
         private void DropBombs()
         {
             if (bombsPerLevel.Length == 0) return;
-            int count = bombsPerLevel[Mathf.Clamp(_level - 1, 0, bombsPerLevel.Length - 1)];
-            int damage = Mathf.Max(1, Mathf.RoundToInt(_stats.Damage.Value * damageFactor));
             Vector2 dashEnd = transform.position;
+            int count = bombsPerLevel[Mathf.Clamp(_level - 1, 0, bombsPerLevel.Length - 1)];
+            if (_level >= distanceFromLevel)
+                count = Mathf.Max(count, Mathf.FloorToInt(Vector2.Distance(_dashStart, dashEnd) / bombSpacing) + 1);
+            int damage = Mathf.Max(1, Mathf.RoundToInt(_stats.Damage.Value * damageFactor));
 
             for (int i = 0; i < count; i++)
             {

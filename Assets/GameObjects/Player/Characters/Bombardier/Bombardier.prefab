@@ -549,7 +549,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Scripts.Dash.PlayerDash
   baseCooldown: 4
-  dashSpeed: 18
+  dashSpeedPerMoveSpeed: 6
   dashDuration: 0.09
 --- !u!114 &5601507511839838329
 MonoBehaviour:

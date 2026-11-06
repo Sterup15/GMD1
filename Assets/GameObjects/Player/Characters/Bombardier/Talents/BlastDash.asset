@@ -22,4 +22,4 @@ MonoBehaviour:
     description: 'Dashing drops a bomb where you started and one where you land, each exploding after 1.5 seconds'
   - masteryLevel: 11
     gloryCost: 5000
-    description: 'Dashing drops a line of 5 bombs along the dash, each exploding after 1.5 seconds'
+    description: 'Dashing drops a line of bombs along the dash, one for every bit of distance (at least 5), each exploding after 1.5 seconds. Swiftness makes the dash longer'

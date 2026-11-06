@@ -49,5 +49,7 @@ MonoBehaviour:
   - 1
   - 2
   - 5
+  distanceFromLevel: 3
+  bombSpacing: 0.4
   fuseTime: 1.5
   damageFactor: 1
