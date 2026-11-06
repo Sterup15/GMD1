@@ -8,8 +8,8 @@ namespace GameObjects.Common.Progression.Scripts
     public static class Mastery
     {
         public const int MaxLevel = 20;
-        private const int BaseCost = 50;
-        private const int CostPerLevel = 25;
+        private const int BaseCost = 350;
+        private const int CostPerLevel = 50;
 
         public static int Xp(string characterId) => PlayerPrefs.GetInt(Key(characterId), 0);
 
