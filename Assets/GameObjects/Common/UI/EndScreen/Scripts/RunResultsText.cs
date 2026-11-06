@@ -28,7 +28,7 @@ namespace GameObjects.Common.UI.EndScreen.Scripts
             {
                 lines += $"\n+{result.MasteryXpEarned} {result.CharacterName} XP  (Mastery {result.MasteryLevelAfter})";
                 if (result.MasteryLevelAfter > result.MasteryLevelBefore)
-                    lines += "  <color=#FFD54A>Level up!</color>";
+                    lines += "  <color=#B35C00>Level up!</color>";
             }
 
             text.text = lines;
