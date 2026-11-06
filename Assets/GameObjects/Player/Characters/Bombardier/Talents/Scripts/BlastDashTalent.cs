@@ -1,15 +1,17 @@
 using GameObjects.Common.Events;
 using UnityEngine;
-using ExplosionEffect = GameObjects.Common.Effects.Explosion.Scripts.Explosion;
+using BombProjectile = GameObjects.Player.Characters.Bombardier.Bomb.Scripts.Bomb;
 
 namespace GameObjects.Player.Characters.Bombardier.Talents.Scripts
 {
-    // Bombardier talent: dashing leaves an explosion where the dash started, hitting enemies that crowded in
+    // Bombardier talent: dashing drops a bomb where the dash started, which goes off after a short fuse
+    // and catches the enemies that chased the Bombardier there. Its blast is reported like a thrown bomb's,
+    // so bomb talents such as Cluster Bombs trigger on it too
     public class BlastDashTalent : MonoBehaviour
     {
-        [SerializeField] private ExplosionEffect explosionPrefab;
-        [Tooltip("Blast radius before the Area stat")]
-        [SerializeField, Min(0.1f)] private float radius = 1.2f;
+        [SerializeField] private BombProjectile bombPrefab;
+        [Tooltip("Seconds from the drop to the blast")]
+        [SerializeField, Min(0f)] private float fuseTime = 1.5f;
         [Tooltip("Damage as a multiple of the Damage stat")]
         [SerializeField, Min(0f)] private float damageFactor = 1f;
 
@@ -27,8 +29,8 @@ namespace GameObjects.Player.Characters.Bombardier.Talents.Scripts
 
         private void Blast(Vector2 _)
         {
-            var blast = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            blast.Init(Mathf.Max(1, Mathf.RoundToInt(_stats.Damage.Value * damageFactor)), radius * _stats.Area.Value);
+            var bomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
+            bomb.Drop(fuseTime, Mathf.Max(1, Mathf.RoundToInt(_stats.Damage.Value * damageFactor)), _stats.Area.Value, _events.BombExploded);
         }
     }
 }

@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 840eb005c11b4886be46a902bcf407e8, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Characters.Bombardier.Talents.Scripts.BlastDashTalent
-  explosionPrefab: {fileID: 1540999890061489971, guid: b053977407a44636bb71821bb6c67b29, type: 3}
-  radius: 1.2
+  bombPrefab: {fileID: 701226567285400636, guid: 6a57dfd68950437d85e6d7318de4dfc8, type: 3}
+  fuseTime: 1.5
   damageFactor: 1
