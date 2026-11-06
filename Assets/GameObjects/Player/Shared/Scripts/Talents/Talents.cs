@@ -36,6 +36,16 @@ namespace GameObjects.Player.Shared.Scripts.Talents
         public static int Level(TalentDefinition talent) =>
             Mathf.Clamp(PlayerPrefs.GetInt(LevelKey(talent), 1), 1, talent.MaxLevel);
 
+        // The level a run uses: the one picked in the loadout, or the highest bought one when none was picked
+        public static int EquippedLevel(TalentDefinition talent) =>
+            Mathf.Clamp(PlayerPrefs.GetInt(EquippedLevelKey(talent), int.MaxValue), 1, Level(talent));
+
+        public static void SetEquippedLevel(TalentDefinition talent, int level)
+        {
+            PlayerPrefs.SetInt(EquippedLevelKey(talent), level);
+            PlayerPrefs.Save();
+        }
+
         // The level after the bought one, or null at the max level
         public static TalentLevel NextLevel(TalentDefinition talent) => talent.LevelInfo(Level(talent) + 1);
 
@@ -80,7 +90,7 @@ namespace GameObjects.Player.Shared.Scripts.Talents
             PlayerPrefs.Save();
         }
 
-        // Attaches the equipped talents to a freshly spawned player, at their bought level
+        // Attaches the equipped talents to a freshly spawned player, at their equipped level
         public static void Apply(CharacterDefinition character, GameObject player)
         {
             foreach (var talent in Equipped(character))
@@ -91,12 +101,13 @@ namespace GameObjects.Player.Shared.Scripts.Talents
                     continue;
                 }
                 var instance = Object.Instantiate(talent.Prefab, player.transform);
-                int level = Level(talent);
+                int level = EquippedLevel(talent);
                 foreach (var leveled in instance.GetComponentsInChildren<ILeveledTalent>()) leveled.SetLevel(level);
             }
         }
 
         private static string Key(CharacterDefinition character) => $"talents.{character.name}.equipped";
         private static string LevelKey(TalentDefinition talent)  => $"talents.{talent.name}.level";
+        private static string EquippedLevelKey(TalentDefinition talent) => $"talents.{talent.name}.equippedLevel";
     }
 }

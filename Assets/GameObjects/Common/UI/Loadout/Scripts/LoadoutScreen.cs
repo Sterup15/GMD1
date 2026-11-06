@@ -11,10 +11,10 @@ using UnityEngine.UI;
 namespace GameObjects.Common.UI.Loadout.Scripts
 {
     // The talent loadout, shown after Start on the character select screen. One row per talent of the chosen
-    // character. Left/right browses a talent's levels, shown in the details box beside the list. Interact (or a click)
-    // equips or unequips the talent, or buys the viewed level when it is the next one; equipping with every slot full
-    // swaps out the oldest pick. The button on a row's right also buys the next level. Begin starts the run,
-    // Back or Pause returns to the select screen. The loadout is saved per character
+    // character; the details box beside the list shows the selected talent at one of its levels. Left/right (or the
+    // box's arrows) browses the bought levels and the next one, and Interact or the box's button does what the
+    // button says for that level: buy it, equip it, or unequip it; clicking a row only shows it. Equipping with every slot full swaps out the
+    // oldest pick. Begin starts the run, Back or Pause returns to the select screen. The loadout is saved per character
     public class LoadoutScreen : MonoBehaviour
     {
         [SerializeField] private GameObject panel;
@@ -34,12 +34,20 @@ namespace GameObjects.Common.UI.Loadout.Scripts
         [SerializeField] private TextMeshProUGUI detailsTitle;
         [SerializeField] private TextMeshProUGUI detailsLevel;
         [SerializeField] private TextMeshProUGUI detailsBody;
+        [SerializeField] private Button decreaseButton;
+        [SerializeField] private Button increaseButton;
+        [Tooltip("Buys, equips or unequips the viewed level, and says which it will do")]
+        [SerializeField] private Button actionButton;
+        [SerializeField] private TextMeshProUGUI actionLabel;
+        [Tooltip("Price colour when the player has too little Glory")]
+        [SerializeField] private Color unaffordableColor = new(0.7f, 0.23f, 0.23f);
 
         private readonly List<LoadoutRow> _rows = new();
         private List<TalentDefinition> _equipped;
         private MenuNavigator _navigator;
         private CharacterDefinition _character;
         private LoadoutRow _shownRow;
+        private Color _actionColor;
         private Action _onBegin;
         private Action _onClosed;
 
@@ -49,6 +57,10 @@ namespace GameObjects.Common.UI.Loadout.Scripts
         {
             backButton.onClick.AddListener(Close);
             beginButton.onClick.AddListener(Begin);
+            decreaseButton.onClick.AddListener(ShowPreviousLevel);
+            increaseButton.onClick.AddListener(ShowNextLevel);
+            actionButton.onClick.AddListener(Act);
+            _actionColor = actionLabel.color;
             panel.SetActive(false);
         }
 
@@ -92,11 +104,14 @@ namespace GameObjects.Common.UI.Loadout.Scripts
 
             if (_navigator.Row < _rows.Count)
             {
-                if (GameInput.NavigateLeft)       _rows[_navigator.Row].ShowPreviousLevel();
-                else if (GameInput.NavigateRight) _rows[_navigator.Row].ShowNextLevel();
+                if (GameInput.NavigateLeft)       ShowPreviousLevel();
+                else if (GameInput.NavigateRight) ShowNextLevel();
             }
 
-            if (GameInput.InteractPressed) _navigator.Submit();
+            if (!GameInput.InteractPressed) return;
+            // On a talent, Interact does what the details box's button says; elsewhere it presses the selected button
+            if (_navigator.Row < _rows.Count) Act();
+            else                              _navigator.Submit();
         }
 
         // Rows depend on the character, so they are rebuilt on every open (a menu, not a per-frame path)
@@ -116,10 +131,9 @@ namespace GameObjects.Common.UI.Loadout.Scripts
                 row.gameObject.SetActive(true);
                 row.name = talents[i].name;
                 ((RectTransform)row.transform).anchoredPosition = start + Vector2.down * (rowSpacing * _rows.Count);
-                row.Bind(talents[i], Talents.Level(talents[i]));
-                row.Button.onClick.AddListener(() => Press(row));
-                row.UpgradeButton.onClick.AddListener(() => Upgrade(row));
-                row.OnViewedLevelChanged += ShowDetails;
+                row.Bind(talents[i], Talents.EquippedLevel(talents[i]));
+                // A click only shows the talent; buying and equipping go through the details box's button
+                row.Button.onClick.AddListener(() => ShowDetails(row));
                 _rows.Add(row);
                 // One navigator row per talent, so left/right is free to browse levels
                 items.Add(new[] { row.Button });
@@ -130,46 +144,55 @@ namespace GameObjects.Common.UI.Loadout.Scripts
             _navigator.OnSelectionChanged += ShowDescription;
         }
 
-        // Pressing a talent on the next level up buys that level; on a bought level it equips or unequips the talent
-        private void Press(LoadoutRow row)
+        private void ShowPreviousLevel() => ViewLevel(-1);
+        private void ShowNextLevel()     => ViewLevel(1);
+
+        private void ViewLevel(int step)
         {
-            int level = Talents.Level(row.Talent);
-            if (row.ViewedLevel == level + 1) Upgrade(row);
-            else if (row.ViewedLevel <= level) Toggle(row.Talent);
+            if (_shownRow != null && _shownRow.View(_shownRow.ViewedLevel + step)) ShowDetails(_shownRow);
         }
 
-        private void Toggle(TalentDefinition talent)
+        // What the action button says, for the shown talent at its viewed level
+        private void Act()
+        {
+            if (_shownRow == null) return;
+            var talent = _shownRow.Talent;
+            int viewed = _shownRow.ViewedLevel;
+
+            if (viewed > Talents.Level(talent)) Upgrade(talent);
+            else if (IsEquippedAt(talent, viewed)) Unequip(talent);
+            else Equip(talent, viewed);
+        }
+
+        private void Upgrade(TalentDefinition talent)
+        {
+            if (!Talents.TryUpgrade(_character, talent)) return;
+            Refresh();
+        }
+
+        private void Equip(TalentDefinition talent, int level)
         {
             if (!Talents.IsUnlocked(_character, talent)) return;
 
-            if (_equipped.Contains(talent))
-                _equipped.Remove(talent);
-            else
+            if (!_equipped.Contains(talent))
             {
                 if (_equipped.Count >= Talents.Slots(_character)) _equipped.RemoveAt(0);
                 _equipped.Add(talent);
+                Talents.SetEquipped(_character, _equipped);
             }
+            Talents.SetEquippedLevel(talent, level);
+            Refresh();
+        }
 
+        private void Unequip(TalentDefinition talent)
+        {
+            _equipped.Remove(talent);
             Talents.SetEquipped(_character, _equipped);
             Refresh();
         }
 
-        private void Upgrade(LoadoutRow row)
-        {
-            if (!Talents.CanUpgrade(_character, row.Talent)) return;
-
-            if (!Talents.TryUpgrade(_character, row.Talent))
-            {
-                ShowDetails(row);
-                detailsBody.text += "\n\n<color=#B33A3A>Not enough Glory</color>";
-                return;
-            }
-
-            row.View(Talents.Level(row.Talent));
-            Refresh();
-            // A bought-out or locked upgrade button can't stay selected after a click, so go back to the talent
-            if (!row.UpgradeButton.gameObject.activeSelf || !row.UpgradeButton.interactable) _navigator.Select(row.Button);
-        }
+        private bool IsEquippedAt(TalentDefinition talent, int level) =>
+            _equipped.Contains(talent) && Talents.EquippedLevel(talent) == level;
 
         private void Refresh()
         {
@@ -183,9 +206,11 @@ namespace GameObjects.Common.UI.Loadout.Scripts
                              $"    Glory {Glory.Balance}";
 
             foreach (var row in _rows)
-                row.Refresh(Talents.IsUnlocked(_character, row.Talent), _equipped.Contains(row.Talent), Talents.Level(row.Talent),
-                            Talents.NextLevel(row.Talent), Talents.CanUpgrade(_character, row.Talent),
-                            Glory.Balance >= (Talents.NextLevel(row.Talent)?.GloryCost ?? 0));
+            {
+                bool equipped = _equipped.Contains(row.Talent);
+                row.Refresh(Talents.IsUnlocked(_character, row.Talent), equipped, Talents.Level(row.Talent),
+                            equipped ? Talents.EquippedLevel(row.Talent) : Talents.Level(row.Talent));
+            }
 
             if (_shownRow != null) ShowDetails(_shownRow);
             ShowDescription(_navigator.Row, _navigator.Column);
@@ -196,36 +221,64 @@ namespace GameObjects.Common.UI.Loadout.Scripts
             if (row < _rows.Count)
             {
                 ShowDetails(_rows[row]);
-                descriptionText.text = _rows[row].Talent.MaxLevel > 1 ? "Left / right to see each level" : string.Empty;
+                descriptionText.text = string.Empty;
             }
             else if (_rows.Count == 0) descriptionText.text = "No talents for this character yet";
             else                       descriptionText.text = column == 1 ? "Start the run with this loadout" : string.Empty;
         }
 
-        // Name, "Level 2 / 3", what the viewed level does and whether it is bought, buyable or still locked
+        // Name, "Level 2 / 3", what the viewed level does, the arrows and the button for that level
         private void ShowDetails(LoadoutRow row)
         {
             _shownRow = row;
             var talent = row.Talent;
             int viewed = row.ViewedLevel;
-            int bought = Talents.Level(talent);
 
             detailsTitle.text = talent.DisplayName;
             detailsLevel.text = $"Level {viewed} / {talent.MaxLevel}";
-            detailsBody.text = $"{talent.DescriptionAt(viewed)}\n\n<size=85%>{LevelStatus(talent, viewed, bought)}</size>";
+            detailsBody.text = talent.DescriptionAt(viewed);
+
+            bool hasLevels = talent.MaxLevel > 1;
+            decreaseButton.gameObject.SetActive(hasLevels);
+            increaseButton.gameObject.SetActive(hasLevels);
+            decreaseButton.interactable = viewed > 1;
+            increaseButton.interactable = viewed < row.MaxViewedLevel;
+
+            ShowAction(talent, viewed);
         }
 
-        private string LevelStatus(TalentDefinition talent, int viewed, int bought)
+        private void ShowAction(TalentDefinition talent, int viewed)
         {
-            if (!Talents.IsUnlocked(_character, talent)) return $"Unlocks at Mastery {talent.UnlockLevel}";
-            if (viewed <= bought) return _equipped.Contains(talent) ? "Unlocked, equipped" : "Unlocked";
+            actionLabel.color = _actionColor;
 
+            if (!Talents.IsUnlocked(_character, talent))
+            {
+                SetAction($"Unlocks at Mastery {talent.UnlockLevel}", false);
+                return;
+            }
+
+            if (viewed <= Talents.Level(talent))
+            {
+                SetAction(IsEquippedAt(talent, viewed) ? "Equipped" : "Equip", true);
+                return;
+            }
+
+            // Only the next level up can be viewed, so this is the one to buy
             var info = talent.LevelInfo(viewed);
-            bool masteryReached = Mastery.Level(_character.name) >= info.MasteryLevel;
-            // Only the next level can be viewed, so this is the one to buy
-            return masteryReached
-                ? $"Press to buy for {info.GloryCost} Glory"
-                : $"Unlocks at Mastery {info.MasteryLevel}, then costs {info.GloryCost} Glory";
+            if (!Talents.CanUpgrade(_character, talent))
+            {
+                SetAction($"Unlocks at Mastery {info.MasteryLevel}", false);
+                return;
+            }
+
+            SetAction($"{info.GloryCost} Glory", true);
+            if (Glory.Balance < info.GloryCost) actionLabel.color = unaffordableColor;
+        }
+
+        private void SetAction(string text, bool interactable)
+        {
+            actionLabel.text = text;
+            actionButton.interactable = interactable;
         }
 
         private void Begin() => _onBegin?.Invoke();
