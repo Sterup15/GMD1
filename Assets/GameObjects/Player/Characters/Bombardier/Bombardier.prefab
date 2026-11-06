@@ -440,7 +440,7 @@ MonoBehaviour:
   FireRate:
     baseValue: 0.6
   Damage:
-    baseValue: 2
+    baseValue: 1
   MaxHealth:
     baseValue: 5
   ShootRange:
