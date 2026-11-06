@@ -13,6 +13,13 @@ MonoBehaviour:
   m_Name: ClusterBombs
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Talents.TalentDefinition
   displayName: Cluster Bombs
-  description: 'Every bomb scatters three smaller blasts around where it lands'
+  description: 'Every bomb scatters three smaller blasts around where it lands, each dealing half the bomb''s damage'
   unlockLevel: 1
   prefab: {fileID: 4526367185984833061, guid: 1345c93e45c84d618b63d3b2bd314f84, type: 3}
+  levels:
+  - masteryLevel: 3
+    gloryCost: 1500
+    description: 'Every bomb scatters three heavier blasts around where it lands, each dealing 75% of the bomb''s damage'
+  - masteryLevel: 7
+    gloryCost: 5000
+    description: 'Every bomb scatters three heavier blasts (75% of the bomb''s damage), plus one more for every point of Plenty'

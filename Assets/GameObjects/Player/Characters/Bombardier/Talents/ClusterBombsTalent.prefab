@@ -47,6 +47,10 @@ MonoBehaviour:
   explosionPrefab: {fileID: 1540999890061489971, guid: b053977407a44636bb71821bb6c67b29, type: 3}
   bomblets: 3
   distance: 1
-  damageFactor: 0.5
+  damageFactorPerLevel:
+  - 0.5
+  - 0.75
+  - 0.75
   radiusFactor: 0.5
   stagger: 0.1
+  plentyFromLevel: 3
