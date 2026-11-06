@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Talents.TalentDefinition
   displayName: Blast Dash
   description: 'Dashing drops a bomb where you started that explodes after 1.5 seconds'
-  unlockLevel: 6
+  unlockLevel: 2
   prefab: {fileID: 8840270346881113370, guid: 37db84ad2c684019b2c7a6d83cebae42, type: 3}
   levels:
-  - masteryLevel: 8
+  - masteryLevel: 5
     gloryCost: 1500
     description: 'Dashing drops a bomb where you started and one where you land, each exploding after 1.5 seconds'
-  - masteryLevel: 15
+  - masteryLevel: 11
     gloryCost: 5000
     description: 'Dashing drops a line of 5 bombs along the dash, each exploding after 1.5 seconds'

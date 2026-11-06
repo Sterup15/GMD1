@@ -9,7 +9,7 @@ namespace GameObjects.Player.Shared.Scripts.Talents
     public static class Talents
     {
         // One slot from the start, one more at each of these mastery levels
-        private static readonly int[] ExtraSlotLevels = { 10, 20 };
+        private static readonly int[] ExtraSlotLevels = { 8, 18 };
 
         public static int SlotsFor(int masteryLevel)
         {

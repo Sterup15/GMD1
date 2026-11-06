@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Talents.TalentDefinition
   displayName: Cluster Bombs
   description: 'Every bomb scatters three smaller blasts around where it lands'
-  unlockLevel: 3
+  unlockLevel: 1
   prefab: {fileID: 4526367185984833061, guid: 1345c93e45c84d618b63d3b2bd314f84, type: 3}

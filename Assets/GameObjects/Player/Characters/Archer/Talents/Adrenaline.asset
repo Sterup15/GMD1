@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Talents.TalentDefinition
   displayName: Adrenaline
   description: 'After every dash, attack 50% faster for 3 seconds'
-  unlockLevel: 6
+  unlockLevel: 2
   prefab: {fileID: 8855661020151849028, guid: ad1587b890fa4d7eb9f16e2876707a48, type: 3}

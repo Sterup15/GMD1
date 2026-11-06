@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Talents.TalentDefinition
   displayName: Split Shot
   description: 'Every 5th shot splits: two extra arrows fan out beside it'
-  unlockLevel: 3
+  unlockLevel: 1
   prefab: {fileID: 1784501712084201878, guid: 4b8fc4deec224374a2fe97128256facd, type: 3}
