@@ -133,6 +133,18 @@ MonoBehaviour:
   spriteRadius: 1.2
   hitSound:
     clips:
-    - {fileID: 8300000, guid: 0181d7183e123104ab400018e981ec1b, type: 3}
+    - {fileID: 8300000, guid: 35d00bd9d36422b4a89557369d9f8b12, type: 3}
+    - {fileID: 8300000, guid: b43b7b4e87e79ac4b8d99c61298196b9, type: 3}
+    - {fileID: 8300000, guid: 6396dac984560a7479b1a8869ab64577, type: 3}
+    - {fileID: 8300000, guid: f4e2be12f65d7e242a40542bd96d9579, type: 3}
+    - {fileID: 8300000, guid: b8697e424ecbe544888e2c71c5e3f0bb, type: 3}
+    - {fileID: 8300000, guid: 2f56344e74b5fb9409cca4f80fa38026, type: 3}
+    - {fileID: 8300000, guid: b4d202fa4e1634147ab83fa275f0ee35, type: 3}
+    - {fileID: 8300000, guid: 65ecf349677f40b40b211310bc5501ba, type: 3}
+    - {fileID: 8300000, guid: d7cb22617463168428a1d8c10ed041cc, type: 3}
+    - {fileID: 8300000, guid: 0d8a63f42264dcb44801b07350c273bf, type: 3}
+    - {fileID: 8300000, guid: c291abd7c6d38c84ba9ee0085ad75ab3, type: 3}
+    - {fileID: 8300000, guid: 6e8ddf4b2af1d1849b44123b9d6ac652, type: 3}
+    - {fileID: 8300000, guid: 83f690d923d58ed4daff513e1e42dc0f, type: 3}
     volume: 0.6
     cooldown: 0.1
