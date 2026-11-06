@@ -5,6 +5,8 @@ namespace GameObjects.Common.Upgrades.Scripts
     {
         None,
         Projectiles,
-        Explosions
+        Explosions,
+        // A talent that reads ProjectileCount (Plenty) is equipped at a level that uses it
+        ProjectileCount
     }
 }

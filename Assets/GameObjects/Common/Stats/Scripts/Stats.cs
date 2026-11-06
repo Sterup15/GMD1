@@ -16,6 +16,8 @@ namespace GameObjects.Common.Stats.Scripts
         public Stat DashCharges;
         public Stat Area;
         public Stat Luck;
+        [Tooltip("Extra projectiles for talents that release several (Split Shot arrows, Cluster Bombs bomblets). Shown as Plenty on cards")]
+        public Stat ProjectileCount;
 
         public Stat GetStat(StatType type) => type switch
         {
@@ -31,6 +33,7 @@ namespace GameObjects.Common.Stats.Scripts
             StatType.DashCharges  => DashCharges,
             StatType.Area         => Area,
             StatType.Luck         => Luck,
+            StatType.ProjectileCount => ProjectileCount,
             _                     => null
         };
     }

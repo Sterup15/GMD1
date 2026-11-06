@@ -13,6 +13,7 @@ namespace GameObjects.Common.Stats.Scripts
         Haste,
         DashCharges,
         Area,
-        Luck
+        Luck,
+        ProjectileCount
     }
 }
