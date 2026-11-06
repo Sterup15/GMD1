@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Talents
 {
-    // Each character's saved loadout and how many talent slots its mastery level gives
+    // Each character's saved loadout, how many talent slots its mastery level gives, and the talent levels bought with Glory
     public static class Talents
     {
         // One slot from the start, one more at each of these mastery levels
@@ -31,6 +31,28 @@ namespace GameObjects.Player.Shared.Scripts.Talents
 
         public static bool IsUnlocked(CharacterDefinition character, TalentDefinition talent) =>
             Mastery.Level(character.name) >= talent.UnlockLevel;
+
+        // Bought level, kept per talent asset. Level 1 comes free with the unlock
+        public static int Level(TalentDefinition talent) =>
+            Mathf.Clamp(PlayerPrefs.GetInt(LevelKey(talent), 1), 1, talent.MaxLevel);
+
+        // The level after the bought one, or null at the max level
+        public static TalentLevel NextLevel(TalentDefinition talent) => talent.LevelInfo(Level(talent) + 1);
+
+        // Whether mastery allows buying the next level (Glory is checked when buying)
+        public static bool CanUpgrade(CharacterDefinition character, TalentDefinition talent)
+        {
+            var next = NextLevel(talent);
+            return next != null && IsUnlocked(character, talent) && Mastery.Level(character.name) >= next.MasteryLevel;
+        }
+
+        public static bool TryUpgrade(CharacterDefinition character, TalentDefinition talent)
+        {
+            if (!CanUpgrade(character, talent) || !Glory.TrySpend(NextLevel(talent).GloryCost)) return false;
+            PlayerPrefs.SetInt(LevelKey(talent), Level(talent) + 1);
+            PlayerPrefs.Save();
+            return true;
+        }
 
         // The saved loadout, skipping talents that are gone or locked and anything past the slot count
         public static List<TalentDefinition> Equipped(CharacterDefinition character)
@@ -58,7 +80,7 @@ namespace GameObjects.Player.Shared.Scripts.Talents
             PlayerPrefs.Save();
         }
 
-        // Attaches the equipped talents to a freshly spawned player
+        // Attaches the equipped talents to a freshly spawned player, at their bought level
         public static void Apply(CharacterDefinition character, GameObject player)
         {
             foreach (var talent in Equipped(character))
@@ -68,10 +90,13 @@ namespace GameObjects.Player.Shared.Scripts.Talents
                     Debug.LogWarning($"Talents: {talent.name} has no prefab.", talent);
                     continue;
                 }
-                Object.Instantiate(talent.Prefab, player.transform);
+                var instance = Object.Instantiate(talent.Prefab, player.transform);
+                int level = Level(talent);
+                foreach (var leveled in instance.GetComponentsInChildren<ILeveledTalent>()) leveled.SetLevel(level);
             }
         }
 
         private static string Key(CharacterDefinition character) => $"talents.{character.name}.equipped";
+        private static string LevelKey(TalentDefinition talent)  => $"talents.{talent.name}.level";
     }
 }
