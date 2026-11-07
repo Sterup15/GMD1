@@ -5,9 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameObjects.Common.Health.Scripts
+namespace UI.Bars.Healthbar
 {
-    // The player's health bar. Listens to the player's own ActorEvents, found by tag when the run starts
+    // The local player's health bar. Listens to that player's ActorEvents, found through Players when the run starts
     public class HealthBar : MonoBehaviour
     {
         [SerializeField] private Slider slider;

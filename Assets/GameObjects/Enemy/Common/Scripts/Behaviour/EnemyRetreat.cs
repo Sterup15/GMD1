@@ -44,9 +44,6 @@ namespace GameObjects.Enemy.Common.Scripts.Behaviour
             foreach (var col in GetComponentsInChildren<Collider2D>())
                 col.enabled = false;
 
-            // Untagged so the player's auto-aim ignores it and targets the boss
-            gameObject.tag = "Untagged";
-
             Destroy(gameObject, maxRetreatTime);
             _events.Retreat(_direction);
         }
