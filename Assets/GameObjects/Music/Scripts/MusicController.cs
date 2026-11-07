@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace GameObjects.Music.Scripts
 {
+    // Plays the scene's music: the normal track from the start, and in the game scene the boss, defeat and victory
+    // tracks on their GlobalEvents (the main menu only sets the normal track). Every track loops, and the volume
+    // follows the Music setting
     public class MusicController : MonoBehaviour
     {
         [SerializeField] private AudioSource audioSource;
@@ -53,6 +56,7 @@ namespace GameObjects.Music.Scripts
         {
             if (clip == null || audioSource.clip == clip) return;
             audioSource.clip = clip;
+            audioSource.loop = true;
             audioSource.Play();
         }
     }

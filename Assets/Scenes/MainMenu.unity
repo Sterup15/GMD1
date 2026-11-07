@@ -1491,11 +1491,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2048438123}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c35aeb142a437ef47bfcc4abc6a394f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 1937003744e38c74ea9d0838931bd01e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Music.Scripts.MainMenuMusicController
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Music.Scripts.MusicController
   audioSource: {fileID: 0}
-  menuMusic: {fileID: 8300000, guid: ccff406d0f07bad41b641954dfc88cdd, type: 3}
+  normalMusic: {fileID: 8300000, guid: ccff406d0f07bad41b641954dfc88cdd, type: 3}
 --- !u!4 &2048438126
 Transform:
   m_ObjectHideFlags: 0
