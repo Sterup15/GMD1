@@ -158,7 +158,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 
 ### Talent blueprint
 
-Follow this for every new talent, on every character. Reference implementations: `ClusterBombsTalent` (all three levels, Plenty hook) and `BlastDashTalent` (count per level).
+Follow this for every new talent, on every character. Reference implementations: `ClusterBombsTalent` (all three levels, Plenty hook), `BlastDashTalent` (count per level) and `BombBagTalent` (a temporary attack speed bonus through `Stat.AddBonus` instead of its own throwing, and a HUD bar on its own overlay canvas inside the talent prefab, sorting order -1 so the HUD canvas's screens cover it, which only exists while the talent is equipped).
 
 **Design rules**
 - Every character gets **6 talents × 3 levels**, plus the 2 extra slots, which fills mastery 1–20 with exactly one unlock per level. List the talents on `CharacterDefinition.talents` in unlock order (T1 first) and use this schedule:
@@ -179,7 +179,7 @@ Follow this for every new talent, on every character. Reference implementations:
 **Build steps**
 1. **Script:** `Player/Characters/<Character>/Talents/Scripts/<Name>Talent.cs`, a `MonoBehaviour` implementing `ILeveledTalent`.
    - Cache `ActorEvents` and `Stats` with `GetComponentInParent` in `Awake`, subscribe in `OnEnable`, unsubscribe in `OnDisable`.
-   - React only to events (`OnShotFired`, `OnProjectileFired`, `OnBombExploded`, `OnDashStarted/Ended`, ...). Never edit or reference the attack scripts. If the talent needs a moment no event covers, add the event to `ActorEvents` and raise it from the attack.
+   - React only to events (`OnShotFired`, `OnProjectileFired`, `OnBombExploded`, `OnDashStarted/Ended`, `OnAttackingChanged` from the player's movement state, ...). Never edit or reference the attack scripts. If the talent needs a moment no event covers, add the event to `ActorEvents` and raise it from the attack.
    - `SetLevel(int level)` stores the level and switches on the hook card requirement at the hook level.
    - Per-level numbers are Inspector arrays indexed with `Mathf.Clamp(level - 1, 0, length - 1)` (e.g. `damageFactorPerLevel = { 0.5, 0.75, 0.75 }`), and the hook level is a field (`plentyFromLevel = 3`).
    - Read hooked stats at trigger time (`_stats.ProjectileCount.Value`, rounded with `Mathf.RoundToInt` for counts), so cards picked mid-run apply at once.
