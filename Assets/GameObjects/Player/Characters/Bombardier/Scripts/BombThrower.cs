@@ -31,7 +31,7 @@ namespace GameObjects.Player.Characters.Bombardier.Scripts
             var target = Targeting.NearestEnemy(spawnPoint.position);
             if (target == null) return;
 
-            var bomb = Instantiate(bombPrefab, spawnPoint.position, Quaternion.identity);
+            var bomb = PrefabPool.Spawn(bombPrefab, spawnPoint.position, Quaternion.identity);
             bomb.Launch(target.position, Mathf.RoundToInt(_stats.Damage.Value), _stats.Area.Value, _events.BombExploded);
         }
     }

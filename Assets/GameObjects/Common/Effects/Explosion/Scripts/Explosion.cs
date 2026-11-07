@@ -1,10 +1,12 @@
 using GameObjects.Common.Audio.Scripts;
 using GameObjects.Common.Projectiles.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Common.Effects.Explosion.Scripts
 {
-    // Area damage with an explosion animation. The blast and the clean-up are animation events on the clip
+    // Area damage with an explosion animation. The blast and the clean-up are animation events on the clip.
+    // Pooled (PrefabPool): Init sets everything a blast uses, and the Animator restarts its clip on every reuse
     public class Explosion : MonoBehaviour
     {
         [SerializeField] private LayerMask targetLayers = 1 << 9;
@@ -51,7 +53,7 @@ namespace GameObjects.Common.Effects.Explosion.Scripts
         }
 
         // Animation event on the last frame
-        public void OnExplosionComplete() => Destroy(gameObject);
+        public void OnExplosionComplete() => PooledObject.Release(gameObject);
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()

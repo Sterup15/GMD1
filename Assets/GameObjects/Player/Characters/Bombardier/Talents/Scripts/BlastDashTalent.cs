@@ -1,4 +1,5 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Utils;
 using GameObjects.Player.Shared.Scripts.Talents;
 using UnityEngine;
 using BombProjectile = GameObjects.Player.Characters.Bombardier.Bomb.Scripts.Bomb;
@@ -61,7 +62,7 @@ namespace GameObjects.Player.Characters.Bombardier.Talents.Scripts
             for (int i = 0; i < count; i++)
             {
                 float t = count == 1 ? 0f : i / (count - 1f);
-                var bomb = Instantiate(bombPrefab, Vector2.Lerp(_dashStart, dashEnd, t), Quaternion.identity);
+                var bomb = PrefabPool.Spawn(bombPrefab, Vector2.Lerp(_dashStart, dashEnd, t), Quaternion.identity);
                 bomb.Drop(fuseTime, damage, _stats.Area.Value, _events.BombExploded);
             }
         }

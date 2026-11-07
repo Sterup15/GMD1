@@ -1,10 +1,12 @@
 using System;
+using GameObjects.Common.Utils;
 using UnityEngine;
 using ExplosionEffect = GameObjects.Common.Effects.Explosion.Scripts.Explosion;
 
 namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
 {
-    // Flies in an arc to the spot it was thrown at and explodes on landing, or lies where it was dropped until its fuse runs out
+    // Flies in an arc to the spot it was thrown at and explodes on landing, or lies where it was dropped until its fuse runs out.
+    // Pooled (PrefabPool): Launch resets the flight, and the Animator is back on its default clip after every reuse
     public class Bomb : MonoBehaviour
     {
         private const string FuseLitState = "FuseLit";
@@ -42,6 +44,7 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
             _damage   = damage;
             _duration = Mathf.Max(minFlightTime, Vector2.Distance(_start, _target) / speed);
             _arc      = arcHeight;
+            _progress = 0f;
         }
 
         // Leaves the bomb where it is and blows it up after fuseTime seconds
@@ -66,10 +69,10 @@ namespace GameObjects.Player.Characters.Bombardier.Bomb.Scripts
 
         private void Explode()
         {
-            var explosion = Instantiate(explosionPrefab, _target, Quaternion.identity);
+            var explosion = PrefabPool.Spawn(explosionPrefab, _target, Quaternion.identity);
             explosion.Init(_damage, _radius);
             _onExploded?.Invoke(_target, _damage, _radius);
-            Destroy(gameObject);
+            PooledObject.Release(gameObject);
         }
     }
 }

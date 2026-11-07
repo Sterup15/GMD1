@@ -1,6 +1,7 @@
 using System.Collections;
 using GameObjects.Common.Events;
 using GameObjects.Common.Upgrades.Scripts;
+using GameObjects.Common.Utils;
 using GameObjects.Player.Shared.Scripts.Talents;
 using UnityEngine;
 using ExplosionEffect = GameObjects.Common.Effects.Explosion.Scripts.Explosion;
@@ -71,7 +72,7 @@ namespace GameObjects.Player.Characters.Bombardier.Talents.Scripts
                 yield return wait;
                 float angle = (startAngle + 360f / count * i) * Mathf.Deg2Rad;
                 var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * (radius * distance);
-                var blast = Instantiate(explosionPrefab, position + offset, Quaternion.identity);
+                var blast = PrefabPool.Spawn(explosionPrefab, position + offset, Quaternion.identity);
                 blast.Init(smallDamage, radius * radiusFactor);
             }
         }
