@@ -10,6 +10,9 @@ namespace GameObjects.Common.Camera.Scripts
 {
     public class CameraWalls : MonoBehaviour
     {
+        [Tooltip("Every layer a player can be on (normal, and the invulnerable ones), so the boss walls hold players in all of them")]
+        [SerializeField] private string[] playerLayerNames = { "Player", "PlayerHitSafe", "PlayerDashSafe" };
+
         private UnityEngine.Camera _camera;
         private BoxCollider2D _topWall;
         private BoxCollider2D _bottomWall;
@@ -56,8 +59,16 @@ namespace GameObjects.Common.Camera.Scripts
             if (_playerBounce != null) _playerBounce.OnValueChanged -= OnPlayerBounceChanged;
         }
 
-        private void OnBossSpawned()    => EnableCollisionWithLayer(LayerMask.NameToLayer("Player"));
-        private void OnBossDefeated()   => DisableCollisionWithLayer(LayerMask.NameToLayer("Player"));
+        private void OnBossSpawned()
+        {
+            foreach (var layerName in playerLayerNames) EnableCollisionWithLayer(LayerMask.NameToLayer(layerName));
+        }
+
+        private void OnBossDefeated()
+        {
+            foreach (var layerName in playerLayerNames) DisableCollisionWithLayer(LayerMask.NameToLayer(layerName));
+        }
+
         private void OnPlayerBounceChanged()
         {
             if (_playerBounce.Value >= 1f)

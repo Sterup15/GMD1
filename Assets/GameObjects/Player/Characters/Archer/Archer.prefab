@@ -671,8 +671,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c230c6bb9b4a729411dd7b16002522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Health.PlayerInvulnerability
-  enemyLayerName: Enemy
-  enemyProjectileLayerName: EnemyProjectile
+  hitLayerName: PlayerHitSafe
+  dashLayerName: PlayerDashSafe
   hitDuration: 2
   dashGraceTime: 0.15
 --- !u!114 &5865221782417249696
