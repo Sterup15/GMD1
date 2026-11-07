@@ -17,7 +17,7 @@ namespace GameObjects.Common.DamageNumber.Scripts
         // Pooled: every number starts fresh here, since a reused one still has the last number's fade
         public void Setup(int damage)
         {
-            text.text = damage.ToString();
+            text.SetText("{0}", damage);
             text.color = _color;
             _elapsed = 0f;
         }
