@@ -1,5 +1,6 @@
 using GameObjects.Common.Events;
 using GameObjects.Common.UI.Navigation.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,7 +45,7 @@ namespace GameObjects.Common.UI.EndScreen.Scripts
         private void Show()
         {
             panel.SetActive(true);
-            Time.timeScale = 0f;
+            GamePause.Pause(this);
             _navigator.BlockInputThisFrame();
             _navigator.Select(0, 0);
         }

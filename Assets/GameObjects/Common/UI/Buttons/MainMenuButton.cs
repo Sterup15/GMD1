@@ -12,9 +12,9 @@ namespace GameObjects.Common.UI.Scripts
             GetComponent<Button>().onClick.AddListener(GoToMainMenu);
         }
 
+        // GamePause drops every pause when the scene loads
         private void GoToMainMenu()
         {
-            Time.timeScale = 1f;
             SceneManager.LoadScene(0);
         }
     }

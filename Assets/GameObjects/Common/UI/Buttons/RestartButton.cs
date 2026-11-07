@@ -12,9 +12,9 @@ namespace GameObjects.Common.UI.Scripts
             GetComponent<Button>().onClick.AddListener(Restart);
         }
 
+        // GamePause drops every pause when the scene loads
         private void Restart()
         {
-            Time.timeScale = 1f;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }

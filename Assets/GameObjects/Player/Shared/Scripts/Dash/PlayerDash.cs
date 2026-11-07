@@ -1,6 +1,7 @@
 using System;
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Dash
@@ -55,7 +56,7 @@ namespace GameObjects.Player.Shared.Scripts.Dash
         private void Update()
         {
             // Space both confirms menus (Resume, upgrade cards) and dashes, so the press that unpauses must not also dash
-            if (Time.timeScale == 0f)
+            if (GamePause.IsPaused)
             {
                 _wasPaused = true;
                 return;

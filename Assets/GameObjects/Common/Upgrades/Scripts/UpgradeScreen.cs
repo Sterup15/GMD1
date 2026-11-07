@@ -109,7 +109,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             }
 
             panel.SetActive(true);
-            Time.timeScale = 0f;
+            GamePause.Pause(this);
 
             _navigator.BlockInputThisFrame();
             _navigator.Select(cards[0].Button);
@@ -127,7 +127,7 @@ namespace GameObjects.Common.Upgrades.Scripts
                 _available.Remove(definition);
 
             panel.SetActive(false);
-            Time.timeScale = 1f;
+            GamePause.Resume(this);
         }
 
         // Percentage stats scale with the character's own base value, so one card set works for every character,

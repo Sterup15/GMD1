@@ -1,18 +1,18 @@
 using GameObjects.Common.UI.Navigation.Scripts;
 using GameObjects.Common.UI.Settings.Scripts;
+using GameObjects.Common.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace GameObjects.Common.UI.Pause.Scripts
 {
     // Pause (Esc, P, gamepad Start) stops the run and offers Resume, Settings and Main Menu.
-    // It doesn't open over another pausing screen (upgrade cards, victory, defeat), which already set the time scale to 0
+    // It doesn't open over another pausing screen (upgrade cards, victory, defeat), which already holds a pause
     public class PauseMenu : MonoBehaviour
     {
         [SerializeField] private GameObject panel;
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button settingsButton;
-        [Tooltip("Uses the MainMenuButton component, which restores the time scale before loading the menu")]
         [SerializeField] private Button mainMenuButton;
         [SerializeField] private SettingsMenu settingsPrefab;
 
@@ -36,7 +36,7 @@ namespace GameObjects.Common.UI.Pause.Scripts
 
             if (!IsOpen)
             {
-                if (GameInput.PausePressed && Time.timeScale > 0f) Open();
+                if (GameInput.PausePressed && !GamePause.IsPaused) Open();
                 return;
             }
 
@@ -53,14 +53,14 @@ namespace GameObjects.Common.UI.Pause.Scripts
         private void Open()
         {
             panel.SetActive(true);
-            Time.timeScale = 0f;
+            GamePause.Pause(this);
             _navigator.Select(resumeButton);
         }
 
         private void Resume()
         {
             panel.SetActive(false);
-            Time.timeScale = 1f;
+            GamePause.Resume(this);
         }
 
         private void OpenSettings()
