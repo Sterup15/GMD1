@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace GameObjects.Common.Terrain.Scripts
 {
-    // Scatters a few map decorations (trees, bushes, ground patches) at run start, so the open grass doesn't all look the same
+    // Scatters a few map decorations (trees, bushes, ground patches) at run start, so the open grass doesn't all look the same.
+    // Every draw comes from the run's seed (keyed by this object's name), so the same seed always builds the same map
     public class TerrainScatter : MonoBehaviour
     {
         [Tooltip("Picked at random, one per placed piece")]
@@ -29,6 +30,7 @@ namespace GameObjects.Common.Terrain.Scripts
         private const int MaxAttemptsPerPiece = 30;
 
         private readonly List<Vector2> _placed = new();
+        private System.Random _random;
         private bool _done;
 
         private void Start() => EnsurePlaced();
@@ -50,12 +52,14 @@ namespace GameObjects.Common.Terrain.Scripts
                 foreach (var other in avoid)
                     if (other != null && other != this) other.EnsurePlaced();
 
+            _random = RunSeed.CreateRandom(name);
+
             for (int i = 0; i < count; i++)
             {
                 if (!TryFindSpot(_placed, out var position)) continue;
 
                 _placed.Add(position);
-                Instantiate(prefabs[Random.Range(0, prefabs.Length)], position, Quaternion.identity, transform);
+                Instantiate(prefabs[_random.Next(prefabs.Length)], position, Quaternion.identity, transform);
             }
         }
 
@@ -63,7 +67,7 @@ namespace GameObjects.Common.Terrain.Scripts
         {
             for (int attempt = 0; attempt < MaxAttemptsPerPiece; attempt++)
             {
-                position = new Vector2(Random.Range(area.xMin, area.xMax), Random.Range(area.yMin, area.yMax));
+                position = new Vector2(Range(area.xMin, area.xMax), Range(area.yMin, area.yMax));
                 if (IsFree(position, placed)) return true;
             }
 
@@ -71,7 +75,9 @@ namespace GameObjects.Common.Terrain.Scripts
             return false;
         }
 
-        // Players have just spawned, so their positions are where they start
+        private float Range(float min, float max) => min + (float)_random.NextDouble() * (max - min);
+
+        // Players have just spawned, so their positions are where they start (online these must match on every machine)
         private bool IsFree(Vector2 position, List<Vector2> placed)
         {
             foreach (var player in Players.All)
