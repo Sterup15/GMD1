@@ -20,3 +20,4 @@ MonoBehaviour:
   talents:
   - {fileID: 11400000, guid: 976029da848e41d4aa9f043e7608532e, type: 2}
   - {fileID: 11400000, guid: 285cd1e18a42426fa48dd8e02add40bc, type: 2}
+  - {fileID: 11400000, guid: edde3ea80de24802aea00431965ca4ed, type: 2}

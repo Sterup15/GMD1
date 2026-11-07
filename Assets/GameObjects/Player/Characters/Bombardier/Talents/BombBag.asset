@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc72cbd4ea7d43a895f6134d97b49854, type: 3}
+  m_Name: BombBag
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Player.Shared.Scripts.Talents.TalentDefinition
+  displayName: Bomb Bag
+  description: 'While not attacking, bombs pile up in a bag that holds three, at half your attack speed whether standing still or running. An attack that starts with bombs in the bag throws them at ten times attack speed until the bag is empty'
+  unlockLevel: 4
+  prefab: {fileID: 3443665765242958843, guid: 4d7900197f6e4585bf6d2a84e080842e, type: 3}
+  levels:
+  - masteryLevel: 9
+    gloryCost: 1500
+    description: 'While not attacking, bombs pile up in a bag that holds three, at your full attack speed whether standing still or running. An attack that starts with bombs in the bag throws them at ten times attack speed until the bag is empty'
+  - masteryLevel: 14
+    gloryCost: 5000
+    description: 'While not attacking, bombs pile up in a bag that holds four plus one for every point of Plenty, at your full attack speed whether standing still or running. An attack that starts with bombs in the bag throws them at ten times attack speed until the bag is empty'

@@ -97,7 +97,12 @@ namespace GameObjects.Player.Shared.Scripts.Movement
                     break;
             }
 
+            var previous = currentMoveState;
             currentMoveState = newMoveState;
+
+            // Raised after the state is set, so an attack speed change from a listener applies to the new attack
+            if ((previous == MoveStateEnum.Attack) != (newMoveState == MoveStateEnum.Attack))
+                _events.AttackingChanged(newMoveState == MoveStateEnum.Attack);
         }
 
         private void HandleAttack()

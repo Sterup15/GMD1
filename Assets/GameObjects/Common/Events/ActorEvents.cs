@@ -28,6 +28,8 @@ namespace GameObjects.Common.Events
         public event Action<Vector2> OnRetreat;
         public event Action<Vector2> OnDashStarted;
         public event Action OnDashEnded;
+        // Raised by the player's movement state when an attack starts or stops, for talents
+        public event Action<bool> OnAttackingChanged;
         // Raised by attacks, so talents can add to them: (origin, direction) and (position, damage, radius)
         public event Action<Vector2, Vector2> OnProjectileFired;
         public event Action<Vector2, int, float> OnBombExploded;
@@ -56,6 +58,7 @@ namespace GameObjects.Common.Events
         public void Retreat(Vector2 direction) => OnRetreat?.Invoke(direction);
         public void DashStarted(Vector2 velocity)  => OnDashStarted?.Invoke(velocity);
         public void DashEnded()                    => OnDashEnded?.Invoke();
+        public void AttackingChanged(bool attacking) => OnAttackingChanged?.Invoke(attacking);
         public void ProjectileFired(Vector2 origin, Vector2 direction)    => OnProjectileFired?.Invoke(origin, direction);
         public void BombExploded(Vector2 position, int damage, float radius) => OnBombExploded?.Invoke(position, damage, radius);
     }
