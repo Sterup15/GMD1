@@ -41,8 +41,16 @@ namespace GameObjects.Enemy.Spawner.Scripts
     {
         [Header("Spawn Settings")]
         [SerializeField] private List<EnemySpawnConfig> enemyTypes = new();
+        [Tooltip("Distance from the chosen player that enemies appear at")]
         [SerializeField] private float spawnRadius = 12f;
         [SerializeField] private float baseSpawnInterval = 3f;
+        [Tooltip("Extra room around each player's screen that counts as in view, so an enemy never spawns half visible")]
+        [SerializeField, Min(0f)] private float viewMargin = 1f;
+        [SerializeField] private LayerMask obstacleLayer = 1 << 4;
+
+        [Header("Player Count")]
+        [Tooltip("Extra spawn rate and minimum enemies alive for every player after the first (0.6 = +60% each)")]
+        [SerializeField, Min(0f)] private float perExtraPlayer = 0.6f;
 
         [Header("Spawn Rate Scaling")]
         [Tooltip("X = run time in seconds, Y = multiplier on spawn rate")]
@@ -56,7 +64,7 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private float _runTime;
         private float _nextSpawnTime;
-        private Transform _player;
+        private UnityEngine.Camera _camera;
         private bool _isBossFightActive;
         private int _aliveEnemyCount;
 
@@ -71,9 +79,8 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void Start()
         {
-            // One anchor player for now; spawning around every player comes with the spawner rework
-            _player = Players.Local;
-            if (_player == null) Debug.LogWarning("EnemySpawner: No local player registered.");
+            _camera = UnityEngine.Camera.main;
+            if (Players.All.Count == 0) Debug.LogWarning("EnemySpawner: No player registered.");
 
             ScheduleNextSpawn();
         }
@@ -103,7 +110,7 @@ namespace GameObjects.Enemy.Spawner.Scripts
                 ScheduleNextSpawn();
             }
 
-            int minAlive = Mathf.RoundToInt(minEnemiesAliveCurve.Evaluate(_runTime));
+            int minAlive = Mathf.RoundToInt(minEnemiesAliveCurve.Evaluate(_runTime) * PlayerCountMultiplier);
             int deficit = Mathf.Min(minAlive - _aliveEnemyCount, maxTopUpPerFrame);
             for (int i = 0; i < deficit; i++)
                 SpawnEnemy();
@@ -124,19 +131,25 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void ScheduleNextSpawn()
         {
-            float rate = Mathf.Max(0.1f, spawnRateCurve.Evaluate(_runTime));
+            float rate = Mathf.Max(0.1f, spawnRateCurve.Evaluate(_runTime) * PlayerCountMultiplier);
             _nextSpawnTime = Time.time + baseSpawnInterval / rate;
         }
 
+        private float PlayerCountMultiplier => 1f + perExtraPlayer * Mathf.Max(0, Players.All.Count - 1);
+
         private void SpawnEnemy()
         {
-            if (_player == null || enemyTypes.Count == 0) return;
+            if (enemyTypes.Count == 0) return;
+
+            var anchor = SpawnPoints.RandomAnchor();
+            if (anchor == null) return;
 
             var config = PickConfig();
             if (config?.prefab == null) return;
 
             // No dry spot this time: try again next tick instead
-            if (!SpawnPoints.TryAround(_player.position, spawnRadius, obstacleLayer, out var position)) return;
+            var viewHalfSize = SpawnPoints.ViewHalfSize(_camera, viewMargin);
+            if (!SpawnPoints.TryAround(anchor.position, spawnRadius, viewHalfSize, obstacleLayer, out var position)) return;
 
             var enemy = Instantiate(config.prefab, position, Quaternion.identity);
 
@@ -175,8 +188,6 @@ namespace GameObjects.Enemy.Spawner.Scripts
         private static float Evaluate(AnimationCurve curve, float time, float fallback) =>
             curve != null && curve.length > 0 ? curve.Evaluate(time) : fallback;
 
-        [SerializeField] private LayerMask obstacleLayer = 1 << 4;
-
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -190,10 +201,14 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void OnDrawGizmosSelected()
         {
-            if (_player == null) _player = Players.Local;
-            if (_player == null) return;
-            Gizmos.color = new Color(1f, 0f, 0f, 1f);
-            Gizmos.DrawWireSphere(_player.position, spawnRadius);
+            var viewHalfSize = SpawnPoints.ViewHalfSize(UnityEngine.Camera.main, viewMargin);
+            foreach (var player in Players.All)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(player.position, spawnRadius);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireCube(player.position, viewHalfSize * 2f);
+            }
         }
 #endif
     }
