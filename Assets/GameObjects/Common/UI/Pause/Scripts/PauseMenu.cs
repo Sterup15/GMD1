@@ -6,62 +6,45 @@ using UnityEngine.UI;
 
 namespace GameObjects.Common.UI.Pause.Scripts
 {
-    // Pause (Esc, P, gamepad Start) stops the run and offers Resume, Settings and Main Menu.
+    // Pause (Esc, P, gamepad Start) stops the run and offers Resume, Settings and Main Menu; Pause again resumes.
     // It doesn't open over another pausing screen (upgrade cards, victory, defeat), which already holds a pause
-    public class PauseMenu : MonoBehaviour
+    public class PauseMenu : MenuScreen
     {
-        [SerializeField] private GameObject panel;
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button mainMenuButton;
         [SerializeField] private SettingsMenu settingsPrefab;
 
-        private MenuNavigator _navigator;
         private SettingsMenu _settings;
 
-        private bool IsOpen => panel.activeSelf;
-        private bool InSettings => _settings != null && _settings.IsOpen;
+        protected override bool IsCovered => _settings != null && _settings.IsOpen;
 
         private void Awake()
         {
-            _navigator = new MenuNavigator(new[] { resumeButton, settingsButton, mainMenuButton });
-            resumeButton.onClick.AddListener(Resume);
+            Navigator = new MenuNavigator(new[] { resumeButton, settingsButton, mainMenuButton });
+            resumeButton.onClick.AddListener(Close);
             settingsButton.onClick.AddListener(OpenSettings);
             panel.SetActive(false);
         }
 
-        private void Update()
+        protected override void Update()
         {
-            if (InSettings || _navigator.InputBlocked) return;
-
             if (!IsOpen)
             {
-                if (GameInput.PausePressed && !GamePause.IsPaused) Open();
+                if (GameInput.PausePressed && !GamePause.IsPaused && !Navigator.InputBlocked) Open();
                 return;
             }
-
-            if (GameInput.PausePressed)
-            {
-                Resume();
-                return;
-            }
-
-            _navigator.Navigate();
-            if (GameInput.InteractPressed) _navigator.Submit();
+            base.Update();
         }
 
         private void Open()
         {
-            panel.SetActive(true);
+            ShowPanel();
             GamePause.Pause(this);
-            _navigator.Select(resumeButton);
+            Navigator.Select(resumeButton);
         }
 
-        private void Resume()
-        {
-            panel.SetActive(false);
-            GamePause.Resume(this);
-        }
+        protected override void OnClosed() => GamePause.Resume(this);
 
         private void OpenSettings()
         {
@@ -72,8 +55,8 @@ namespace GameObjects.Common.UI.Pause.Scripts
         // Closing settings with Pause must not also resume the game on the same frame
         private void OnSettingsClosed()
         {
-            _navigator.BlockInputThisFrame();
-            _navigator.Select(settingsButton);
+            Navigator.BlockInputThisFrame();
+            Navigator.Select(settingsButton);
         }
     }
 }

@@ -7,16 +7,10 @@ namespace GameObjects.Common.UI.Settings.Scripts
 {
     // The settings page. Opened from the main menu and the pause menu, which pass a callback to return to.
     // Up/down picks a row, left/right changes it, Interact presses it, and Pause or the Back button closes the page
-    public class SettingsMenu : MonoBehaviour
+    public class SettingsMenu : MenuScreen
     {
-        [SerializeField] private GameObject panel;
         [SerializeField] private SettingsRow[] rows;
         [SerializeField] private Button backButton;
-
-        private MenuNavigator _navigator;
-        private Action _onClosed;
-
-        public bool IsOpen => panel.activeSelf;
 
         private void Awake()
         {
@@ -25,7 +19,7 @@ namespace GameObjects.Common.UI.Settings.Scripts
             for (int i = 0; i < rows.Length; i++)
                 items[i] = new[] { rows[i].GetComponent<Button>() };
             items[rows.Length] = new[] { backButton };
-            _navigator = new MenuNavigator(items);
+            Navigator = new MenuNavigator(items);
 
             backButton.onClick.AddListener(Close);
             panel.SetActive(false);
@@ -33,38 +27,15 @@ namespace GameObjects.Common.UI.Settings.Scripts
 
         public void Open(Action onClosed)
         {
-            _onClosed = onClosed;
-            panel.SetActive(true);
-            _navigator.BlockInputThisFrame();
-            _navigator.Select(0, 0);
+            ShowPanel(onClosed);
+            Navigator.Select(0, 0);
         }
 
-        public void Close()
+        protected override void HandleExtraInput()
         {
-            if (!IsOpen) return;
-            panel.SetActive(false);
-            _onClosed?.Invoke();
-        }
-
-        private void Update()
-        {
-            if (!IsOpen || _navigator.InputBlocked) return;
-
-            if (GameInput.PausePressed)
-            {
-                Close();
-                return;
-            }
-
-            _navigator.Navigate();
-
-            if (_navigator.Row < rows.Length)
-            {
-                if (GameInput.NavigateLeft)       rows[_navigator.Row].Decrease();
-                else if (GameInput.NavigateRight) rows[_navigator.Row].Increase();
-            }
-
-            if (GameInput.InteractPressed) _navigator.Submit();
+            if (Navigator.Row >= rows.Length) return;
+            if (GameInput.NavigateLeft)       rows[Navigator.Row].Decrease();
+            else if (GameInput.NavigateRight) rows[Navigator.Row].Increase();
         }
     }
 }

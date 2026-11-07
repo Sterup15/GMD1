@@ -7,18 +7,17 @@ using UnityEngine.UI;
 namespace GameObjects.Common.UI.EndScreen.Scripts
 {
     // The victory or defeat screen: shows its panel and pauses when the run ends that way
-    public class EndScreen : MonoBehaviour
+    public class EndScreen : MenuScreen
     {
         [SerializeField] private EndScreenType showOn;
-        [SerializeField] private GameObject panel;
         [Tooltip("In on-screen order")]
         [SerializeField] private Button[] buttons;
 
-        private MenuNavigator _navigator;
+        protected override bool ClosesOnPause => false;
 
         private void Awake()
         {
-            _navigator = new MenuNavigator(buttons);
+            Navigator = new MenuNavigator(buttons);
             panel.SetActive(false);
         }
 
@@ -34,20 +33,11 @@ namespace GameObjects.Common.UI.EndScreen.Scripts
             GlobalEvents.OnPlayerDied -= Show;
         }
 
-        private void Update()
-        {
-            if (!panel.activeSelf || _navigator.InputBlocked) return;
-
-            _navigator.Navigate();
-            if (GameInput.InteractPressed) _navigator.Submit();
-        }
-
         private void Show()
         {
-            panel.SetActive(true);
+            ShowPanel();
             GamePause.Pause(this);
-            _navigator.BlockInputThisFrame();
-            _navigator.Select(0, 0);
+            Navigator.Select(0, 0);
         }
     }
 }

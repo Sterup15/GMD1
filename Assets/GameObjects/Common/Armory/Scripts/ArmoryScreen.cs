@@ -10,9 +10,8 @@ namespace GameObjects.Common.Armory.Scripts
     // The Armory: spend Glory on permanent upgrades for every character. One row per ArmoryUpgrade asset, built
     // when the screen is created, so a new upgrade needs no UI work. Up/down picks a row, Interact (or a click)
     // buys its next level, Refund gives all spent Glory back, and Pause or Back closes the screen
-    public class ArmoryScreen : MonoBehaviour
+    public class ArmoryScreen : MenuScreen
     {
-        [SerializeField] private GameObject panel;
         [Tooltip("Inactive template, copied once per upgrade")]
         [SerializeField] private ArmoryRow rowTemplate;
         [Tooltip("Distance between rows, going down from the template's position")]
@@ -23,24 +22,17 @@ namespace GameObjects.Common.Armory.Scripts
         [SerializeField] private Button backButton;
 
         private ArmoryRow[] _rows;
-        private MenuNavigator _navigator;
-        private Action _onClosed;
-
-        public bool IsOpen => panel.activeSelf;
 
         private void Awake()
         {
             var upgrades = Armory.Upgrades;
             _rows = new ArmoryRow[upgrades.Count];
             var items = new Button[upgrades.Count + 1][];
-            var start = ((RectTransform)rowTemplate.transform).anchoredPosition;
 
             for (int i = 0; i < upgrades.Count; i++)
             {
-                var row = Instantiate(rowTemplate, rowTemplate.transform.parent);
-                row.gameObject.SetActive(true);
+                var row = CreateRow(rowTemplate, i, rowSpacing);
                 row.name = upgrades[i].name;
-                ((RectTransform)row.transform).anchoredPosition = start + Vector2.down * (rowSpacing * i);
                 row.Bind(upgrades[i]);
                 var upgrade = upgrades[i];
                 row.Button.onClick.AddListener(() => Buy(upgrade));
@@ -49,8 +41,8 @@ namespace GameObjects.Common.Armory.Scripts
             }
             items[upgrades.Count] = new[] { refundButton, backButton };
 
-            _navigator = new MenuNavigator(items);
-            _navigator.OnSelectionChanged += ShowDescription;
+            Navigator = new MenuNavigator(items);
+            Navigator.OnSelectionChanged += ShowDescription;
             refundButton.onClick.AddListener(Refund);
             backButton.onClick.AddListener(Close);
             panel.SetActive(false);
@@ -58,34 +50,11 @@ namespace GameObjects.Common.Armory.Scripts
 
         public void Open(Action onClosed)
         {
-            _onClosed = onClosed;
-            panel.SetActive(true);
+            ShowPanel(onClosed);
             Refresh();
-            _navigator.BlockInputThisFrame();
             // Back first, so moving down past the last upgrade lands on Back rather than Refund
-            _navigator.Select(backButton);
-            _navigator.Select(0, 0);
-        }
-
-        public void Close()
-        {
-            if (!IsOpen) return;
-            panel.SetActive(false);
-            _onClosed?.Invoke();
-        }
-
-        private void Update()
-        {
-            if (!IsOpen || _navigator.InputBlocked) return;
-
-            if (GameInput.PausePressed)
-            {
-                Close();
-                return;
-            }
-
-            _navigator.Navigate();
-            if (GameInput.InteractPressed) _navigator.Submit();
+            Navigator.Select(backButton);
+            Navigator.Select(0, 0);
         }
 
         private void Buy(ArmoryUpgrade upgrade)
@@ -103,7 +72,7 @@ namespace GameObjects.Common.Armory.Scripts
             int glory = Glory.Balance;
             gloryText.text = $"Glory: {glory}";
             foreach (var row in _rows) row.Refresh(glory);
-            ShowDescription(_navigator.Row, _navigator.Column);
+            ShowDescription(Navigator.Row, Navigator.Column);
         }
 
         private void ShowDescription(int row, int column)

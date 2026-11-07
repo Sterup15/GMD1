@@ -20,9 +20,8 @@ namespace GameObjects.Common.Upgrades.Scripts
         public float luckBonus;
     }
 
-    public class UpgradeScreen : MonoBehaviour
+    public class UpgradeScreen : MenuScreen
     {
-        [SerializeField] private GameObject panel;
         [SerializeField] private UpgradeCard[] cards;
         [Header("Balance")]
         [Tooltip("What one card point is worth for each stat. Stats missing here get 1 flat per point")]
@@ -52,7 +51,9 @@ namespace GameObjects.Common.Upgrades.Scripts
         private UpgradeEligibility _eligibility;
         private UpgradeScaling _scaling;
         private readonly List<UpgradeDefinition> _available = new();
-        private MenuNavigator _navigator;
+
+        // A level-up must be answered with a card
+        protected override bool ClosesOnPause => false;
 
         private void Start()
         {
@@ -70,7 +71,7 @@ namespace GameObjects.Common.Upgrades.Scripts
             var buttons = new Button[cards.Length];
             for (int i = 0; i < cards.Length; i++)
                 buttons[i] = cards[cards.Length - 1 - i].Button;
-            _navigator = new MenuNavigator(buttons);
+            Navigator = new MenuNavigator(buttons);
 
             panel.SetActive(false);
         }
@@ -79,14 +80,6 @@ namespace GameObjects.Common.Upgrades.Scripts
         private void OnDisable() => GlobalEvents.OnLevelUp -= OnLevelUp;
 
         private void OnLevelUp(int _) => Show();
-
-        private void Update()
-        {
-            if (!panel.activeSelf || _navigator.InputBlocked) return;
-
-            _navigator.Navigate();
-            if (GameInput.InteractPressed) _navigator.Submit();
-        }
 
         private void Show()
         {
@@ -108,11 +101,9 @@ namespace GameObjects.Common.Upgrades.Scripts
                 }
             }
 
-            panel.SetActive(true);
+            ShowPanel();
             GamePause.Pause(this);
-
-            _navigator.BlockInputThisFrame();
-            _navigator.Select(cards[0].Button);
+            Navigator.Select(cards[0].Button);
         }
 
         private void Pick(UpgradeDefinition definition)
@@ -126,9 +117,10 @@ namespace GameObjects.Common.Upgrades.Scripts
             if (!definition.canRepeat)
                 _available.Remove(definition);
 
-            panel.SetActive(false);
-            GamePause.Resume(this);
+            Close();
         }
+
+        protected override void OnClosed() => GamePause.Resume(this);
 
         // Percentage stats scale with the character's own base value, so one card set works for every character,
         // and the character's UpgradeScaling tunes how much it gets out of each stat

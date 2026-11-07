@@ -16,9 +16,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
     // a character, Interact moves down to Start) and Back / Armory / Start below them (down/up moves between the
     // rows). Armory opens the shop for permanent upgrades on top of this screen, and Start opens the chosen
     // character's talent loadout, from which the run begins. Pause also goes back
-    public class CharacterSelectScreen : MonoBehaviour
+    public class CharacterSelectScreen : MenuScreen
     {
-        [SerializeField] private GameObject panel;
         [SerializeField] private CharacterRoster roster;
         [Tooltip("Inactive template, copied once per character into the portrait row")]
         [SerializeField] private Button portraitTemplate;
@@ -36,13 +35,12 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         private const int PortraitRowIndex = 0;
 
-        private MenuNavigator _navigator;
         private int _characterIndex;
-        private Action _onClosed;
         private ArmoryScreen _armory;
         private LoadoutScreen _loadout;
 
-        public bool IsOpen => panel.activeSelf;
+        // While the Armory or the loadout is open on top, it has the input
+        protected override bool IsCovered => (_armory != null && _armory.IsOpen) || (_loadout != null && _loadout.IsOpen);
 
         private void Awake()
         {
@@ -54,12 +52,12 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
                 portrait.name = roster[i].name;
                 portrait.GetComponent<Image>().sprite = roster[i].Portrait;
                 int index = i;
-                portrait.onClick.AddListener(() => _navigator.Select(PortraitRowIndex, index));
+                portrait.onClick.AddListener(() => Navigator.Select(PortraitRowIndex, index));
                 portraits[i] = portrait;
             }
 
-            _navigator = new MenuNavigator(portraits, new[] { backButton, armoryButton, startButton });
-            _navigator.OnSelectionChanged += OnSelectionChanged;
+            Navigator = new MenuNavigator(portraits, new[] { backButton, armoryButton, startButton });
+            Navigator.OnSelectionChanged += OnSelectionChanged;
             startButton.onClick.AddListener(OpenLoadout);
             backButton.onClick.AddListener(Close);
             if (armoryPrefab != null) armoryButton.onClick.AddListener(OpenArmory);
@@ -69,37 +67,17 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         public void Open(Action onClosed)
         {
-            _onClosed = onClosed;
-            panel.SetActive(true);
-            _navigator.BlockInputThisFrame();
+            ShowPanel(onClosed);
             // Selecting Start first makes it the button that moving down from the portraits lands on
-            _navigator.Select(startButton);
-            _navigator.Select(PortraitRowIndex, CharacterSelection.LastPickIndex(roster));
+            Navigator.Select(startButton);
+            Navigator.Select(PortraitRowIndex, CharacterSelection.LastPickIndex(roster));
         }
 
-        public void Close()
+        // Interact on a portrait moves down to Start; elsewhere it presses the selected button
+        protected override void Interact()
         {
-            if (!IsOpen) return;
-            panel.SetActive(false);
-            _onClosed?.Invoke();
-        }
-
-        private void Update()
-        {
-            // While the Armory or the loadout is open on top, it has the input
-            if (!IsOpen || _navigator.InputBlocked || (_armory != null && _armory.IsOpen) || (_loadout != null && _loadout.IsOpen)) return;
-
-            if (GameInput.PausePressed)
-            {
-                Close();
-                return;
-            }
-
-            _navigator.Navigate();
-
-            if (!GameInput.InteractPressed) return;
-            if (_navigator.Row == PortraitRowIndex) _navigator.Select(startButton);
-            else _navigator.Submit();
+            if (Navigator.Row == PortraitRowIndex) Navigator.Select(startButton);
+            else Navigator.Submit();
         }
 
         private void OpenArmory()
@@ -111,8 +89,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
         // The key that closed the Armory must not also act on this screen
         private void OnArmoryClosed()
         {
-            _navigator.BlockInputThisFrame();
-            _navigator.Select(armoryButton);
+            Navigator.BlockInputThisFrame();
+            Navigator.Select(armoryButton);
         }
 
         private void OpenLoadout()
@@ -130,8 +108,8 @@ namespace GameObjects.Common.UI.CharacterSelect.Scripts
 
         private void OnLoadoutClosed()
         {
-            _navigator.BlockInputThisFrame();
-            _navigator.Select(startButton);
+            Navigator.BlockInputThisFrame();
+            Navigator.Select(startButton);
         }
 
         private void OnSelectionChanged(int row, int column)

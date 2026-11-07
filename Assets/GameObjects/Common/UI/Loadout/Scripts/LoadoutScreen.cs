@@ -15,9 +15,8 @@ namespace GameObjects.Common.UI.Loadout.Scripts
     // box's arrows) browses the bought levels and the next one, and Interact or the box's button does what the
     // button says for that level: buy it, equip it, or unequip it; clicking a row only shows it. Equipping with every slot full swaps out the
     // oldest pick. Begin starts the run, Back or Pause returns to the select screen. The loadout is saved per character
-    public class LoadoutScreen : MonoBehaviour
+    public class LoadoutScreen : MenuScreen
     {
-        [SerializeField] private GameObject panel;
         [Tooltip("Inactive template, copied once per talent")]
         [SerializeField] private LoadoutRow rowTemplate;
         [Tooltip("Distance between rows, going down from the template's position")]
@@ -44,14 +43,10 @@ namespace GameObjects.Common.UI.Loadout.Scripts
 
         private readonly List<LoadoutRow> _rows = new();
         private List<TalentDefinition> _equipped;
-        private MenuNavigator _navigator;
         private CharacterDefinition _character;
         private LoadoutRow _shownRow;
         private Color _actionColor;
         private Action _onBegin;
-        private Action _onClosed;
-
-        public bool IsOpen => panel.activeSelf;
 
         private void Awake()
         {
@@ -68,50 +63,33 @@ namespace GameObjects.Common.UI.Loadout.Scripts
         {
             _character = character;
             _onBegin = onBegin;
-            _onClosed = onClosed;
             _equipped = Talents.Equipped(character);
 
-            panel.SetActive(true);
+            // Rows cache their button in Awake, so the panel must be active before they are built
+            ShowPanel(onClosed);
             BuildRows();
+            Navigator.BlockInputThisFrame();
             _shownRow = _rows.Count > 0 ? _rows[0] : null;
             detailsBox.SetActive(_shownRow != null);
             Refresh();
-            _navigator.BlockInputThisFrame();
             // Begin first, so moving down past the last talent lands on Begin, and Begin is selected when there
             // are no talents yet
-            _navigator.Select(beginButton);
-            if (_rows.Count > 0) _navigator.Select(0, 0);
+            Navigator.Select(beginButton);
+            if (_rows.Count > 0) Navigator.Select(0, 0);
         }
 
-        public void Close()
+        protected override void HandleExtraInput()
         {
-            if (!IsOpen) return;
-            panel.SetActive(false);
-            _onClosed?.Invoke();
+            if (Navigator.Row >= _rows.Count) return;
+            if (GameInput.NavigateLeft)       ShowPreviousLevel();
+            else if (GameInput.NavigateRight) ShowNextLevel();
         }
 
-        private void Update()
+        // On a talent, Interact does what the details box's button says; elsewhere it presses the selected button
+        protected override void Interact()
         {
-            if (!IsOpen || _navigator.InputBlocked) return;
-
-            if (GameInput.PausePressed)
-            {
-                Close();
-                return;
-            }
-
-            _navigator.Navigate();
-
-            if (_navigator.Row < _rows.Count)
-            {
-                if (GameInput.NavigateLeft)       ShowPreviousLevel();
-                else if (GameInput.NavigateRight) ShowNextLevel();
-            }
-
-            if (!GameInput.InteractPressed) return;
-            // On a talent, Interact does what the details box's button says; elsewhere it presses the selected button
-            if (_navigator.Row < _rows.Count) Act();
-            else                              _navigator.Submit();
+            if (Navigator.Row < _rows.Count) Act();
+            else                             Navigator.Submit();
         }
 
         // Rows depend on the character, so they are rebuilt on every open (a menu, not a per-frame path)
@@ -122,15 +100,12 @@ namespace GameObjects.Common.UI.Loadout.Scripts
 
             var talents = _character.Talents;
             var items = new List<Button[]>();
-            var start = ((RectTransform)rowTemplate.transform).anchoredPosition;
 
             for (int i = 0; i < talents.Count; i++)
             {
                 if (talents[i] == null) continue;
-                var row = Instantiate(rowTemplate, rowTemplate.transform.parent);
-                row.gameObject.SetActive(true);
+                var row = CreateRow(rowTemplate, _rows.Count, rowSpacing);
                 row.name = talents[i].name;
-                ((RectTransform)row.transform).anchoredPosition = start + Vector2.down * (rowSpacing * _rows.Count);
                 row.Bind(talents[i], Talents.EquippedLevel(talents[i]));
                 // A click only shows the talent; buying and equipping go through the details box's button
                 row.Button.onClick.AddListener(() => ShowDetails(row));
@@ -140,8 +115,8 @@ namespace GameObjects.Common.UI.Loadout.Scripts
             }
             items.Add(new[] { backButton, beginButton });
 
-            _navigator = new MenuNavigator(items.ToArray());
-            _navigator.OnSelectionChanged += ShowDescription;
+            Navigator = new MenuNavigator(items.ToArray());
+            Navigator.OnSelectionChanged += ShowDescription;
         }
 
         private void ShowPreviousLevel() => ViewLevel(-1);
@@ -213,7 +188,7 @@ namespace GameObjects.Common.UI.Loadout.Scripts
             }
 
             if (_shownRow != null) ShowDetails(_shownRow);
-            ShowDescription(_navigator.Row, _navigator.Column);
+            ShowDescription(Navigator.Row, Navigator.Column);
         }
 
         private void ShowDescription(int row, int column)
