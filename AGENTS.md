@@ -25,7 +25,7 @@ Everything belonging to one entity lives in that entity's folder: scripts, sprit
 ```
 Assets/GameObjects/
   Common/            shared systems: Armory (permanent upgrades bought with Glory), Audio, Camera, DamageNumber, Events, Health (bar UI),
-                     Progression (run points, Glory), Projectiles, Settings (saved player settings), Stats, UI (buttons, main/pause/settings/character select menus,
+                     Progression (run points, team gold and level, Glory), Projectiles, Settings (saved player settings), Stats, UI (buttons, main/pause/settings/character select menus,
                      EndScreen for victory/defeat, Loadout (talent loadout before a run), Navigation (MenuNavigator), Pointer: mouse cursor and selection hand), Upgrades, Utils
     Effects/         shared visual effects, one folder each: DustPuff (death and dash smoke), Explosion (area damage, used by bombs), Fire (imported, not used yet)
     Pickups/         things the player collects, one folder each: Gold, Steak
@@ -43,7 +43,7 @@ Assets/GameObjects/
     Spawner/         EnemySpawner (waves), BossSpawner (boss), BossArena (boss fight space), BossTimer, SpawnPoints (dry, out-of-view spawn spot on the ring, anchor player)
   Music/             MusicController, MainMenuMusicController, AudioFiles
   Player/
-    Shared/          Scripts/{Movement,Health,Gold,Dash,Selection,Talents}, AudioFiles used by every character, CharacterRoster.asset
+    Shared/          Scripts/{Movement,Health,Gold (pickup range),Dash,Selection,Talents}, AudioFiles used by every character, CharacterRoster.asset
     Characters/      one folder per playable character
       Archer/        Sprite/Anims, ArcherSprite.prefab, AudioFiles, Archer.prefab (arrows via ProjectileSpawner), ArcherDefinition.asset, Talents/ (talent assets, prefabs and Scripts)
       Bombardier/    Sprite/Anims (own art: kettle helmet and tabard in the archer's palette), Scripts (BombThrower), Bomb/ (Bomb script, sprite, prefab), Bombardier.prefab, BombardierDefinition.asset
@@ -97,7 +97,7 @@ The whole game is **component-based and event-driven**. These rules come from th
 - Upgrade cards are shared by every character and only say how many **points** they give (`points`, +1 to +4), using in-game stat names instead of numbers: Strength (`Damage`), Agility (`FireRate`), Vitality (`MaxHealth`), Swiftness (`MoveSpeed`), Sight (`ShootRange`), Greed (`PickupRange`), Haste, Blast (`Area`), Luck, Plenty (`ProjectileCount`). Never put percentages or raw values on a card. What one point is worth lives in one table, `UpgradeScreen.pointValues` (`StatPointValue`: flat, or `percentOfBase` = a percentage of the character's own `Stat.BaseValue`, so a slow-firing character doesn't outgrow a fast one). The values keep the archer's old numbers (Agility 40%, Swiftness 13.33%, Sight 8%, Greed 40%, Blast 10% of base; Strength/Vitality/Luck 1 and Haste 10 flat). Stats missing from the table (bounce, penetration, dash charges, projectile count) get 1 per point. Never change a character's base stats with `AddBonus`, because percentage points are computed from `BaseValue`. To tune how fast one character grows in a stat, use its `UpgradeScaling` component (a multiplier per stat on the character prefab, 1 when not listed, e.g. the Bombardier's Agility at 0.35). It scales only what cards add; the cards and base stats stay the same.
 - A card's rarity shows as a glow behind it (`UpgradeCard.rarityGlow`, one colour per rarity with the alpha as strength: none, green, blue, orange). Cards use the scroll background like the menus.
 - Cards that only make sense for some attacks have a `requirement` (`UpgradeRequirementType`: None, Projectiles, Explosions, ProjectileCount). Plenty cards need ProjectileCount, which no character has by default: a talent that reads the stat switches it on with `UpgradeEligibility.Set` when it is equipped at that level, so the card is never offered when it would do nothing. Each character prefab has an `UpgradeEligibility` component with one bool per requirement (archer: projectiles, Bombardier: explosions), and `UpgradeScreen` filters the pool by it on every level-up. Something that adds a new kind of attack mid-run (e.g. the Shoulder Ballista or Backpack Catapult items) calls `UpgradeEligibility.Set(requirement, true)`. A new requirement is a new enum value plus a bool on `UpgradeEligibility`, not character checks in the upgrade code.
-- **Difficulty** uses `AnimationCurve`s (X = run time in seconds or player level, Y = multiplier or value): spawn rate, enemy health/speed/damage, gold drop, minimum enemies alive, gold threshold. Provide a default curve in `Awake` and `OnValidate` (see `CurveUtils.EaseIn`) for when the serialized curve is empty.
+- **Difficulty** uses `AnimationCurve`s (X = run time in seconds or team level, Y = multiplier or value): spawn rate, enemy health/speed/damage, gold drop, minimum enemies alive, gold threshold (on `TeamLevel`). Provide a default curve in `Awake` and `OnValidate` (see `CurveUtils.EaseIn`) for when the serialized curve is empty.
 - Global balance knobs live on one component (e.g. `UpgradeScreen.pointValues`), not spread across many assets.
 - Tunables are `[SerializeField] private` fields with `[Header]` and `[Tooltip]` where useful.
 
@@ -220,7 +220,7 @@ Match the newer files (`ActorEvents`, `BossMelee`, `UpgradeScreen`):
 ## Known quirks and debt (be aware, don't "fix" silently)
 
 - Static state and `Physics2D.IgnoreLayerCollision` settings survive scene loads. Reset them at run start or in `OnDisable` (see `CameraWalls.Start`, which resets every wall collision). Avoid adding static run state; the camera walls watch the player's Bounce stat instead of a global flag.
-- The player's health and gold changes go through its `ActorEvents` (`OnHealthChanged`, `OnGoldChanged`); HUD bars find `Players.Local` and subscribe in `Start`, with the `OnEnable`/`OnDisable` null-check pattern from `StaminaBar`.
+- The player's health changes go through its `ActorEvents` (`OnHealthChanged`); HUD bars find `Players.Local` and subscribe in `Start`, with the `OnEnable`/`OnDisable` null-check pattern from `StaminaBar`. Gold and level belong to the team, not a player: `TeamLevel` (one object in the game scene, `Common/Progression`, found through `TeamLevel.Current`) takes every player's gold pickups, levels up on its threshold curve and raises `GlobalEvents.OnLevelUp`, and the gold bar listens to its `OnGoldChanged`.
 - `CameraFollow`/`CameraWalls` subscribe in `Start`/`OnDestroy` instead of `OnEnable`/`OnDisable`.
 - A few namespaces don't match their folder (`BossTimer` → `GameObjects.Enemy.Common.Spawner`, the UI buttons → `GameObjects.Common.UI.Scripts`, `UpgradeDefinition` → `GameObjects.Common.Upgrades`). `GameInput` is in the global namespace.
 
