@@ -1,5 +1,6 @@
 using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
+using GameObjects.Enemy.Common.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
 
         private EnemyRanged _mover;
         private Stats _stats;
-        private Transform _player;
+        private EnemyTargetSelector _targetSelector;
         private ActorEvents _events;
         private bool isAttacking;
 
@@ -28,12 +29,7 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
             _mover  = GetComponent<EnemyRanged>();
             _stats  = GetComponent<Stats>();
             _events = GetComponent<ActorEvents>();
-        }
-
-        private void Start()
-        {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null) _player = playerObj.transform;
+            _targetSelector = GetComponent<EnemyTargetSelector>();
         }
 
         private void OnEnable()
@@ -62,9 +58,10 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
         {
             if (isAttacking) return;
 
-            if (IsPlayerInRange())
+            var player = _targetSelector.Target;
+            if (IsInRange(player))
                 SetMoveState(EnemyMoveStateEnum.Attack);
-            else if (_player != null)
+            else if (player != null)
                 SetMoveState(EnemyMoveStateEnum.Move);
             else
                 SetMoveState(EnemyMoveStateEnum.Idle);
@@ -79,11 +76,11 @@ namespace GameObjects.Enemy.RangedEnemy.Shared.Scripts.Behaviour
             CurrentMoveState = EnemyMoveStateEnum.Idle;
         }
 
-        private bool IsPlayerInRange()
+        private bool IsInRange(Transform player)
         {
-            if (_player == null) return false;
+            if (player == null) return false;
             float range = _stats != null ? _stats.ShootRange.Value : 6f;
-            return Vector2.Distance(transform.position, _player.position) < range;
+            return Vector2.Distance(transform.position, player.position) < range;
         }
 
         private void SetMoveState(EnemyMoveStateEnum newState)

@@ -1,5 +1,6 @@
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Events;
+using GameObjects.Enemy.Common.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using GameObjects.Common.Projectiles.Scripts;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         [SerializeField] private BossHitbox hitbox;
 
         private Rigidbody2D _rb;
-        private Transform _player;
+        private EnemyTargetSelector _targetSelector;
         private BossMeleeMovementState _movementState;
         private Stats _stats;
         private ActorEvents _events;
@@ -21,7 +22,14 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         private Vector2 _lungeDirection;
 
         public Vector2 MoveDirection => _moveDirection;
-        public bool IsMoving => _player != null && (_player.position - transform.position).sqrMagnitude > 0.01f;
+        public bool IsMoving
+        {
+            get
+            {
+                var player = _targetSelector.Target;
+                return player != null && (player.position - transform.position).sqrMagnitude > 0.01f;
+            }
+        }
 
         private void Awake()
         {
@@ -29,6 +37,7 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
             _movementState = GetComponent<BossMeleeMovementState>();
             _stats = GetComponent<Stats>();
             _events = GetComponent<ActorEvents>();
+            _targetSelector = GetComponent<EnemyTargetSelector>();
         }
 
         private void OnEnable()
@@ -51,17 +60,11 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
         {
             if (_stats == null)
                 Debug.LogError("BossMelee: Missing Stats component.", this);
-
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-                _player = playerObj.transform;
-            else
-                Debug.LogWarning("BossMelee: No GameObject tagged 'Player' found.");
         }
 
         private void FixedUpdate()
         {
-            if (_player == null || _stats == null) return;
+            if (_stats == null) return;
 
             switch (_movementState.CurrentMoveState)
             {
@@ -79,7 +82,14 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
                     return;
             }
 
-            Vector2 toPlayer = (Vector2)_player.position - _rb.position;
+            var player = _targetSelector.Target;
+            if (player == null)
+            {
+                _rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
+            Vector2 toPlayer = (Vector2)player.position - _rb.position;
             float range = _stats.ShootRange.Value;
             if (toPlayer.sqrMagnitude <= range * range)
             {
@@ -93,7 +103,9 @@ namespace GameObjects.Enemy.TogreBoss.Scripts.Behaviour
 
         private void SnapshotLungeDirection()
         {
-            _lungeDirection = ((Vector2)_player.position - _rb.position).normalized;
+            var player = _targetSelector.Target;
+            if (player == null) return;
+            _lungeDirection = ((Vector2)player.position - _rb.position).normalized;
             _moveDirection = _lungeDirection;
         }
 

@@ -124,6 +124,7 @@ GameObject:
   - component: {fileID: 4166887063204226694}
   - component: {fileID: 4062687047859689775}
   - component: {fileID: 1220313050945183305}
+  - component: {fileID: 480187490286692565}
   - component: {fileID: 188860216683925967}
   m_Layer: 9
   m_Name: Togre
@@ -739,3 +740,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Common.DamageNumber.Scripts.DamageNumberSpawner
   damageNumberPrefab: {fileID: 3722326909509200501, guid: 64ae3196ed0fdf44f8caacc46dedf1fe, type: 3}
+--- !u!114 &480187490286692565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908229703796852517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38d44413b0ff426b99018ff7776f9818, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.EnemyTargetSelector
+  recheckInterval: 1.5
+  switchMargin: 0.25

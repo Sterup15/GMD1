@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 7065489996659437598}
   - component: {fileID: 377685209947848422}
   - component: {fileID: 384336309863278165}
+  - component: {fileID: 7883991874204657196}
   - component: {fileID: 552288284148006108}
   - component: {fileID: 2992381233673110903}
   m_Layer: 9
@@ -940,3 +941,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.Health.EnemyHealthBar
   slider: {fileID: 7086594009721506124}
+--- !u!114 &7883991874204657196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5558930510443425097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38d44413b0ff426b99018ff7776f9818, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GameObjects.Enemy.Common.Scripts.EnemyTargetSelector
+  recheckInterval: 1.5
+  switchMargin: 0.25

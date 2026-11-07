@@ -2,6 +2,7 @@ using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Enemy.Common.Scripts.Behaviour;
 using GameObjects.Common.Projectiles.Scripts;
+using GameObjects.Enemy.Common.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
@@ -11,7 +12,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         [SerializeField] private float damageCooldown = 1f;
 
         private Rigidbody2D rb;
-        private Transform player;
+        private EnemyTargetSelector targetSelector;
         private EnemyMeleeMovementState meleeMovementState;
         private Stats stats;
         private ActorEvents events;
@@ -19,7 +20,14 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         private Vector2 moveDirection;
 
         public Vector2 MoveDirection => moveDirection;
-        public bool IsMoving => player != null && (player.position - transform.position).sqrMagnitude > 0.01f;
+        public bool IsMoving
+        {
+            get
+            {
+                var player = targetSelector.Target;
+                return player != null && (player.position - transform.position).sqrMagnitude > 0.01f;
+            }
+        }
 
         private void Awake()
         {
@@ -27,6 +35,7 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
             meleeMovementState = GetComponent<EnemyMeleeMovementState>();
             stats = GetComponent<Stats>();
             events = GetComponent<ActorEvents>();
+            targetSelector = GetComponent<EnemyTargetSelector>();
         }
 
         private void OnEnable()  => events.OnRetreat += HandleRetreat;
@@ -35,18 +44,14 @@ namespace GameObjects.Enemy.MeleeEnemy.Shared.Scripts.Behaviour
         // EnemyRetreat drives movement from here on
         private void HandleRetreat(Vector2 _) => enabled = false;
 
-        private void Start()
-        {
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-                player = playerObj.transform;
-            else
-                Debug.LogWarning("EnemyMelee: No GameObject tagged 'Player' found.");
-        }
-
         private void FixedUpdate()
         {
-            if (player == null) return;
+            var player = targetSelector.Target;
+            if (player == null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                return;
+            }
 
             moveDirection = ((Vector2)player.position - rb.position).normalized;
             rb.linearVelocity = moveDirection * stats.MoveSpeed.Value;

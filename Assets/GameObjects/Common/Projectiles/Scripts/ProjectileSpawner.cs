@@ -1,5 +1,6 @@
 using GameObjects.Common.Events;
 using GameObjects.Common.Utils;
+using GameObjects.Enemy.Common.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Common.Projectiles.Scripts
@@ -13,21 +14,18 @@ namespace GameObjects.Common.Projectiles.Scripts
 
         private Stats.Scripts.Stats _stats;
         private ActorEvents _events;
-        private Transform _player;
+        private EnemyTargetSelector _targetSelector;
 
         private void Awake()
         {
             _stats  = GetComponent<Stats.Scripts.Stats>();
             _events = GetComponent<ActorEvents>();
             if (spawnPoint == null) spawnPoint = transform;
-        }
 
-        private void Start()
-        {
             if (targetMode != TargetModeEnum.Player) return;
-
-            var playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null) _player = playerObj.transform;
+            _targetSelector = GetComponent<EnemyTargetSelector>();
+            if (_targetSelector == null)
+                Debug.LogWarning("ProjectileSpawner: Player target mode needs an EnemyTargetSelector.", this);
         }
 
         private void OnEnable()  => _events.OnShotFired += Fire;
@@ -63,7 +61,8 @@ namespace GameObjects.Common.Projectiles.Scripts
             switch (targetMode)
             {
                 case TargetModeEnum.Player:
-                    return _player != null ? (Vector2?)_player.position : null;
+                    var player = _targetSelector != null ? _targetSelector.Target : null;
+                    return player != null ? (Vector2?)player.position : null;
 
                 case TargetModeEnum.NearestEnemy:
                     var enemy = Targeting.NearestEnemy(spawnPoint.position);
