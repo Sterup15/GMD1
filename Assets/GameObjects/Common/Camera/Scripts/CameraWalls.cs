@@ -1,17 +1,17 @@
-using GameObjects.Common.Events;
 using GameObjects.Common.Stats.Scripts;
 using GameObjects.Common.Utils;
 using UnityEngine;
 
-// Requires a dedicated layer assigned to this GameObject (e.g. "CameraWalls").
-// On Start, all Physics2D collisions for that layer are disabled.
-// Call EnableCollisionWithLayer / DisableCollisionWithLayer to control what the walls block.
+// The box player arrows bounce off once they have Bounce: four walls around the camera's position, sized by a setting
+// rather than by the screen (online, players' screens differ). Requires a dedicated layer on this GameObject
+// (e.g. "CameraWalls"); on Start all Physics2D collisions for that layer are disabled, and arrows are let in when
+// the player gets Bounce. The boss fight's walls are BossArena's, not these
 namespace GameObjects.Common.Camera.Scripts
 {
     public class CameraWalls : MonoBehaviour
     {
-        [Tooltip("Every layer a player can be on (normal, and the invulnerable ones), so the boss walls hold players in all of them")]
-        [SerializeField] private string[] playerLayerNames = { "Player", "PlayerHitSafe", "PlayerDashSafe" };
+        [Tooltip("World size of the bounce box, centred on the camera. About one 16:9 screen at the normal zoom; meant to become a lobby setting")]
+        [SerializeField] private Vector2 size = new(19.56f, 11f);
 
         private UnityEngine.Camera _camera;
         private BoxCollider2D _topWall;
@@ -25,7 +25,6 @@ namespace GameObjects.Common.Camera.Scripts
 
         private void Awake()
         {
-
             _camera = UnityEngine.Camera.main;
             _wallLayer = gameObject.layer;
 
@@ -40,9 +39,6 @@ namespace GameObjects.Common.Camera.Scripts
             for (int i = 0; i < 32; i++)
                 Physics2D.IgnoreLayerCollision(_wallLayer, i, true);
 
-            GlobalEvents.OnBossSpawned  += OnBossSpawned;
-            GlobalEvents.OnBossDefeated += OnBossDefeated;
-
             // Player arrows only hit the walls once they can bounce, so arrows aimed at enemies past the screen edge still reach them
             var player = Players.Local;
             var stats = player != null ? player.GetComponent<Stats.Scripts.Stats>() : null;
@@ -54,19 +50,7 @@ namespace GameObjects.Common.Camera.Scripts
 
         private void OnDestroy()
         {
-            GlobalEvents.OnBossSpawned  -= OnBossSpawned;
-            GlobalEvents.OnBossDefeated -= OnBossDefeated;
             if (_playerBounce != null) _playerBounce.OnValueChanged -= OnPlayerBounceChanged;
-        }
-
-        private void OnBossSpawned()
-        {
-            foreach (var layerName in playerLayerNames) EnableCollisionWithLayer(LayerMask.NameToLayer(layerName));
-        }
-
-        private void OnBossDefeated()
-        {
-            foreach (var layerName in playerLayerNames) DisableCollisionWithLayer(LayerMask.NameToLayer(layerName));
         }
 
         private void OnPlayerBounceChanged()
@@ -95,8 +79,8 @@ namespace GameObjects.Common.Camera.Scripts
 
         private void PositionWalls()
         {
-            float halfHeight = _camera.orthographicSize;
-            float halfWidth  = halfHeight * _camera.aspect;
+            float halfHeight = size.y / 2f;
+            float halfWidth  = size.x / 2f;
             Vector2 cam      = _camera.transform.position;
             float halfThick  = WallThickness / 2f;
 
@@ -117,11 +101,6 @@ namespace GameObjects.Common.Camera.Scripts
         public void EnableCollisionWithLayer(int layer)
         {
             Physics2D.IgnoreLayerCollision(_wallLayer, layer, false);
-        }
-
-        public void DisableCollisionWithLayer(int layer)
-        {
-            Physics2D.IgnoreLayerCollision(_wallLayer, layer, true);
         }
     }
 }

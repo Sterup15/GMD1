@@ -13,6 +13,8 @@ namespace GameObjects.Enemy.Spawner.Scripts
     public class BossSpawner : MonoBehaviour
     {
         [SerializeField] private BossTimer bossTimer;
+        [Tooltip("Opened around the player when the boss spawns. Without one the fight happens wherever the player is")]
+        [SerializeField] private BossArena arena;
         [SerializeField] private List<BossSpawnConfig> bossTypes = new();
         [Tooltip("Distance from the player the boss appears at")]
         [SerializeField] private float spawnRadius = 12f;
@@ -52,9 +54,11 @@ namespace GameObjects.Enemy.Spawner.Scripts
             if (config?.prefab == null) return;
 
             // The boss must appear even if every try lands in the water
+            // The camera fits the arena when it opens, so the view below is the fight's
+            Vector2 center = arena != null ? arena.Open(_player.position) : (Vector2)_player.position;
             var viewHalfSize = SpawnPoints.ViewHalfSize(_camera, viewMargin);
-            if (!SpawnPoints.TryAround(_player.position, spawnRadius, viewHalfSize, obstacleLayer, out var position))
-                position = (Vector2)_player.position + Random.insideUnitCircle.normalized * spawnRadius;
+            if (!SpawnPoints.TryAround(center, spawnRadius, viewHalfSize, obstacleLayer, out var position))
+                position = center + Random.insideUnitCircle.normalized * spawnRadius;
 
             var boss = Instantiate(config.prefab, position, Quaternion.identity);
 
@@ -72,6 +76,7 @@ namespace GameObjects.Enemy.Spawner.Scripts
 
         private void OnBossDeath()
         {
+            if (arena != null) arena.Close();
             bossTimer.ResetAndStart();
             GlobalEvents.BossDefeated();
         }
