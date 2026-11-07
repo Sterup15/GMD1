@@ -1,5 +1,4 @@
 using GameObjects.Common.Pickups.Scripts;
-using GameObjects.Player.Shared.Scripts.Health;
 using UnityEngine;
 
 namespace GameObjects.Common.Pickups.Steak.Scripts
@@ -11,7 +10,7 @@ namespace GameObjects.Common.Pickups.Steak.Scripts
         public void Collect(GameObject collector)
         {
             // Left on the ground at full health so the player can come back for it later
-            if (!collector.TryGetComponent<PlayerHealth>(out var health) || health.IsFullHealth) return;
+            if (!collector.TryGetComponent<IHealable>(out var health) || health.IsFullHealth) return;
 
             health.Heal(healAmount);
             Destroy(gameObject);

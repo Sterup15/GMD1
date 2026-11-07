@@ -6,7 +6,7 @@ namespace GameObjects.Enemy.Common.Scripts
     // Picks which player this enemy goes after: the nearest one still in the run. It only looks again every few
     // seconds and switches only to a clearly closer player, so enemies don't flip between two players standing
     // side by side. A player who leaves or is out is dropped at once
-    public class EnemyTargetSelector : MonoBehaviour
+    public class EnemyTargetSelector : MonoBehaviour, ITargetProvider
     {
         [Tooltip("Seconds between checks for a closer player")]
         [SerializeField] private float recheckInterval = 1.5f;

@@ -1,5 +1,5 @@
 using GameObjects.Common.Events;
-using GameObjects.Player.Shared.Scripts.Selection;
+using GameObjects.Common.Utils;
 using UnityEngine;
 
 namespace GameObjects.Common.Progression.Scripts
@@ -78,14 +78,14 @@ namespace GameObjects.Common.Progression.Scripts
                 GloryTotal = Glory.Balance,
             };
 
-            var character = CharacterSelection.Selected;
-            if (character != null)
+            var player = Players.Local;
+            if (player != null && player.TryGetComponent<IMasteryCharacter>(out var character) && character.MasteryId.Length > 0)
             {
                 result.CharacterName = character.DisplayName;
-                result.MasteryLevelBefore = Mastery.Level(character.name);
+                result.MasteryLevelBefore = Mastery.Level(character.MasteryId);
                 result.MasteryXpEarned = Mathf.RoundToInt(points * masteryXpPerPoint);
-                Mastery.Add(character.name, result.MasteryXpEarned);
-                result.MasteryLevelAfter = Mastery.Level(character.name);
+                Mastery.Add(character.MasteryId, result.MasteryXpEarned);
+                result.MasteryLevelAfter = Mastery.Level(character.MasteryId);
             }
 
             GlobalEvents.RunEnded(result);

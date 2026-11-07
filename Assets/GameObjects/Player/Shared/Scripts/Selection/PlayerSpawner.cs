@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Selection
 {
-    // Spawns the character picked on the select screen. Runs in Awake, so everything that looks for the
-    // "Player" tag in Start (camera, spawner, HUD, upgrades) finds it
+    // Spawns the character picked on the select screen. Runs in Awake, so everything that looks the player up in
+    // Players in Start (camera, spawner, HUD, upgrades) finds it
     [DefaultExecutionOrder(-50)]
     public class PlayerSpawner : MonoBehaviour
     {
@@ -27,6 +27,7 @@ namespace GameObjects.Player.Shared.Scripts.Selection
             }
 
             var player = Instantiate(character.Prefab, transform.position, Quaternion.identity);
+            player.AddComponent<PlayedCharacter>().Definition = character;
             Talents.Talents.Apply(character, player);
         }
     }

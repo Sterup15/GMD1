@@ -1,11 +1,12 @@
 using GameObjects.Common.Events;
+using GameObjects.Common.Pickups.Scripts;
 using GameObjects.Common.Projectiles.Scripts;
 using GameObjects.Common.Stats.Scripts;
 using UnityEngine;
 
 namespace GameObjects.Player.Shared.Scripts.Health
 {
-    public class PlayerHealth : MonoBehaviour, IDamageable
+    public class PlayerHealth : MonoBehaviour, IDamageable, IHealable
     {
         public int MaxHealth { get; private set; }
         public int CurrentHealth { get; private set; }
